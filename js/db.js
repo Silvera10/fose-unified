@@ -376,9 +376,11 @@ const DB = {
 
       // Cargar meta
       const meta = await SB.fetchMeta();
+      // Respetar activeId local si ya fue cambiado por setActive()
+      const localActiveId = this._meta && this._meta.activeId ? this._meta.activeId : null;
       this._meta = {
-        instituciones: instList.map(i => ({id: i.id, nombre: i.nombre})),
-        activeId: (meta && meta.active_inst_id) || instList[0].id,
+        instituciones: instList.map(i => ({id: i.id, nombre: i.nombre, vigencia: i.vigencia||''})),
+        activeId: localActiveId || (meta && meta.active_inst_id) || instList[0].id,
         cambios: (meta && meta.cambios) || 0
       };
 
