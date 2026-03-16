@@ -106,13 +106,25 @@ function recargarApp(){
 }
 
 async function cambiarInstitucion(id){
-  await DB.setActive(id);
-  // Forzar sync del activeId a Supabase antes de recargar
-  if(typeof SB !== 'undefined' && SB.isActive()){
-    try { await SB.saveMeta(DB._meta); } catch(e){}
+  try {
+    console.log('[CAMBIO INST] Cambiando a:', id);
+    DB._meta.activeId = id;
+    await DB.saveMeta();
+    // Precargar datos
+    const d = await DB._get('instituciones', id);
+    DB._mem = d || DB.initVacio();
+    // Forzar sync del activeId a Supabase antes de recargar
+    if(typeof SB !== 'undefined' && SB.isActive()){
+      try { await SB.saveMeta(DB._meta); } catch(e){ console.warn('[CAMBIO INST] Error sync Supabase:', e); }
+    }
+    console.log('[CAMBIO INST] OK, recargando...');
+    location.reload();
+  } catch(e){
+    console.error('[CAMBIO INST] Error:', e);
+    // Fallback: guardar en localStorage y recargar
+    try { localStorage.setItem('fose_activeId', id); } catch(ex){}
+    location.reload();
   }
-  // Recarga completa de la página para garantizar que todo se actualice
-  location.reload();
 }
 
 /* ── Multi-Institución ── */

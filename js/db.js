@@ -377,7 +377,9 @@ const DB = {
       // Cargar meta
       const meta = await SB.fetchMeta();
       // Respetar activeId local si ya fue cambiado por setActive()
-      const localActiveId = this._meta && this._meta.activeId ? this._meta.activeId : null;
+      let localActiveId = this._meta && this._meta.activeId ? this._meta.activeId : null;
+      // Fallback: si cambiarInstitucion guardó en localStorage
+      if(!localActiveId){ try { const ls = localStorage.getItem('fose_activeId'); if(ls){ localActiveId = ls; localStorage.removeItem('fose_activeId'); } } catch(e){} }
       this._meta = {
         instituciones: instList.map(i => ({id: i.id, nombre: i.nombre, vigencia: i.vigencia||''})),
         activeId: localActiveId || (meta && meta.active_inst_id) || instList[0].id,
