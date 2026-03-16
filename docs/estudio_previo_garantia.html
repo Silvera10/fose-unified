@@ -17,7 +17,7 @@
     page-break-inside: avoid;
   }
   table.ep-info th {
-    background: #f0f7f0;
+    background: #f5f5f5;
     font-weight: bold;
     padding: 4px 8px;
     border: 1px solid #bbb;
@@ -39,9 +39,9 @@
     font-size: 10pt;
     font-weight: bold;
     text-transform: uppercase;
-    background: #e8f5e9;
+    background: #eee;
     padding: 4px 8px;
-    border-left: 4px solid #1a6b3c;
+    border-left: 4px solid #333;
     margin-bottom: 6px;
   }
   .ep-section p {
@@ -68,12 +68,12 @@
     page-break-inside: avoid;
   }
   table.ep-table thead th {
-    background: #1a6b3c;
-    color: #fff;
+    background: #eee;
+    color: #000;
     padding: 5px 7px;
     text-align: left;
     font-weight: bold;
-    border: 1px solid #145530;
+    border: 1px solid #999;
   }
   table.ep-table thead th.center { text-align: center; }
   table.ep-table tbody td {
@@ -82,12 +82,12 @@
     vertical-align: top;
     line-height: 1.35;
   }
-  table.ep-table tbody tr:nth-child(even) td { background: #f8faf8; }
+  table.ep-table tbody tr:nth-child(even) td { background: #f5f5f5; }
   table.ep-table tfoot td {
     padding: 5px 7px;
     border: 1px solid #aaa;
     font-weight: bold;
-    background: #e8f5e9;
+    background: #eee;
   }
 
   /* Bloque de firmas */
@@ -99,9 +99,9 @@
     font-size: 10pt;
     font-weight: bold;
     text-transform: uppercase;
-    background: #e8f5e9;
+    background: #eee;
     padding: 4px 8px;
-    border-left: 4px solid #1a6b3c;
+    border-left: 4px solid #333;
     margin-bottom: 8px;
   }
   .ep-firma-section > p {
@@ -217,9 +217,9 @@
 <div class="ep-section">
   <h3>2. Descripción de la Necesidad</h3>
   <p>
-    {{ 'El' if 'CENTRO' in inst_nombre|upper else 'La' }} <strong>{{ inst_nombre }}</strong>, con NIT <strong>{{ format_id(inst_nit) }}</strong>, ha
-    identificado la necesidad de contratar lo siguiente, con el fin de garantizar el
-    adecuado funcionamiento institucional y el cumplimiento de sus objetivos misionales:
+    {{ inst_Art }} <strong>{{ inst_nombre }}</strong>, identificada con NIT <strong>{{ format_id(inst_nit) }}</strong>,
+    ha identificado la necesidad de contratar lo siguiente, con el fin de garantizar
+    el adecuado funcionamiento institucional y el cumplimiento de sus objetivos misionales:
   </p>
   <p><strong>Necesidad identificada:</strong> {{ objeto }}</p>
   <p>
@@ -241,14 +241,9 @@
       </tr>
     </thead>
     <tbody>
-      {% set codigos_unspsc = items | selectattr('unsp') | map(attribute='unsp') | list %}
-      <tr>
+            <tr>
         <td style="text-align:center; font-weight:bold; letter-spacing:0.5px;">
-          {% if codigos_unspsc %}
-            {{ codigos_unspsc | join('; ') }}
-          {% else %}
-            —
-          {% endif %}
+            {{ codigos_unspsc_texto }}
         </td>
         <td>{{ objeto }}</td>
       </tr>
@@ -278,7 +273,7 @@
 <div class="ep-section">
   <h3>5. Obligaciones del Contratista</h3>
   {% if obligaciones and obligaciones.strip() %}
-    {% for linea in obligaciones.split('\n') %}
+    {% for linea in obligaciones.split('\\n') %}
       {% if linea.strip() %}<p>{{ linea.strip() }}</p>{% endif %}
     {% endfor %}
   {% else %}
@@ -421,7 +416,7 @@
   <p>
     <strong>CUMPLIMIENTO DE LA LEY DE GARANTÍAS ELECTORALES:</strong> El presente proceso
     se adelanta dentro del período de restricción electoral previsto en la Ley 996 de 2005
-    (período electoral vigencia {{ anio }}). La presente convocatoria es de
+    y sus reglamentaciones vigentes para el período electoral correspondiente. La presente convocatoria es de
     carácter <strong>GENERAL</strong>, no dirigida a proveedor específico, y permite la
     participación de una <strong>PLURALIDAD DE OFERENTES</strong> con criterios objetivos
     de evaluación. En consecuencia, conforme al Concepto del

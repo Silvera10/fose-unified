@@ -19,7 +19,7 @@
   text-align: center;
   font-size: 10.5pt;
   font-weight: bold;
-  color: #1a6b3c;
+  color: #333;
   margin: -8px 0 14px;
   letter-spacing: 0.5px;
 }
@@ -43,9 +43,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -67,7 +67,7 @@ table.ai-tabla {
   break-inside: avoid;
 }
 table.ai-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -86,13 +86,13 @@ table.ai-tabla td {
 }
 /* Cabeceras de grupo (LA INSTITUCIÓN / EL CONTRATISTA / SUPERVISOR) */
 table.ai-tabla .ai-grupo {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   font-weight: bold;
   font-size: 9pt;
   letter-spacing: 0.5px;
   padding: 5px 10px;
-  border: 1.5px solid #1a6b3c;
+  border: 1.5px solid #333;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -150,7 +150,7 @@ table.ai-firma-tabla td {
   En el municipio de <strong>{{ inst_municipio }}</strong>,
   {{ inst_departamento }}, siendo el día <strong>{{ fecha_inicio_larga }}</strong>,
   en las instalaciones de
-  {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+  {{ inst_art }}
   <strong>{{ inst_nombre }}</strong>, NIT <strong>{{ format_id(inst_nit) }}</strong>,
   ubicada en {{ inst_dir }}, se reunieron las partes que suscriben el presente
   contrato, con el fin de dar inicio formal a su ejecución.
@@ -195,7 +195,7 @@ table.ai-firma-tabla td {
       <th>Número</th>
       <td>{{ format_id(num_id_contratista) }}</td>
     </tr>
-    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
     <tr>
       <th>Representante Legal</th>
       <td colspan="3">{{ rep_legal_nombre }}</td>
@@ -286,7 +286,7 @@ table.ai-firma-tabla td {
     </tr>
     <tr>
       <th>Duración pactada</th>
-      <td><strong>{{ dias_duracion }} días hábiles</strong></td>
+      <td><strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong></td>
     </tr>
   </table>
 </div>
@@ -299,7 +299,7 @@ table.ai-firma-tabla td {
     acta se encuentran cumplidos los requisitos de perfeccionamiento y ejecución
     del contrato N.° <strong>{{ numero }}</strong>, razón por la cual
     <strong>se da inicio formal a la ejecución del contrato</strong>.
-    {% if sexo_contratista == 'E' %}
+    {% if es_empresa %}
       La empresa contratista
     {% elif sexo_contratista == 'F' %}
       La contratista
@@ -350,7 +350,7 @@ table.ai-firma-tabla td {
       <!-- Contratista -->
       <td>
         <div class="ai-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="ai-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ai-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="ai-firma-cargo">Representante Legal</p>

@@ -17,7 +17,7 @@
     page-break-inside: avoid;
   }
   table.invg-info th {
-    background: #f0f7f0;
+    background: #f5f5f5;
     font-weight: bold;
     padding: 4px 8px;
     border: 1px solid #bbb;
@@ -33,8 +33,8 @@
   .invg-destinatario {
     margin: 10px 0 14px;
     padding: 8px 12px;
-    border-left: 4px solid #1a6b3c;
-    background: #f9fdf9;
+    border-left: 4px solid #333;
+    background: #fff;
     font-size: 10pt;
     line-height: 1.7;
     page-break-inside: avoid;
@@ -56,9 +56,9 @@
     font-size: 10pt;
     font-weight: bold;
     text-transform: uppercase;
-    background: #e8f5e9;
+    background: #eee;
     padding: 4px 8px;
-    border-left: 4px solid #1a6b3c;
+    border-left: 4px solid #333;
     margin-bottom: 7px;
   }
   .invg-section p {
@@ -75,7 +75,7 @@
   .invg-section h4 {
     font-size: 10pt;
     margin: 8px 0 3px;
-    color: #1a6b3c;
+    color: #333;
   }
 
   table.invg-table {
@@ -86,12 +86,12 @@
     page-break-inside: avoid;
   }
   table.invg-table thead th {
-    background: #1a6b3c;
-    color: #fff;
+    background: #eee;
+    color: #000;
     padding: 5px 8px;
     text-align: center;
     font-weight: bold;
-    border: 1px solid #145530;
+    border: 1px solid #999;
   }
   table.invg-table thead th.left { text-align: left; }
   table.invg-table tbody td {
@@ -99,21 +99,21 @@
     border: 1px solid #ccc;
     vertical-align: top;
   }
-  table.invg-table tbody tr:nth-child(even) td { background: #f9fdf9; }
+  table.invg-table tbody tr:nth-child(even) td { background: #f5f5f5; }
 
   /* Bloque de garantías destacado */
   .invg-garantia-box {
-    border: 2px solid #1a6b3c;
+    border: 2px solid #333;
     border-radius: 4px;
     padding: 10px 14px;
     margin: 10px 0;
-    background: #f0f7f0;
+    background: #fff;
     page-break-inside: avoid;
   }
   .invg-garantia-box .invg-garantia-titulo {
     font-weight: bold;
     font-size: 10pt;
-    color: #1a6b3c;
+    color: #333;
     margin-bottom: 6px;
     text-transform: uppercase;
   }
@@ -123,11 +123,11 @@
     font-size: 9.5pt;
   }
   .invg-garantia-box table th {
-    background: #1a6b3c;
-    color: #fff;
+    background: #eee;
+    color: #000;
     padding: 4px 8px;
     text-align: left;
-    border: 1px solid #145530;
+    border: 1px solid #999;
   }
   .invg-garantia-box table td {
     padding: 4px 8px;
@@ -192,7 +192,7 @@
 <!-- Introducción general -->
 <div class="invg-section">
   <p>
-    Desde el <strong>{{ inst_nombre }}</strong>, identificada con NIT No. <strong>{{ format_id(inst_nit) }}</strong>,
+    Desde {{ inst_art }} <strong>{{ inst_nombre }}</strong>, identificada con NIT No. <strong>{{ format_id(inst_nit) }}</strong>,
     en su calidad de entidad de régimen especial, se permite invitar de manera general y no
     dirigida a proveedor específico a las personas naturales y/o jurídicas interesadas en
     presentar oferta para la contratación de bienes y/o servicios requeridos para el
@@ -273,14 +273,9 @@
       </tr>
     </thead>
     <tbody>
-      {% set codigos_unspsc = items | selectattr('unsp') | map(attribute='unsp') | list %}
-      <tr>
+            <tr>
         <td style="text-align:center; font-weight:bold; letter-spacing:0.5px;">
-          {% if codigos_unspsc %}
-            {{ codigos_unspsc | join('; ') }}
-          {% else %}
-            —
-          {% endif %}
+            {{ codigos_unspsc_texto }}
         </td>
         <td>{{ objeto }}</td>
       </tr>
@@ -303,9 +298,9 @@
 <div class="invg-section">
   <div class="invg-section-titulo">4. Plazo de Ejecución</div>
   <p>
-    <strong>{{ dias_duracion }} días hábiles</strong> contados a partir del acta de inicio,
+    <strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong> contados a partir del acta de inicio,
     previo cumplimiento de los requisitos de perfeccionamiento y ejecución, incluida
-    la constitución y aprobación de la póliza de garantía.
+    la constitución y aprobación de la póliza de garantía (si aplica).
   </p>
   <p>
     <strong>Inicio estimado:</strong> {{ fecha_inicio_larga }}&nbsp;&nbsp;&nbsp;
@@ -498,7 +493,7 @@
   <p>
     <strong>CUMPLIMIENTO DE LA LEY DE GARANTÍAS ELECTORALES:</strong> El presente proceso
     se adelanta dentro del período de restricción electoral previsto en la Ley 996 de 2005
-    (período electoral vigencia {{ anio }}). La presente invitación es de
+    y sus reglamentaciones vigentes para el período electoral correspondiente. La presente invitación es de
     carácter <strong>GENERAL</strong>, no dirigida a proveedor específico, y permite la
     participación de una <strong>PLURALIDAD DE OFERENTES</strong> con criterios objetivos
     de evaluación. En consecuencia, conforme al Concepto del
@@ -521,7 +516,7 @@
     <strong>{{ inst_nombre }}</strong>, {{ inst_dir }}, {{ inst_municipio }},
     o al correo <strong>{{ inst_email }}</strong>, dentro del plazo señalado en el
     cronograma. Deberá incluir valor total, discriminado por ítems e IVA si aplica,
-    y manifestación expresa de capacidad para constituir la póliza de garantía.
+    y manifestación expresa de capacidad para constituir la póliza de garantía (si aplica).
   </p>
 </div>
 

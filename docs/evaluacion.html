@@ -24,10 +24,10 @@ table.ev-info {
   break-inside: avoid;
 }
 table.ev-info th {
-  background: #e8f5e9;
+  background: #f0f0f0;
   font-weight: bold;
   padding: 5px 9px;
-  border: 1.5px solid #aaa;
+  border: 1.5px solid #999;
   width: 19%;
   text-align: left;
   white-space: nowrap;
@@ -37,7 +37,7 @@ table.ev-info th {
 }
 table.ev-info td {
   padding: 5px 9px;
-  border: 1.5px solid #aaa;
+  border: 1.5px solid #999;
   vertical-align: top;
   font-size: 9.5pt;
   line-height: 1.4;
@@ -54,9 +54,9 @@ table.ev-info td {
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -88,12 +88,12 @@ table.ev-table {
   break-inside: avoid;
 }
 table.ev-table thead th {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   padding: 6px 8px;
   text-align: center;
   font-weight: bold;
-  border: 1px solid #155430;
+  border: 1.5px solid #999;
   line-height: 1.35;
   font-size: 9pt;
   -webkit-print-color-adjust: exact;
@@ -104,13 +104,13 @@ table.ev-table thead th.left {
 }
 table.ev-table tbody td {
   padding: 5px 8px;
-  border: 1px solid #c0c0c0;
+  border: 1px solid #bbb;
   vertical-align: middle;
   font-size: 9pt;
   line-height: 1.35;
 }
 table.ev-table tbody tr:nth-child(even) td {
-  background: #f7faf7;
+  background: #f5f5f5;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -118,7 +118,7 @@ table.ev-table tfoot td {
   padding: 6px 8px;
   border: 1.5px solid #999;
   font-weight: bold;
-  background: #e8f5e9;
+  background: #eee;
   font-size: 9pt;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -126,12 +126,13 @@ table.ev-table tfoot td {
 
 /* ── Fila del proponente seleccionado ─────────────── */
 tr.ev-fila-sel td {
-  background: #fff9c4 !important;
+  background: #e0e0e0 !important;
+  font-weight: bold;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 td.ev-seleccion {
-  color: #4e342e;
+  color: #000;
   font-weight: bold;
   text-align: center;
   font-size: 8.5pt;
@@ -139,7 +140,7 @@ td.ev-seleccion {
 td.ev-item {
   text-align: center;
   font-weight: bold;
-  color: #444;
+  color: #333;
 }
 td.ev-valor {
   text-align: right;
@@ -164,9 +165,9 @@ td.ev-fecha {
 
 /* ── Bloque NOTA de cotizaciones ─────────────────── */
 .ev-nota {
-  background: #fafafa;
-  border: 1px solid #ccc;
-  border-left: 4px solid #1a6b3c;
+  background: #fff;
+  border: 1px solid #bbb;
+  border-left: 4px solid #333;
   padding: 9px 13px;
   margin: 8px 0 4px;
   font-size: 9.5pt;
@@ -177,16 +178,16 @@ td.ev-fecha {
   print-color-adjust: exact;
 }
 .ev-nota p { margin: 4px 0; text-align: justify; }
-.ev-cumple-txt  { color: #145214; font-weight: bold; }
-.ev-nocumple-txt{ color: #8b0000; font-weight: bold; }
+.ev-cumple-txt  { color: #000; font-weight: bold; }
+.ev-nocumple-txt{ color: #000; font-weight: bold; text-decoration: underline; }
 
 /* ── Caja de recomendación ────────────────────────── */
 .ev-recomendacion {
   margin: 9px 0 4px;
   padding: 10px 14px;
-  border: 2px solid #1a6b3c;
+  border: 2px solid #333;
   border-radius: 3px;
-  background: #f0f7f0;
+  background: #fff;
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.5;
@@ -283,41 +284,7 @@ table.ev-firma-tabla td {
       </tr>
     </thead>
     <tbody>
-      {# ── Lista de cotizantes (cot1, cot2, cot3) ── #}
-      {% set ns = namespace(item=0) %}
-      {% for cot in [
-          (cot1_nombre, cot1_cc, cot1_fecha, cot1_hora, cot1_ampm, cot1_valor),
-          (cot2_nombre, cot2_cc, cot2_fecha, cot2_hora, cot2_ampm, cot2_valor),
-          (cot3_nombre, cot3_cc, cot3_fecha, cot3_hora, cot3_ampm, cot3_valor),
-      ] %}
-      {% if cot[0] %}
-      {% set ns.item = ns.item + 1 %}
-      {% set es_sel = (cot[0] == nombre_contratista) %}
-      <tr {% if es_sel %}class="ev-fila-sel"{% endif %}>
-        <td class="ev-item">{{ ns.item }}</td>
-        <td>
-          <strong>{{ cot[0] }}</strong>
-          {% if cot[1] %}<br><small style="color:#555">CC/NIT {{ format_id(cot[1]) }}</small>{% endif %}
-        </td>
-        <td class="ev-fecha">
-          {{ format_fecha_larga(cot[2]) if cot[2] else '—' }}
-        </td>
-        <td class="ev-hora">
-          {{ cot[3] if cot[3] else '—' }}
-          {{ cot[4] if cot[4] else '' }}
-        </td>
-        <td class="ev-valor">
-          <strong>{{ format_moneda(cot[5]) if cot[5] else '—' }}</strong>
-          {% if cot[5] %}
-          <small>({{ format_letras(cot[5]) }})</small>
-          {% endif %}
-        </td>
-        <td class="{% if es_sel %}ev-seleccion{% endif %}" style="text-align:center">
-          {% if es_sel %}✔ SELECCIONADO{% endif %}
-        </td>
-      </tr>
-      {% endif %}
-      {% endfor %}
+      {{ eval_filas_html }}
     </tbody>
     <tfoot>
       <tr>
@@ -339,30 +306,9 @@ table.ev-firma-tabla td {
     continuación:
   </p>
 
-  {# Contar cotizantes registrados #}
-  {% set ns2 = namespace(total=0) %}
-  {% for n in [cot1_nombre, cot2_nombre, cot3_nombre] %}
-    {% if n %}{% set ns2.total = ns2.total + 1 %}{% endif %}
-  {% endfor %}
-
   <div class="ev-nota">
     <p>{{ eval_nota_html }}</p>
-    {% set ns3 = namespace(i=0) %}
-    {% for nombre in [cot1_nombre, cot2_nombre, cot3_nombre] %}
-      {% if nombre %}
-        {% set ns3.i = ns3.i + 1 %}
-        <p>
-          — <strong>Proponente {{ ns3.i }}: {{ nombre }}</strong> —
-          {% if nombre == nombre_contratista %}
-            <span class="ev-cumple-txt">CUMPLE</span>
-            con todos los requisitos técnicos, jurídicos y económicos exigidos.
-          {% else %}
-            <span class="ev-nocumple-txt">NO CUMPLE</span>.
-            Documentación incompleta o no subsanada dentro del plazo establecido.
-          {% endif %}
-        </p>
-      {% endif %}
-    {% endfor %}
+    {{ eval_verificacion_html }}
   </div>
 </div>
 
@@ -372,7 +318,7 @@ table.ev-firma-tabla td {
   <p>Efectuada la evaluación de las propuestas recibidas, se concluye lo siguiente:</p>
   <ol>
     <li>
-      {% if sexo_contratista == 'E' %}La empresa proponente
+      {% if es_empresa %}La empresa proponente
       {% elif sexo_contratista == 'F' %}La proponente
       {% else %}El proponente{% endif %}
       <strong>{{ nombre_contratista }}</strong>,
@@ -392,7 +338,7 @@ table.ev-firma-tabla td {
 
   <div class="ev-recomendacion">
     En consecuencia, se <strong>RECOMIENDA</strong> a la Rectoría de
-    {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+    {{ inst_art }}
     <strong>{{ inst_nombre }}</strong> proceder a la
     <strong>ACEPTACIÓN DE LA OFERTA</strong> presentada por
     <strong>{{ nombre_contratista }}</strong>, por la suma de
@@ -424,13 +370,6 @@ table.ev-firma-tabla td {
 <div class="ev-firma-section">
   <table class="ev-firma-tabla">
     <tr>
-      <td>
-        <div class="ev-firma-linea">
-          <p class="ev-firma-nombre">ELABORÓ Y EVALUÓ</p>
-          <p class="ev-firma-cargo">Responsable del Proceso</p>
-          <p class="ev-firma-cargo">{{ inst_nombre }}</p>
-        </div>
-      </td>
       <td>
         <div class="ev-firma-linea">
           <p class="ev-firma-nombre">{{ rector }}</p>

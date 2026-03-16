@@ -1,0 +1,266 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Comprobante de Egreso — {{ num_egreso }}{% endblock %}
+{% block doc_titulo %}COMPROBANTE DE EGRESO{% endblock %}
+
+{% block extra_css %}
+<style>
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+.ed-numero {
+  text-align: center;
+  font-size: 12pt;
+  font-weight: bold;
+  margin: -4px 0 14px;
+  color: #333;
+}
+.ed-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.ed-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #eee;
+  padding: 5px 10px;
+  border-left: 5px solid #333;
+  margin-bottom: 6px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ed-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 4px 0 8px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ed-tabla th {
+  background: #f5f5f5;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #999;
+  text-align: left;
+  width: 25%;
+  white-space: nowrap;
+  vertical-align: top;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ed-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #999;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+.ed-valor-box {
+  border: 2px solid #333;
+  border-radius: 3px;
+  padding: 10px 16px;
+  margin: 8px 0;
+  text-align: center;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.ed-valor-monto {
+  font-size: 14pt;
+  font-weight: bold;
+  color: #333;
+}
+.ed-valor-letras {
+  font-size: 9pt;
+  color: #555;
+  font-style: italic;
+  margin-top: 4px;
+}
+table.ed-contable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 4px 0 8px;
+  font-size: 9.5pt;
+}
+table.ed-contable th {
+  background: #f5f5f5;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #999;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ed-contable td {
+  padding: 5px 9px;
+  border: 1.5px solid #999;
+  font-size: 9.5pt;
+}
+.ed-observaciones {
+  font-size: 9pt;
+  color: #444;
+  margin: 8px 0 4px;
+  font-style: italic;
+}
+.ed-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ed-firma-tabla {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  border: none;
+}
+table.ed-firma-tabla td {
+  text-align: center;
+  padding: 0;
+  border: none;
+  vertical-align: bottom;
+  width: 50%;
+}
+.ed-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin: 58px 30px 0;
+}
+.ed-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.ed-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<p class="ed-numero">Egreso N.° {{ num_egreso }}</p>
+
+<!-- 1. DATOS DEL PAGO -->
+<div class="ed-section">
+  <div class="ed-section-titulo">1. Datos del Pago</div>
+  <table class="ed-tabla">
+    <tr>
+      <th>Concepto</th>
+      <td colspan="3">{{ concepto }}</td>
+    </tr>
+    <tr>
+      <th>Período</th>
+      <td>{{ periodo }}</td>
+      <th>Fecha</th>
+      <td>{{ fecha_larga }}</td>
+    </tr>
+    <tr>
+      <th>N° Formulario DIAN</th>
+      <td colspan="3">{{ formulario_dian }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- 2. VALOR -->
+<div class="ed-section">
+  <div class="ed-section-titulo">2. Valor</div>
+  <div class="ed-valor-box">
+    <div class="ed-valor-monto">{{ valor_fmt }}</div>
+    <div class="ed-valor-letras">({{ valor_letras }})</div>
+  </div>
+</div>
+
+<!-- 3. BENEFICIARIO Y PAGO -->
+<div class="ed-section">
+  <div class="ed-section-titulo">3. Beneficiario y Forma de Pago</div>
+  <table class="ed-tabla">
+    <tr>
+      <th>Beneficiario</th>
+      <td colspan="3">{{ beneficiario }}</td>
+    </tr>
+    <tr>
+      <th>NIT</th>
+      <td>{{ nit_beneficiario_fmt }}</td>
+      <th>Medio de Pago</th>
+      <td>{{ medio_pago }}</td>
+    </tr>
+    <tr>
+      <th>Banco Origen</th>
+      <td>{{ banco_origen }}</td>
+      <th>Comprobante Bancario</th>
+      <td>{{ num_comprobante_banco }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- 4. REGISTRO CONTABLE -->
+<div class="ed-section">
+  <div class="ed-section-titulo">4. Registro Contable</div>
+  <table class="ed-contable">
+    <thead>
+      <tr>
+        <th style="width:20%">Cuenta</th>
+        <th>Concepto</th>
+        <th style="width:20%">Débito</th>
+        <th style="width:20%">Crédito</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="text-center">{{ cuenta_contable }}</td>
+        <td>{{ nombre_cuenta }}</td>
+        <td class="text-end">{{ valor_fmt }}</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="text-center">1110</td>
+        <td>Bancos y Corporaciones</td>
+        <td></td>
+        <td class="text-end">{{ valor_fmt }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr style="font-weight:bold;background:#f5f5f5">
+        <td colspan="2" class="text-end">TOTALES</td>
+        <td class="text-end">{{ valor_fmt }}</td>
+        <td class="text-end">{{ valor_fmt }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+{% if observaciones %}
+<p class="ed-observaciones"><strong>Observaciones:</strong> {{ observaciones }}</p>
+{% endif %}
+
+<!-- FIRMAS -->
+<div class="ed-firma-section">
+  <table class="ed-firma-tabla">
+    <tr>
+      <td>
+        <div class="ed-firma-linea">
+          <p class="ed-firma-nombre">{{ rector }}</p>
+          <p class="ed-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+          <p class="ed-firma-cargo">Rector(a)</p>
+          <p class="ed-firma-cargo">Ordenador del Gasto</p>
+        </div>
+      </td>
+      <td>
+        <div class="ed-firma-linea">
+          <p class="ed-firma-nombre">&nbsp;</p>
+          <p class="ed-firma-cargo">&nbsp;</p>
+          <p class="ed-firma-cargo">Auxiliar Administrativo</p>
+          <p class="ed-firma-cargo">Pagador(a)</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

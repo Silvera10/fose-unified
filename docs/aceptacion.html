@@ -34,9 +34,9 @@
   margin: 0 0 14px;
   font-size: 9.5pt;
   line-height: 1.5;
-  border-left: 4px solid #1a6b3c;
+  border-left: 4px solid #333;
   padding-left: 10px;
-  background: #f0f7f0;
+  background: #fff;
   padding-top: 4px;
   padding-bottom: 4px;
   -webkit-print-color-adjust: exact;
@@ -61,9 +61,9 @@
   font-size: 10pt;
   font-weight: bold;
   text-transform: uppercase;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   letter-spacing: 0.3px;
   -webkit-print-color-adjust: exact;
@@ -80,7 +80,7 @@ table.ao-tabla {
   break-inside: avoid;
 }
 table.ao-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -167,10 +167,10 @@ table.ao-firma-tabla td {
 <div class="ao-destinatario">
   <p>
     {% if sexo_contratista == 'F' %}Señora:
-    {% elif sexo_contratista == 'E' %}Señor(a):
+    {% elif es_empresa %}Señor(a):
     {% else %}Señor:{% endif %}
   </p>
-  {% if sexo_contratista == 'E' and rep_legal_nombre %}
+  {% if es_empresa and rep_legal_nombre %}
     <p><strong>{{ rep_legal_nombre }}</strong></p>
     <p>CC N.° {{ format_id(rep_legal_cc) }}</p>
     <p>Representante Legal de <strong>{{ nombre_contratista }}</strong></p>
@@ -193,12 +193,12 @@ table.ao-firma-tabla td {
 <div class="ao-body">
   <p>
     {% if sexo_contratista == 'F' %}Apreciada señora:
-    {% elif sexo_contratista == 'E' %}Apreciado(a) señor(a):
+    {% elif es_empresa %}Apreciado(a) señor(a):
     {% else %}Apreciado señor:{% endif %}
   </p>
 
   <p>
-    En nombre de {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+    En nombre de {{ inst_art }}
     <strong>{{ inst_nombre }}</strong>, NIT <strong>{{ format_id(inst_nit) }}</strong>,
     y en mi calidad de Rector(a) de la misma, me complace comunicarle que, surtido el
     proceso de selección correspondiente a la modalidad de
@@ -232,7 +232,7 @@ table.ao-firma-tabla td {
     <tr>
       <th>Plazo de ejecución</th>
       <td colspan="3">
-        {{ dias_duracion }} días hábiles, contados desde la suscripción del acta de inicio.
+        {{ plazo_valor }} {{ plazo_unidad_texto }}, contados desde la suscripción del acta de inicio.
       </td>
     </tr>
     <tr>
@@ -300,7 +300,7 @@ table.ao-firma-tabla td {
   <p>
     Se solicita
     {% if sexo_contratista == 'F' %}a la contratista
-    {% elif sexo_contratista == 'E' %}a la empresa contratista
+    {% elif es_empresa %}a la empresa contratista
     {% else %}al contratista{% endif %}
     presentarse en las instalaciones de la Institución Educativa para la suscripción
     del contrato o emisión de la orden de compra,

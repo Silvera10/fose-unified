@@ -175,10 +175,10 @@ table.ao-firma-tabla td {
 <div class="ao-destinatario">
   <p>
     {% if sexo_contratista == 'F' %}Señora:
-    {% elif sexo_contratista == 'E' %}Señor(a):
+    {% elif es_empresa %}Señor(a):
     {% else %}Señor:{% endif %}
   </p>
-  {% if sexo_contratista == 'E' and rep_legal_nombre %}
+  {% if es_empresa and rep_legal_nombre %}
     <p><strong>{{ rep_legal_nombre }}</strong></p>
     <p>CC N.° {{ format_id(rep_legal_cc) }}</p>
     <p>Representante Legal de <strong>{{ nombre_contratista }}</strong></p>
@@ -201,7 +201,7 @@ table.ao-firma-tabla td {
 <div class="ao-body">
   <p>
     {% if sexo_contratista == 'F' %}Apreciada señora:
-    {% elif sexo_contratista == 'E' %}Apreciado(a) señor(a):
+    {% elif es_empresa %}Apreciado(a) señor(a):
     {% else %}Apreciado señor:{% endif %}
   </p>
 
@@ -308,7 +308,7 @@ table.ao-firma-tabla td {
   <p>
     Se solicita
     {% if sexo_contratista == 'F' %}a la contratista
-    {% elif sexo_contratista == 'E' %}a la empresa contratista
+    {% elif es_empresa %}a la empresa contratista
     {% else %}al contratista{% endif %}
     presentarse en las instalaciones de la Institución Educativa para la suscripción
     del contrato o emisión de la orden de compra,
@@ -542,7 +542,7 @@ table.ai-firma-tabla td {
       <th>Número</th>
       <td>{{ format_id(num_id_contratista) }}</td>
     </tr>
-    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
     <tr>
       <th>Representante Legal</th>
       <td colspan="3">{{ rep_legal_nombre }}</td>
@@ -646,7 +646,7 @@ table.ai-firma-tabla td {
     acta se encuentran cumplidos los requisitos de perfeccionamiento y ejecución
     del contrato N.° <strong>{{ numero }}</strong>, razón por la cual
     <strong>se da inicio formal a la ejecución del contrato</strong>.
-    {% if sexo_contratista == 'E' %}
+    {% if es_empresa %}
       La empresa contratista
     {% elif sexo_contratista == 'F' %}
       La contratista
@@ -697,7 +697,7 @@ table.ai-firma-tabla td {
       <!-- Contratista -->
       <td>
         <div class="ai-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="ai-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ai-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="ai-firma-cargo">Representante Legal</p>
@@ -984,7 +984,7 @@ table.al-firma-sup-tabla td {
     <!-- EL CONTRATISTA -->
     <tr>
       <td colspan="4" class="al-parte-hdr">
-        {% if sexo_contratista == 'E' %}LA EMPRESA CONTRATISTA
+        {% if es_empresa %}LA EMPRESA CONTRATISTA
         {% elif sexo_contratista == 'F' %}LA CONTRATISTA
         {% else %}EL CONTRATISTA{% endif %}
       </td>
@@ -1001,7 +1001,7 @@ table.al-firma-sup-tabla td {
       <th>Municipio</th>
       <td>{{ municipio_contratista }}</td>
     </tr>
-    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
     <tr>
       <th>Repr. Legal</th>
       <td>{{ rep_legal_nombre }}</td>
@@ -1080,7 +1080,7 @@ table.al-firma-sup-tabla td {
       </tr>
       <tr>
         <td>Valor neto cancelado
-          {% if sexo_contratista == 'E' %}a la empresa contratista
+          {% if es_empresa %}a la empresa contratista
           {% elif sexo_contratista == 'F' %}a la contratista
           {% else %}al contratista{% endif %}
         </td>
@@ -1088,7 +1088,7 @@ table.al-firma-sup-tabla td {
       </tr>
       <tr>
         <td>Saldo por pagar
-          {% if sexo_contratista == 'E' %}a la empresa contratista
+          {% if es_empresa %}a la empresa contratista
           {% elif sexo_contratista == 'F' %}a la contratista
           {% else %}al contratista{% endif %}
         </td>
@@ -1117,7 +1117,7 @@ table.al-firma-sup-tabla td {
     <strong>{{ numero }}</strong> fue ejecutado en su totalidad, a entera
     satisfacción de la institución, de conformidad con las condiciones
     técnicas y de calidad pactadas.
-    {% if sexo_contratista == 'E' %}La empresa supervisora designada
+    {% if es_empresa %}La empresa supervisora designada
     {% else %}El(La) supervisor(a) designado(a){% endif %},
     <strong>{{ supervisor }}</strong>, emitió concepto favorable sobre
     la ejecución del contrato.
@@ -1137,7 +1137,7 @@ table.al-firma-sup-tabla td {
       Que se han cancelado la totalidad de las obligaciones económicas
       derivadas del contrato, sin que existan saldos pendientes de pago a
       favor
-      {% if sexo_contratista == 'E' %}de la empresa contratista
+      {% if es_empresa %}de la empresa contratista
       {% elif sexo_contratista == 'F' %}de la contratista
       {% else %}del contratista{% endif %}
       o de la institución.
@@ -1195,7 +1195,7 @@ table.al-firma-sup-tabla td {
           <p class="al-firma-nombre">{{ nombre_contratista }}</p>
           <p class="al-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
           <p class="al-firma-cargo">
-            {% if sexo_contratista == 'E' %}LA EMPRESA CONTRATISTA
+            {% if es_empresa %}LA EMPRESA CONTRATISTA
             {% elif sexo_contratista == 'F' %}LA CONTRATISTA
             {% else %}EL CONTRATISTA{% endif %}
           </p>
@@ -1456,7 +1456,7 @@ table.ar-firma-tabla td {
   En el municipio de <strong>{{ inst_municipio }}</strong>,
   {{ inst_departamento }}, siendo el día <strong>{{ fecha_fin_larga }}</strong>,
   el suscrito supervisor y
-  {% if sexo_contratista == 'E' %}la empresa contratista
+  {% if es_empresa %}la empresa contratista
   {% elif sexo_contratista == 'F' %}la contratista
   {% else %}el contratista{% endif %}
   del contrato referenciado, proceden a suscribir la presente acta de recibido
@@ -1483,13 +1483,13 @@ table.ar-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa contratista
+        {% if es_empresa %}Empresa contratista
         {% elif sexo_contratista == 'F' %}Contratista
         {% else %}Contratista{% endif %}
       </th>
       <td colspan="3">
         {{ nombre_contratista }}
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+        {% if es_empresa and rep_legal_nombre %}
           <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
@@ -1570,7 +1570,7 @@ table.ar-firma-tabla td {
       El supervisor del contrato N.° <strong>{{ numero }}</strong>,
       <strong>{{ supervisor }}</strong>, en calidad de {{ cargo_sup }}, certifica que
       los bienes y/o servicios entregados por
-      {% if sexo_contratista == 'E' and rep_legal_nombre %}
+      {% if es_empresa and rep_legal_nombre %}
         la empresa contratista <strong>{{ nombre_contratista }}</strong>
         (NIT {{ format_id(num_id_contratista) }}),
         representada por <strong>{{ rep_legal_nombre }}</strong>,
@@ -1618,7 +1618,7 @@ table.ar-firma-tabla td {
       <!-- Contratista -->
       <td>
         <div class="ar-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="ar-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ar-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="ar-firma-cargo">Representante Legal</p>
@@ -1630,7 +1630,7 @@ table.ar-firma-tabla td {
             <p class="ar-firma-cargo">Cel.: {{ celular_contratista }}</p>
           {% endif %}
           <p class="ar-firma-cargo"><strong>
-            {% if sexo_contratista == 'E' %}LA EMPRESA CONTRATISTA
+            {% if es_empresa %}LA EMPRESA CONTRATISTA
             {% elif sexo_contratista == 'F' %}LA CONTRATISTA
             {% else %}EL CONTRATISTA{% endif %}
           </strong></p>
@@ -1925,7 +1925,7 @@ table.cj-firma-tabla td {
 
 <!-- ── Párrafo introductorio ──────────────────────────────────── -->
 <p class="cj-intro">
-  {% if sexo_contratista == 'E' and rep_legal_nombre %}
+  {% if es_empresa and rep_legal_nombre %}
     El(La) suscrito(a), <strong>{{ rep_legal_nombre }}</strong>,
     identificado(a) con CC N.° <strong>{{ format_id(rep_legal_cc) }}</strong>,
     actuando en representación legal de <strong>{{ nombre_contratista }}</strong>
@@ -2035,7 +2035,7 @@ table.cj-firma-tabla td {
     <tr>
       <td>
         <div class="cj-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="cj-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="cj-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="cj-firma-cargo">Representante Legal</p>
@@ -2312,7 +2312,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
 <!-- Cuerpo -->
 <div class="cp-body">
   <p>
-    {% if tipo_id_contratista == 'NIT' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
       Yo, <strong>{{ rep_legal_nombre }}</strong>, identificado(a) con
       CC N.° <strong>{{ format_id(rep_legal_cc) }}</strong>, actuando en representación de
       <strong>{{ nombre_contratista }}</strong>,
@@ -2398,7 +2398,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
 <div class="cp-firma-section">
   <div class="cp-firma-block">
     <div class="cp-firma-linea">
-      {% if tipo_id_contratista == 'NIT' and rep_legal_nombre %}
+      {% if es_empresa and rep_legal_nombre %}
         <p><strong>{{ rep_legal_nombre }}</strong></p>
         <p>CC N.° {{ rep_legal_cc }}</p>
         <p>Representante Legal</p>
@@ -4170,14 +4170,14 @@ table.ce-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa / Beneficiario
+        {% if es_empresa %}Empresa / Beneficiario
         {% elif sexo_contratista == 'F' %}Beneficiaria
         {% else %}Beneficiario{% endif %}
       </th>
       <td colspan="3">
         <strong>{{ nombre_contratista }}</strong>
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
-          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
+        {% if es_empresa and rep_legal_nombre %}
+          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, C.C. {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
     </tr>
@@ -4345,7 +4345,7 @@ table.ce-firma-tabla td {
     <p>
       Revisada la documentación soporte y verificado el cumplimiento del objeto
       contractual del contrato N.° <strong>{{ numero }}</strong>,
-      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% if es_empresa %}la empresa contratista
       {% elif sexo_contratista == 'F' %}la contratista
       {% else %}el contratista{% endif %}
       <strong>{{ nombre_contratista }}</strong> declara haber recibido
@@ -4375,8 +4375,19 @@ table.ce-firma-tabla td {
       <!-- Recibí conforme -->
       <td>
         <div class="ce-firma-linea">
-          <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
-          <p class="ce-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+          {% if es_empresa and rep_legal_nombre %}
+            <p class="ce-firma-nombre">{{ rep_legal_nombre }}</p>
+            <p class="ce-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
+            <p class="ce-firma-cargo">Representante Legal</p>
+            <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ce-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% elif es_empresa %}
+            <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ce-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% else %}
+            <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ce-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+          {% endif %}
           <p class="ce-firma-cargo">Beneficiario(a)</p>
           <p class="ce-firma-cargo"><strong>RECIBÍ CONFORME</strong></p>
         </div>
@@ -5625,7 +5636,7 @@ table.ev-firma-tabla td {
   <p>Efectuada la evaluación de las propuestas recibidas, se concluye lo siguiente:</p>
   <ol>
     <li>
-      {% if sexo_contratista == 'E' %}La empresa proponente
+      {% if es_empresa %}La empresa proponente
       {% elif sexo_contratista == 'F' %}La proponente
       {% else %}El proponente{% endif %}
       <strong>{{ nombre_contratista }}</strong>,
@@ -6033,11 +6044,11 @@ table.ev-firma-tabla td {
   <p>
     Una vez revisadas las propuestas, se evidenció que todos los proponentes presentaron
     ofertas por el mismo valor. No obstante,
-    {% if sexo_contratista == 'E' %}la empresa
+    {% if es_empresa %}la empresa
     {% elif sexo_contratista == 'F' %}la proponente
     {% else %}el proponente{% endif %}:
     <strong>{{ nombre_contratista }}</strong>,
-    {% if tipo_id_contratista == 'NIT' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
       con NIT N.° <strong>{{ format_id(num_id_contratista) }}</strong>,
       representada legalmente por <strong>{{ rep_legal_nombre }}</strong>,
       CC N.° <strong>{{ format_id(rep_legal_cc) }}</strong>,
@@ -6343,7 +6354,7 @@ table.hd-firma-tabla td {
       <th>Número</th>
       <td>{{ format_id(num_id_contratista) }}</td>
     </tr>
-    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
     <tr>
       <th>Representante Legal</th>
       <td colspan="3">{{ rep_legal_nombre }}</td>
@@ -6714,13 +6725,13 @@ table.ic-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa contratista
+        {% if es_empresa %}Empresa contratista
         {% elif sexo_contratista == 'F' %}Contratista
         {% else %}Contratista{% endif %}
       </th>
       <td colspan="3">
         {{ nombre_contratista }}
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+        {% if es_empresa and rep_legal_nombre %}
           <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
@@ -6911,7 +6922,7 @@ table.ic-firma-tabla td {
 <div class="ic-section">
   <div class="ic-section-titulo">6. Conclusiones</div>
   <p>
-    {% if sexo_contratista == 'E' %}
+    {% if es_empresa %}
       La empresa contratista informa
     {% elif sexo_contratista == 'F' %}
       La suscrita contratista informa
@@ -6956,7 +6967,7 @@ table.ic-firma-tabla td {
     <tr>
       <td>
         <div class="ic-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="ic-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ic-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="ic-firma-cargo">Representante Legal</p>
@@ -7217,13 +7228,13 @@ table.is-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa contratista
+        {% if es_empresa %}Empresa contratista
         {% elif sexo_contratista == 'F' %}Contratista
         {% else %}Contratista{% endif %}
       </th>
       <td colspan="3">
         {{ nombre_contratista }}
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+        {% if es_empresa and rep_legal_nombre %}
           <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
@@ -7436,7 +7447,7 @@ table.is-firma-tabla td {
   <p>
     El suscrito supervisor, una vez verificado el cumplimiento del objeto
     contractual, los informes presentados por
-    {% if sexo_contratista == 'E' %}la empresa contratista
+    {% if es_empresa %}la empresa contratista
     {% elif sexo_contratista == 'F' %}la contratista
     {% else %}el contratista{% endif %}
     y los documentos soporte correspondientes, conceptúa favorablemente sobre
@@ -7458,7 +7469,7 @@ table.is-firma-tabla td {
   <div class="is-concepto">
     <p>
       El supervisor <strong>AVALA</strong> el pago a
-      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% if es_empresa %}la empresa contratista
       {% elif sexo_contratista == 'F' %}la contratista
       {% else %}el contratista{% endif %}
       <strong>{{ nombre_contratista }}</strong>,
@@ -9437,7 +9448,7 @@ table.oc-firma-tabla td {
       <th>Número</th>
       <td>{{ format_id(num_id_contratista) }}</td>
     </tr>
-    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
     <tr>
       <th>Representante Legal</th>
       <td colspan="3">{{ rep_legal_nombre }}</td>
@@ -9541,11 +9552,14 @@ table.oc-firma-tabla td {
       <!-- Contratista -->
       <td>
         <div class="oc-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="oc-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="oc-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="oc-firma-cargo">Representante Legal</p>
-            <p class="oc-firma-cargo">{{ nombre_contratista }}</p>
+            <p class="oc-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="oc-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% elif es_empresa %}
+            <p class="oc-firma-nombre">{{ nombre_contratista }}</p>
             <p class="oc-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
           {% else %}
             <p class="oc-firma-nombre">{{ nombre_contratista }}</p>
@@ -9832,14 +9846,14 @@ table.op-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa / Beneficiario
+        {% if es_empresa %}Empresa / Beneficiario
         {% elif sexo_contratista == 'F' %}Beneficiaria
         {% else %}Beneficiario{% endif %}
       </th>
       <td colspan="3">
         {{ nombre_contratista }}
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
-          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
+        {% if es_empresa and rep_legal_nombre %}
+          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, C.C. {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
     </tr>
@@ -10040,7 +10054,7 @@ table.op-firma-tabla td {
       pago mediante transferencia a la cuenta <strong>{{ tipo_cuenta }}</strong>
       N.° <strong>{{ cuenta_banco }}</strong> del banco
       <strong>{{ banco_contratista }}</strong>, a nombre de
-      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% if es_empresa %}la empresa contratista
       {% elif sexo_contratista == 'F' %}la contratista
       {% else %}el contratista{% endif %}
       <strong>{{ nombre_contratista }}</strong>, por los siguientes valores:

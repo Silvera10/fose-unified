@@ -10,7 +10,7 @@
   /* ── Caja con borde y fondo gris claro ── */
   .cpc-caja {
     border: 1px solid #b0b0b0;
-    background: #f0f0f0;
+    background: #fff;
     padding: 11px 16px;
     margin-bottom: 7px;
     -webkit-print-color-adjust: exact;
@@ -21,8 +21,8 @@
 
   /* ── Banda de título oscuro ── */
   .cpc-titulo {
-    background: #4a4a4a;
-    color: #fff;
+    background: #eee;
+    color: #000;
     text-align: center;
     font-size: 10.5pt;
     font-weight: bold;
@@ -77,13 +77,13 @@
     border-collapse: collapse;
   }
   .cpc-tabla thead th {
-    background: #4a4a4a;
-    color: #fff;
+    background: #eee;
+    color: #000;
     font-weight: bold;
     text-align: center;
     padding: 8px 7px;
     font-size: 10pt;
-    border: 1.5px solid #4a4a4a;
+    border: 1.5px solid #999;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -127,7 +127,7 @@
   <!-- 2. Ordenador del gasto -->
   <div class="cpc-caja">
     <p class="cpc-ordenador">
-      El suscrito Ordenador del Gasto del {{ inst_nombre }}
+      El suscrito Ordenador del Gasto {{ inst_del }} {{ inst_nombre }}
     </p>
   </div>
 
@@ -137,7 +137,7 @@
   </div>
 
   <!-- 4. Párrafo introductorio -->
-  <div class="cpc-caja">
+  <div>
     <p class="cpc-texto">
       Que el bien o servicio que se describe a continuación se encuentra incluido en el
       Plan General de Compras, aprobado por el Consejo Directivo para la vigencia fiscal
@@ -156,12 +156,9 @@
         </tr>
       </thead>
       <tbody>
-        {% set codigos = items | selectattr('unsp') | map(attribute='unsp') | list %}
-        <tr>
+                <tr>
           <td class="tc" style="line-height:1.7">
-            {% if codigos %}
-              {{ codigos | join('; ') }}
-            {% else %}—{% endif %}
+            {{ codigos_unspsc_texto }}
           </td>
           <td class="tc">{{ rubro_codigo or '—' }}</td>
           <td class="tj">{{ objeto or '—' }}</td>
@@ -171,7 +168,7 @@
   </div>
 
   <!-- 6. Párrafo: acuerdo Consejo Directivo -->
-  <div class="cpc-caja">
+  <div>
     <p class="cpc-texto">
       Lo anterior, conforme al Acuerdo aprobado por el Consejo Directivo, de fecha
       <strong>{{ fecha_aprobacion_plan_compras_larga or '___________________' }}</strong>{% if fecha_modificacion_plan_compras_larga %},
@@ -180,7 +177,7 @@
   </div>
 
   <!-- 7. Párrafo: expedición del certificado -->
-  <div class="cpc-caja">
+  <div>
     <p class="cpc-texto-italic">
       La presente certificación se expide para el inicio del proceso de contratación del
       bien o servicio <strong>{{ fecha_cdp_larga or hoy_largo }}</strong>

@@ -19,7 +19,7 @@
   text-align: center;
   font-size: 10.5pt;
   font-weight: bold;
-  color: #1a6b3c;
+  color: #333;
   margin: -8px 0 14px;
   letter-spacing: 0.5px;
 }
@@ -35,9 +35,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -69,7 +69,7 @@ table.ic-tabla {
   break-inside: avoid;
 }
 table.ic-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -97,11 +97,11 @@ table.ic-actividades {
   page-break-inside: auto;
 }
 table.ic-actividades thead th {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   font-weight: bold;
   padding: 6px 8px;
-  border: 1.5px solid #1a6b3c;
+  border: 1.5px solid #333;
   text-align: center;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -115,7 +115,7 @@ table.ic-actividades tbody td {
   min-height: 28px;
 }
 table.ic-actividades tbody tr:nth-child(even) td {
-  background: #f7faf7;
+  background: #f5f5f5;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -130,11 +130,11 @@ table.ic-avance {
   break-inside: avoid;
 }
 table.ic-avance thead th {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   font-weight: bold;
   padding: 6px 9px;
-  border: 1.5px solid #1a6b3c;
+  border: 1.5px solid #333;
   text-align: center;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -145,7 +145,7 @@ table.ic-avance tbody td {
   font-size: 9.5pt;
 }
 table.ic-avance tbody tr:last-child td {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -211,13 +211,13 @@ table.ic-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa contratista
+        {% if es_empresa %}Empresa contratista
         {% elif sexo_contratista == 'F' %}Contratista
         {% else %}Contratista{% endif %}
       </th>
       <td colspan="3">
         {{ nombre_contratista }}
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+        {% if es_empresa and rep_legal_nombre %}
           <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
@@ -232,7 +232,7 @@ table.ic-firma-tabla td {
       <th>Valor total del contrato</th>
       <td>{{ format_moneda(valor_total) }}</td>
       <th>Duración</th>
-      <td>{{ dias_duracion }} días hábiles</td>
+      <td>{{ plazo_valor }} {{ plazo_unidad_texto }}</td>
     </tr>
     <tr>
       <th>Fecha de inicio</th>
@@ -253,6 +253,20 @@ table.ic-firma-tabla td {
 <div class="ic-section">
   <div class="ic-section-titulo">2. Período del Informe</div>
   <table class="ic-tabla">
+    {% if pago_numero %}
+    <tr>
+      <th>Pago</th>
+      <td>{{ pago_nota }}</td>
+    </tr>
+    <tr>
+      <th>Período reportado</th>
+      <td>{{ pago_periodo_texto }}</td>
+    </tr>
+    <tr>
+      <th>Fecha de elaboración</th>
+      <td>{{ fecha_pago_larga }}</td>
+    </tr>
+    {% else %}
     <tr>
       <th>Período reportado</th>
       <td>Del {{ fecha_inicio_larga }} al {{ fecha_fin_larga }}</td>
@@ -261,6 +275,7 @@ table.ic-firma-tabla td {
       <th>Fecha de elaboración</th>
       <td>{{ fecha_fin_larga }}</td>
     </tr>
+    {% endif %}
   </table>
 </div>
 
@@ -281,7 +296,11 @@ table.ic-firma-tabla td {
       <tr>
         <td style="text-align:center">1</td>
         <td>{{ objeto }}</td>
+        {% if pago_numero %}
+        <td style="text-align:center">{{ pago_periodo_desde_larga }}<br>— {{ pago_periodo_hasta_larga }}</td>
+        {% else %}
         <td style="text-align:center">{{ fecha_inicio_larga }}<br>— {{ fecha_fin_larga }}</td>
+        {% endif %}
         <td>Según objeto contractual</td>
         <td>Ejecutado</td>
       </tr>
@@ -313,6 +332,39 @@ table.ic-firma-tabla td {
 <!-- ── 4. AVANCE DE EJECUCIÓN ─────────────────────────────────── -->
 <div class="ic-section">
   <div class="ic-section-titulo">4. Avance de Ejecución</div>
+  {% if pago_numero %}
+  <table class="ic-avance">
+    <thead>
+      <tr>
+        <th style="width:50%">Concepto</th>
+        <th style="width:30%">Valor</th>
+        <th style="width:20%">Porcentaje</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Valor total del contrato</td>
+        <td style="text-align:right">{{ format_moneda(valor_contrato) }}</td>
+        <td style="text-align:center">100%</td>
+      </tr>
+      <tr>
+        <td>Valor de este pago ({{ pago_nota }})</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+        <td style="text-align:center">{{ Math.round(valor_total * 100 / valor_contrato) }}%</td>
+      </tr>
+      <tr>
+        <td>Acumulado pagado</td>
+        <td style="text-align:right">{{ format_moneda(pago_acumulado) }}</td>
+        <td style="text-align:center">{{ Math.round(pago_acumulado * 100 / valor_contrato) }}%</td>
+      </tr>
+      <tr>
+        <td>Saldo pendiente de ejecución</td>
+        <td style="text-align:right">{{ format_moneda(pago_saldo) }}</td>
+        <td style="text-align:center">{{ Math.round(pago_saldo * 100 / valor_contrato) }}%</td>
+      </tr>
+    </tbody>
+  </table>
+  {% else %}
   <table class="ic-avance">
     <thead>
       <tr>
@@ -339,6 +391,7 @@ table.ic-firma-tabla td {
       </tr>
     </tbody>
   </table>
+  {% endif %}
 </div>
 
 <!-- ── 5. DIFICULTADES Y NOVEDADES ───────────────────────────── -->
@@ -355,7 +408,7 @@ table.ic-firma-tabla td {
 <div class="ic-section">
   <div class="ic-section-titulo">6. Conclusiones</div>
   <p>
-    {% if sexo_contratista == 'E' %}
+    {% if es_empresa %}
       La empresa contratista informa
     {% elif sexo_contratista == 'F' %}
       La suscrita contratista informa
@@ -367,12 +420,20 @@ table.ic-firma-tabla td {
     N.° <strong>{{ numero }}</strong> y de las instrucciones impartidas por el
     supervisor designado.
   </p>
+  {% if pago_numero %}
+  <p>
+    El presente informe corresponde al <strong>{{ pago_nota }}</strong>,
+    por un valor de <strong>{{ format_moneda(valor_total) }}</strong>,
+    conforme a la forma de pago establecida en el contrato ({{ forma_pago }}).
+  </p>
+  {% else %}
   <p>
     El objeto contractual ha sido cumplido en su totalidad, dentro del plazo
     establecido y con los estándares de calidad requeridos por la institución,
     por lo que se solicita al supervisor la suscripción del acta de recibido
     a satisfacción correspondiente.
   </p>
+  {% endif %}
 </div>
 
 <!-- ── 7. DOCUMENTOS ADJUNTOS ────────────────────────────────── -->
@@ -392,7 +453,7 @@ table.ic-firma-tabla td {
     <tr>
       <td>
         <div class="ic-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="ic-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ic-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="ic-firma-cargo">Representante Legal</p>

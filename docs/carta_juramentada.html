@@ -19,7 +19,7 @@
   text-align: center;
   font-size: 10pt;
   font-weight: bold;
-  color: #1a6b3c;
+  color: #333;
   margin: -8px 0 14px;
   letter-spacing: 0.5px;
 }
@@ -59,9 +59,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -93,7 +93,7 @@
   font-size: 9.5pt;
   font-weight: bold;
   margin: 0 0 4px;
-  color: #1a4a28;
+  color: #333;
 }
 .cj-item p {
   font-size: 9.5pt;
@@ -114,11 +114,11 @@
 
 /* ── Nota legal ───────────────────────────────────── */
 .cj-nota {
-  border: 2px solid #8b0000;
+  border: 2px solid #333;
   border-radius: 3px;
   padding: 10px 14px;
   margin: 14px 0 6px;
-  background: #fff8f8;
+  background: #fff;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -127,13 +127,13 @@
 .cj-nota-titulo {
   font-size: 9.5pt;
   font-weight: bold;
-  color: #8b0000;
+  color: #333;
   text-align: center;
   margin: 0 0 6px;
 }
 .cj-nota p {
   font-size: 9pt;
-  color: #8b0000;
+  color: #333;
   text-align: justify;
   margin: 0;
   line-height: 1.6;
@@ -200,7 +200,7 @@ table.cj-firma-tabla td {
 
 <!-- ── Párrafo introductorio ──────────────────────────────────── -->
 <p class="cj-intro">
-  {% if sexo_contratista == 'E' and rep_legal_nombre %}
+  {% if es_empresa and rep_legal_nombre %}
     El(La) suscrito(a), <strong>{{ rep_legal_nombre }}</strong>,
     identificado(a) con CC N.° <strong>{{ format_id(rep_legal_cc) }}</strong>,
     actuando en representación legal de <strong>{{ nombre_contratista }}</strong>
@@ -219,7 +219,7 @@ table.cj-firma-tabla td {
   {% endif %}
   en el marco del proceso de contratación N.° <strong>{{ numero }}</strong>
   adelantado por
-  {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+  {{ inst_art }}
   <strong>{{ inst_nombre }}</strong>, por medio del presente documento y
   <strong>BAJO LA GRAVEDAD DEL JURAMENTO</strong>, manifiesto y declaro lo siguiente:
 </p>
@@ -245,7 +245,7 @@ table.cj-firma-tabla td {
     <p>
       Que <strong>NO</strong> me encuentro incurso(a) en ninguna de las causales de incompatibilidad
       establecidas en el artículo 9 de la Ley 80 de 1993 ni en ninguna otra norma que me impida
-      contratar con {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }} {{ inst_nombre }}.
+      contratar con {{ inst_art }} {{ inst_nombre }}.
     </p>
   </div>
 
@@ -253,7 +253,7 @@ table.cj-firma-tabla td {
     <p class="cj-item-titulo">TERCERO — Inexistencia de Conflictos de Interés</p>
     <p>
       Que <strong>NO</strong> existe ninguna situación que pueda generar un conflicto de interés con
-      {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+      {{ inst_art }}
       <strong>{{ inst_nombre }}</strong> o con los funcionarios vinculados al proceso de contratación
       N.° <strong>{{ numero }}</strong>. En caso de que durante la ejecución del contrato surja algún
       conflicto de interés, me comprometo a informarlo de manera inmediata a la institución.
@@ -310,7 +310,7 @@ table.cj-firma-tabla td {
     <tr>
       <td>
         <div class="cj-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="cj-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="cj-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="cj-firma-cargo">Representante Legal</p>

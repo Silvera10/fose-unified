@@ -14,7 +14,7 @@
     text-align: center;
     font-size: 11pt;
     font-weight: bold;
-    color: #1a6b3c;
+    color: #333;
     margin: 8px 0 14px;
     letter-spacing: .3px;
   }
@@ -28,7 +28,7 @@
     page-break-inside: avoid;
   }
   table.ep-info th {
-    background: #f0f7f0;
+    background: #f5f5f5;
     font-weight: bold;
     padding: 4px 8px;
     border: 1px solid #bbb;
@@ -51,9 +51,9 @@
     font-size: 10pt;
     font-weight: bold;
     text-transform: uppercase;
-    background: #e8f5e9;
+    background: #eee;
     padding: 4px 8px;
-    border-left: 4px solid #1a6b3c;
+    border-left: 4px solid #333;
     margin-bottom: 6px;
   }
   .ep-section p {
@@ -83,12 +83,12 @@
     page-break-inside: avoid;
   }
   table.ep-table thead th {
-    background: #1a6b3c;
-    color: #fff;
+    background: #eee;
+    color: #000;
     padding: 5px 7px;
     text-align: left;
     font-weight: bold;
-    border: 1px solid #145530;
+    border: 1px solid #999;
   }
   table.ep-table tbody td {
     padding: 4px 7px;
@@ -97,13 +97,13 @@
     line-height: 1.35;
   }
   table.ep-table tbody tr:nth-child(even) td {
-    background: #f8faf8;
+    background: #f5f5f5;
   }
   table.ep-table tfoot td {
     padding: 5px 7px;
     border: 1px solid #aaa;
     font-weight: bold;
-    background: #e8f5e9;
+    background: #eee;
   }
 
   /* Bloque de firmas */
@@ -115,9 +115,9 @@
     font-size: 10pt;
     font-weight: bold;
     text-transform: uppercase;
-    background: #e8f5e9;
+    background: #eee;
     padding: 4px 8px;
-    border-left: 4px solid #1a6b3c;
+    border-left: 4px solid #333;
     margin-bottom: 8px;
   }
   .ep-firma-section > p {
@@ -195,9 +195,9 @@
 <div class="ep-section">
   <h3>2. Descripción de la Necesidad</h3>
   <p>
-    {{ 'El' if 'CENTRO' in inst_nombre|upper else 'La' }} {{ inst_nombre }}, con NIT {{ format_id(inst_nit) }}, ha identificado la necesidad de
-    contratar lo siguiente, con el fin de garantizar el adecuado funcionamiento
-    institucional y el cumplimiento de sus objetivos misionales:
+    {{ inst_Art }} <strong>{{ inst_nombre }}</strong>, identificada con NIT <strong>{{ format_id(inst_nit) }}</strong>,
+    ha identificado la necesidad de contratar lo siguiente, con el fin de garantizar
+    el adecuado funcionamiento institucional y el cumplimiento de sus objetivos misionales:
   </p>
   <p><strong>Necesidad identificada:</strong> {{ objeto }}</p>
   <p>
@@ -219,14 +219,9 @@
       </tr>
     </thead>
     <tbody>
-      {% set codigos_unspsc = items | selectattr('unsp') | map(attribute='unsp') | list %}
-      <tr>
+            <tr>
         <td style="text-align:center; font-weight:bold; letter-spacing:0.5px;">
-          {% if codigos_unspsc %}
-            {{ codigos_unspsc | join('; ') }}
-          {% else %}
-            —
-          {% endif %}
+            {{ codigos_unspsc_texto }}
         </td>
         <td>{{ objeto }}</td>
       </tr>
@@ -256,7 +251,7 @@
 <div class="ep-section">
   <h3>5. Obligaciones del Contratista</h3>
   {% if obligaciones and obligaciones.strip() %}
-    {% for linea in obligaciones.split('\n') %}
+    {% for linea in obligaciones.split('\\n') %}
       {% if linea.strip() %}<p>{{ linea.strip() }}</p>{% endif %}
     {% endfor %}
   {% else %}
@@ -353,7 +348,38 @@
 
 <!-- ─────────── SECCIÓN 10 ─────────── -->
 <div class="ep-section">
-  <h3>10. Cronograma del Proceso</h3>
+  <h3>10. Plazo de Ejecución del Contrato</h3>
+  <p>
+    El plazo de ejecución del contrato será de <strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong>,
+    contados a partir de la suscripción del acta de inicio.
+  </p>
+  <table class="ep-table">
+    <thead>
+      <tr>
+        <th style="width:50%">Concepto</th>
+        <th style="width:50%; text-align:center">Detalle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Duración del Contrato</td>
+        <td style="text-align:center"><strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong></td>
+      </tr>
+      <tr>
+        <td>Fecha Estimada de Inicio</td>
+        <td style="text-align:center">{{ fecha_inicio_larga if fecha_inicio_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Fecha Estimada de Terminación</td>
+        <td style="text-align:center">{{ fecha_fin_larga if fecha_fin_larga is defined else '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─────────── SECCIÓN 11 ─────────── -->
+<div class="ep-section">
+  <h3>11. Cronograma del Proceso</h3>
   <table class="ep-table">
     <thead>
       <tr>

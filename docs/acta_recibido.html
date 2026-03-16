@@ -19,7 +19,7 @@
   text-align: center;
   font-size: 10.5pt;
   font-weight: bold;
-  color: #1a6b3c;
+  color: #333;
   margin: -8px 0 14px;
   letter-spacing: 0.5px;
 }
@@ -43,9 +43,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -67,7 +67,7 @@ table.ar-tabla {
   break-inside: avoid;
 }
 table.ar-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -95,11 +95,11 @@ table.ar-items {
   page-break-inside: auto;
 }
 table.ar-items thead th {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   font-weight: bold;
   padding: 6px 8px;
-  border: 1.5px solid #1a6b3c;
+  border: 1.5px solid #333;
   text-align: center;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -112,14 +112,14 @@ table.ar-items tbody td {
   line-height: 1.4;
 }
 table.ar-items tbody tr:nth-child(even) td {
-  background: #f7faf7;
+  background: #f5f5f5;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 table.ar-items tfoot td {
   padding: 5px 8px;
   border: 1.5px solid #bbb;
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   font-size: 9pt;
   -webkit-print-color-adjust: exact;
@@ -136,11 +136,11 @@ table.ar-verif {
   break-inside: avoid;
 }
 table.ar-verif thead th {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   font-weight: bold;
   padding: 6px 9px;
-  border: 1.5px solid #1a6b3c;
+  border: 1.5px solid #333;
   text-align: center;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -152,7 +152,7 @@ table.ar-verif tbody td {
   line-height: 1.4;
 }
 table.ar-verif tbody tr:nth-child(even) td {
-  background: #f7faf7;
+  background: #f5f5f5;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -161,25 +161,25 @@ table.ar-verif tbody tr:nth-child(even) td {
 .ar-si {
   text-align: center;
   font-weight: bold;
-  color: #1a5c1a;
+  color: #333;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 .ar-conforme {
   text-align: center;
   font-weight: bold;
-  color: #1a5c1a;
+  color: #333;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
 /* ── Caja de satisfacción ─────────────────────────── */
 .ar-satisfaccion {
-  border: 2px solid #1a6b3c;
+  border: 2px solid #333;
   border-radius: 3px;
   padding: 10px 14px;
   margin: 4px 0;
-  background: #f0f7f0;
+  background: #fff;
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.65;
@@ -246,7 +246,7 @@ table.ar-firma-tabla td {
   En el municipio de <strong>{{ inst_municipio }}</strong>,
   {{ inst_departamento }}, siendo el día <strong>{{ fecha_fin_larga }}</strong>,
   el suscrito supervisor y
-  {% if sexo_contratista == 'E' %}la empresa contratista
+  {% if es_empresa %}la empresa contratista
   {% elif sexo_contratista == 'F' %}la contratista
   {% else %}el contratista{% endif %}
   del contrato referenciado, proceden a suscribir la presente acta de recibido
@@ -273,13 +273,13 @@ table.ar-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa contratista
+        {% if es_empresa %}Empresa contratista
         {% elif sexo_contratista == 'F' %}Contratista
         {% else %}Contratista{% endif %}
       </th>
       <td colspan="3">
         {{ nombre_contratista }}
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+        {% if es_empresa and rep_legal_nombre %}
           <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
@@ -294,7 +294,7 @@ table.ar-firma-tabla td {
       <th>Valor total</th>
       <td>{{ format_moneda(valor_total) }}</td>
       <th>Duración</th>
-      <td>{{ dias_duracion }} días hábiles</td>
+      <td>{{ plazo_valor }} {{ plazo_unidad_texto }}</td>
     </tr>
     <tr>
       <th>Fecha de inicio</th>
@@ -360,7 +360,7 @@ table.ar-firma-tabla td {
       El supervisor del contrato N.° <strong>{{ numero }}</strong>,
       <strong>{{ supervisor }}</strong>, en calidad de {{ cargo_sup }}, certifica que
       los bienes y/o servicios entregados por
-      {% if sexo_contratista == 'E' and rep_legal_nombre %}
+      {% if es_empresa and rep_legal_nombre %}
         la empresa contratista <strong>{{ nombre_contratista }}</strong>
         (NIT {{ format_id(num_id_contratista) }}),
         representada por <strong>{{ rep_legal_nombre }}</strong>,
@@ -408,7 +408,7 @@ table.ar-firma-tabla td {
       <!-- Contratista -->
       <td>
         <div class="ar-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="ar-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ar-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="ar-firma-cargo">Representante Legal</p>
@@ -420,7 +420,7 @@ table.ar-firma-tabla td {
             <p class="ar-firma-cargo">Cel.: {{ celular_contratista }}</p>
           {% endif %}
           <p class="ar-firma-cargo"><strong>
-            {% if sexo_contratista == 'E' %}LA EMPRESA CONTRATISTA
+            {% if es_empresa %}LA EMPRESA CONTRATISTA
             {% elif sexo_contratista == 'F' %}LA CONTRATISTA
             {% else %}EL CONTRATISTA{% endif %}
           </strong></p>

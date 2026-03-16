@@ -7,9 +7,9 @@
   .inv-tabla { width:100%; border-collapse:collapse; margin-bottom:12px; font-size:10pt; }
   .inv-tabla td, .inv-tabla th { padding:4px 8px; border:1px solid #adadad; }
   .inv-tabla th { background:#f0f0f0; font-weight:bold; width:22%; }
-  .inv-hdr-verde th { background:#185a2e; color:#fff; font-weight:bold; }
+  .inv-hdr-verde th { background:#eee; color:#000; font-weight:bold; border:1px solid #999; }
   .inv-fila-alt { background:#f8fdf7; }
-  .inv-seccion { background:#e3f3e4; font-weight:bold; padding:3px 8px; margin:14px 0 6px 0; border-left:4px solid #1a6b3c; font-size:10pt; }
+  .inv-seccion { background:#eee; font-weight:bold; padding:3px 8px; margin:14px 0 6px 0; border-left:4px solid #333; font-size:10pt; }
   .inv-parrafo { text-align:justify; margin:6px 0; font-size:10.5pt; }
   .inv-num { text-align:center; }
   .inv-firma { text-align:center; margin-top:50px; }
@@ -51,8 +51,7 @@
 
 <p class="inv-parrafo">Apreciado(a) señor(a):</p>
 <p class="inv-parrafo">
-  {{ 'El' if 'CENTRO' in inst_nombre|upper else 'La' }}
-  <strong>{{ inst_nombre }}</strong>, NIT <strong>{{ format_id(inst_nit) }}</strong>,
+  {{ inst_Art }} <strong>{{ inst_nombre }}</strong>, identificada con NIT <strong>{{ format_id(inst_nit) }}</strong>,
   con domicilio en {{ inst_dir }}, {{ inst_municipio }}, {{ inst_departamento or 'Bolívar' }},
   en uso de las facultades que le confiere la ley, lo(a) invita respetuosamente a presentar
   cotización para la contratación que se describe a continuación.
@@ -64,7 +63,6 @@
 
 <!-- 2. CLASIFICACIÓN UNSPSC -->
 <div class="inv-seccion">2. CLASIFICACIÓN UNSPSC</div>
-{% set codigos_unspsc = items | selectattr('unsp') | map(attribute='unsp') | list %}
 <table class="inv-tabla">
   <thead>
     <tr class="inv-hdr-verde">
@@ -74,7 +72,7 @@
   </thead>
   <tbody>
     <tr>
-      <td class="inv-num"><strong>{% if codigos_unspsc %}{{ codigos_unspsc | join('; ') }}{% else %}—{% endif %}</strong></td>
+      <td class="inv-num"><strong>{{ codigos_unspsc_texto }}</strong></td>
       <td>{{ objeto }}</td>
     </tr>
   </tbody>
@@ -93,7 +91,7 @@
 <!-- 4. PLAZO DE EJECUCIÓN -->
 <div class="inv-seccion">4. PLAZO DE EJECUCIÓN</div>
 <p class="inv-parrafo">
-  El plazo de ejecución será de <strong>{{ dias_duracion }} días hábiles</strong>,
+  El plazo de ejecución será de <strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong>,
   contados a partir de la suscripción del acta de inicio, previo cumplimiento de los
   requisitos de perfeccionamiento y ejecución del contrato.
 </p>

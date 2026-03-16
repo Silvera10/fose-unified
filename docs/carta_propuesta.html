@@ -18,7 +18,7 @@
     page-break-inside: avoid;
   }
   table.cp-info th {
-    background: #f0f7f0;
+    background: #f5f5f5;
     font-weight: bold;
     padding: 4px 8px;
     border: 1px solid #bbb;
@@ -42,7 +42,7 @@
   .cp-destinatario {
     margin: 0 0 14px;
     padding: 8px 0 8px 18px;
-    border-left: 3px solid #1a6b3c;
+    border-left: 3px solid #333;
     font-size: 10pt;
     line-height: 1.5;
     page-break-inside: avoid;
@@ -92,9 +92,9 @@
     font-size: 10pt;
     font-weight: bold;
     text-transform: uppercase;
-    background: #e8f5e9;
+    background: #eee;
     padding: 4px 8px;
-    border-left: 4px solid #1a6b3c;
+    border-left: 4px solid #333;
     margin-bottom: 7px;
   }
   .cp-section p {
@@ -123,7 +123,7 @@
     page-break-inside: avoid;
   }
   table.cp-data th {
-    background: #f0f7f0;
+    background: #f5f5f5;
     font-weight: bold;
     padding: 4px 8px;
     border: 1px solid #bbb;
@@ -145,12 +145,12 @@
     page-break-inside: avoid;
   }
   table.cp-items thead th {
-    background: #1a6b3c;
-    color: #fff;
+    background: #eee;
+    color: #000;
     padding: 5px 7px;
     text-align: center;
     font-weight: bold;
-    border: 1px solid #145530;
+    border: 1px solid #999;
   }
   table.cp-items thead th.left { text-align: left; }
   table.cp-items tbody td {
@@ -159,12 +159,12 @@
     vertical-align: top;
     line-height: 1.35;
   }
-  table.cp-items tbody tr:nth-child(even) td { background: #f8faf8; }
+  table.cp-items tbody tr:nth-child(even) td { background: #f5f5f5; }
   table.cp-items tfoot td {
     padding: 5px 7px;
     border: 1px solid #aaa;
     font-weight: bold;
-    background: #e8f5e9;
+    background: #eee;
   }
 
   /* Valor en letras */
@@ -172,8 +172,8 @@
     font-size: 9.5pt;
     margin: 6px 0 10px;
     padding: 5px 10px;
-    border-left: 3px solid #1a6b3c;
-    background: #f9fdf9;
+    border-left: 3px solid #333;
+    background: #fff;
   }
 
   /* Firma */
@@ -253,7 +253,7 @@
 <!-- Cuerpo -->
 <div class="cp-body">
   <p>
-    {% if tipo_id_contratista == 'NIT' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
       Yo, <strong>{{ rep_legal_nombre }}</strong>, identificado(a) con
       CC N.° <strong>{{ format_id(rep_legal_cc) }}</strong>, actuando en representación de
       <strong>{{ nombre_contratista }}</strong>,
@@ -283,7 +283,7 @@
       garantizando la continuidad del servicio durante la vigencia contractual.
       El servicio deberá cumplir con los requerimientos funcionales, técnicos y
       de seguridad definidos por
-      {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+      {{ inst_art }}
       <strong>{{ inst_nombre }}</strong>, así como permitir la correcta
       administración de la información institucional.
     </li>
@@ -306,7 +306,7 @@
     </li>
     <li>
       Entiendo que la aceptación de esta oferta por parte de
-      {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+      {{ inst_art }}
       <strong>{{ inst_nombre }}</strong> constituye la manifestación de voluntad
       para la suscripción de la respectiva orden de compra o contrato, conforme
       al procedimiento establecido para procesos de contratación menores o
@@ -339,7 +339,7 @@
 <div class="cp-firma-section">
   <div class="cp-firma-block">
     <div class="cp-firma-linea">
-      {% if tipo_id_contratista == 'NIT' and rep_legal_nombre %}
+      {% if es_empresa and rep_legal_nombre %}
         <p><strong>{{ rep_legal_nombre }}</strong></p>
         <p>CC N.° {{ rep_legal_cc }}</p>
         <p>Representante Legal</p>

@@ -19,7 +19,7 @@
   text-align: center;
   font-size: 10.5pt;
   font-weight: bold;
-  color: #1a6b3c;
+  color: #333;
   margin: -8px 0 14px;
   letter-spacing: 0.5px;
 }
@@ -35,9 +35,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -59,7 +59,7 @@ table.oc-tabla {
   break-inside: avoid;
 }
 table.oc-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -175,7 +175,7 @@ table.oc-firma-tabla td {
       <th>Número</th>
       <td>{{ format_id(num_id_contratista) }}</td>
     </tr>
-    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
     <tr>
       <th>Representante Legal</th>
       <td colspan="3">{{ rep_legal_nombre }}</td>
@@ -250,7 +250,7 @@ table.oc-firma-tabla td {
     recibido a satisfacción por parte del supervisor.
   </p>
   <p>
-    <strong>Plazo de ejecución:</strong> {{ dias_duracion }} días hábiles. &nbsp;
+    <strong>Plazo de ejecución:</strong> {{ plazo_valor }} {{ plazo_unidad_texto }}. &nbsp;
     <strong>Inicio:</strong> {{ fecha_inicio_larga }}. &nbsp;
     <strong>Terminación:</strong> {{ fecha_fin_larga }}.
   </p>
@@ -279,11 +279,14 @@ table.oc-firma-tabla td {
       <!-- Contratista -->
       <td>
         <div class="oc-firma-linea">
-          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          {% if es_empresa and rep_legal_nombre %}
             <p class="oc-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="oc-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
             <p class="oc-firma-cargo">Representante Legal</p>
-            <p class="oc-firma-cargo">{{ nombre_contratista }}</p>
+            <p class="oc-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="oc-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% elif es_empresa %}
+            <p class="oc-firma-nombre">{{ nombre_contratista }}</p>
             <p class="oc-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
           {% else %}
             <p class="oc-firma-nombre">{{ nombre_contratista }}</p>

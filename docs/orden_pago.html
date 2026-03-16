@@ -19,7 +19,7 @@
   text-align: center;
   font-size: 10.5pt;
   font-weight: bold;
-  color: #1a6b3c;
+  color: #333;
   margin: -8px 0 14px;
   letter-spacing: 0.5px;
 }
@@ -35,9 +35,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -69,7 +69,7 @@ table.op-tabla {
   break-inside: avoid;
 }
 table.op-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -98,11 +98,11 @@ table.op-data {
   break-inside: avoid;
 }
 table.op-data thead th {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   font-weight: bold;
   padding: 6px 9px;
-  border: 1.5px solid #1a6b3c;
+  border: 1.5px solid #333;
   text-align: center;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -115,14 +115,14 @@ table.op-data tbody td {
   line-height: 1.4;
 }
 table.op-data tbody tr:nth-child(even) td {
-  background: #f7faf7;
+  background: #f5f5f5;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 table.op-data tfoot td {
   padding: 6px 9px;
   border: 1.5px solid #bbb;
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   font-size: 9.5pt;
   -webkit-print-color-adjust: exact;
@@ -146,7 +146,7 @@ table.op-imputacion th {
   line-height: 1.4;
 }
 .op-imp-titulo {
-  background: #d4e8d4;
+  background: #eee;
   font-weight: bold;
   font-size: 9.5pt;
   text-align: center;
@@ -155,14 +155,14 @@ table.op-imputacion th {
   print-color-adjust: exact;
 }
 .op-imp-sector-hdr {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   font-size: 9pt;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 .op-imp-col-hdr {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   font-size: 9pt;
   text-align: center;
@@ -170,7 +170,7 @@ table.op-imputacion th {
   print-color-adjust: exact;
 }
 .op-imp-total {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   font-size: 9pt;
   -webkit-print-color-adjust: exact;
@@ -179,11 +179,11 @@ table.op-imputacion th {
 
 /* ── Caja de autorización ─────────────────────────── */
 .op-autorizacion {
-  border: 2px solid #1a6b3c;
+  border: 2px solid #333;
   border-radius: 3px;
   padding: 10px 14px;
   margin: 4px 0;
-  background: #f0f7f0;
+  background: #fff;
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.6;
@@ -235,11 +235,15 @@ table.op-firma-tabla td {
 {% set supervisor = nombre_supervisor if nombre_supervisor else rector %}
 {% set cargo_sup  = cargo_supervisor  if cargo_supervisor  else 'Rector(a)' %}
 {% set fp = forma_pago or 'Pago único' %}
-{% set _nom_fuente = fuente_nombre if fuente_nombre else fuente %}
+{% set _fuentes_map = {'1':'SGP – Calidad','2':'Gratuidad','3':'Recursos Propios','4':'Aportes Departamento','5':'Recursos Propios IE'} %}
+{% set _nom_fuente = _fuentes_map[fuente|string] if fuente|string in _fuentes_map else fuente %}
 
 <p class="op-numero">
   Orden de Pago N.° <strong>{{ num_egreso or '—' }}</strong>
   <span style="font-weight:normal; color:#555; font-size:9pt">&nbsp;·&nbsp; Contrato N.° {{ numero }}</span>
+  {% if pago_numero %}
+  <br><span style="font-weight:normal; color:#8e44ad; font-size:9pt">{{ pago_nota }}</span>
+  {% endif %}
 </p>
 
 <!-- ── 1. DATOS GENERALES ─────────────────────────────────────── -->
@@ -264,14 +268,14 @@ table.op-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa / Beneficiario
+        {% if es_empresa %}Empresa / Beneficiario
         {% elif sexo_contratista == 'F' %}Beneficiaria
         {% else %}Beneficiario{% endif %}
       </th>
       <td colspan="3">
         {{ nombre_contratista }}
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
-          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
+        {% if es_empresa and rep_legal_nombre %}
+          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, C.C. {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
     </tr>
@@ -472,7 +476,7 @@ table.op-firma-tabla td {
       pago mediante transferencia a la cuenta <strong>{{ tipo_cuenta }}</strong>
       N.° <strong>{{ cuenta_banco }}</strong> del banco
       <strong>{{ banco_contratista }}</strong>, a nombre de
-      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% if es_empresa %}la empresa contratista
       {% elif sexo_contratista == 'F' %}la contratista
       {% else %}el contratista{% endif %}
       <strong>{{ nombre_contratista }}</strong>, por los siguientes valores:

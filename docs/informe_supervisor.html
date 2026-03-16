@@ -19,7 +19,7 @@
   text-align: center;
   font-size: 10.5pt;
   font-weight: bold;
-  color: #1a6b3c;
+  color: #333;
   margin: -8px 0 14px;
   letter-spacing: 0.5px;
 }
@@ -35,9 +35,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -69,7 +69,7 @@ table.is-tabla {
   break-inside: avoid;
 }
 table.is-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -98,11 +98,11 @@ table.is-data {
   break-inside: avoid;
 }
 table.is-data thead th {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   font-weight: bold;
   padding: 6px 8px;
-  border: 1.5px solid #1a6b3c;
+  border: 1.5px solid #333;
   text-align: center;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -115,14 +115,14 @@ table.is-data tbody td {
   line-height: 1.4;
 }
 table.is-data tbody tr:nth-child(even) td {
-  background: #f7faf7;
+  background: #f5f5f5;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 table.is-data tfoot td {
   padding: 5px 8px;
   border: 1.5px solid #bbb;
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   font-size: 9pt;
   -webkit-print-color-adjust: exact;
@@ -133,32 +133,32 @@ table.is-data tfoot td {
 .is-cumple {
   text-align: center;
   font-weight: bold;
-  color: #1a5c1a;
+  color: #333;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 .is-no-cumple {
   text-align: center;
   font-weight: bold;
-  color: #8b0000;
+  color: #333;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 .is-completado {
   text-align: center;
   font-weight: bold;
-  color: #1a5c1a;
+  color: #333;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
 /* ── Caja de concepto ─────────────────────────────── */
 .is-concepto {
-  border: 2px solid #1a6b3c;
+  border: 2px solid #333;
   border-radius: 3px;
   padding: 10px 14px;
   margin: 4px 0;
-  background: #f0f7f0;
+  background: #fff;
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.6;
@@ -238,13 +238,13 @@ table.is-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa contratista
+        {% if es_empresa %}Empresa contratista
         {% elif sexo_contratista == 'F' %}Contratista
         {% else %}Contratista{% endif %}
       </th>
       <td colspan="3">
         {{ nombre_contratista }}
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+        {% if es_empresa and rep_legal_nombre %}
           <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
@@ -259,7 +259,7 @@ table.is-firma-tabla td {
       <th>Valor total</th>
       <td>{{ format_moneda(valor_total) }}</td>
       <th>Duración</th>
-      <td>{{ dias_duracion }} días hábiles</td>
+      <td>{{ plazo_valor }} {{ plazo_unidad_texto }}</td>
     </tr>
     <tr>
       <th>Fecha de inicio</th>
@@ -279,16 +279,60 @@ table.is-firma-tabla td {
       <th>Cargo</th>
       <td>{{ cargo_sup }}</td>
     </tr>
+    {% if pago_numero %}
+    <tr>
+      <th>Pago</th>
+      <td>{{ pago_nota }}</td>
+      <th>Fecha del informe</th>
+      <td>{{ fecha_pago_larga }}</td>
+    </tr>
+    <tr>
+      <th>Período supervisado</th>
+      <td colspan="3">{{ pago_periodo_texto }}</td>
+    </tr>
+    {% else %}
     <tr>
       <th>Fecha del informe</th>
       <td colspan="3">{{ fecha_fin_larga }}</td>
     </tr>
+    {% endif %}
   </table>
 </div>
 
 <!-- ── 2. SEGUIMIENTO FINANCIERO ──────────────────────────────── -->
 <div class="is-section">
   <div class="is-section-titulo">2. Seguimiento Financiero</div>
+  {% if pago_numero %}
+  <table class="is-data">
+    <thead>
+      <tr>
+        <th style="width:36%">Concepto</th>
+        <th style="width:16%">Valor Contrato</th>
+        <th style="width:16%">Este Pago</th>
+        <th style="width:16%">Acumulado</th>
+        <th style="width:16%">Saldo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ objeto }}</td>
+        <td style="text-align:right">{{ format_moneda(valor_contrato) }}</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+        <td style="text-align:right">{{ format_moneda(pago_acumulado) }}</td>
+        <td style="text-align:right">{{ format_moneda(pago_saldo) }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td><strong>% AVANCE</strong></td>
+        <td style="text-align:center"><strong>100%</strong></td>
+        <td style="text-align:center"><strong>{{ Math.round(valor_total * 100 / valor_contrato) }}%</strong></td>
+        <td style="text-align:center"><strong>{{ Math.round(pago_acumulado * 100 / valor_contrato) }}%</strong></td>
+        <td style="text-align:center"><strong>{{ Math.round(pago_saldo * 100 / valor_contrato) }}%</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  {% else %}
   <table class="is-data">
     <thead>
       <tr>
@@ -318,6 +362,7 @@ table.is-firma-tabla td {
       </tr>
     </tfoot>
   </table>
+  {% endif %}
 </div>
 
 <!-- ── 3. VERIFICACIÓN DE CUMPLIMIENTO ───────────────────────── -->
@@ -381,8 +426,13 @@ table.is-firma-tabla td {
     <tbody>
       <tr>
         <td>{{ objeto }}</td>
+        {% if pago_numero %}
+        <td style="text-align:center">{{ pago_periodo_desde_larga }}<br>— {{ pago_periodo_hasta_larga }}</td>
+        <td style="text-align:center">{{ pago_periodo_desde_larga }}<br>— {{ fecha_pago_larga }}</td>
+        {% else %}
         <td style="text-align:center">{{ fecha_inicio_larga }}<br>— {{ fecha_fin_larga }}</td>
         <td style="text-align:center">{{ fecha_inicio_larga }}<br>— {{ fecha_fin_larga }}</td>
+        {% endif %}
         <td class="is-completado">COMPLETADO</td>
       </tr>
       <tr>
@@ -407,15 +457,19 @@ table.is-firma-tabla td {
   <p>
     El suscrito supervisor, una vez verificado el cumplimiento del objeto
     contractual, los informes presentados por
-    {% if sexo_contratista == 'E' %}la empresa contratista
+    {% if es_empresa %}la empresa contratista
     {% elif sexo_contratista == 'F' %}la contratista
     {% else %}el contratista{% endif %}
     y los documentos soporte correspondientes, conceptúa favorablemente sobre
     la ejecución del contrato N.° <strong>{{ numero }}</strong> y recomienda:
   </p>
   <ul>
+    {% if pago_numero %}
+    <li>Proceder al trámite de la orden de pago correspondiente al <strong>{{ pago_nota }}</strong>, por valor de <strong>{{ format_moneda(valor_total) }}</strong>.</li>
+    {% else %}
     <li>Proceder al trámite de la orden de pago correspondiente, toda vez que el objeto contractual fue ejecutado a satisfacción.</li>
     <li>Suscribir el acta de recibido a satisfacción y la liquidación del contrato.</li>
+    {% endif %}
   </ul>
 </div>
 
@@ -425,14 +479,21 @@ table.is-firma-tabla td {
   <div class="is-concepto">
     <p>
       El supervisor <strong>AVALA</strong> el pago a
-      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% if es_empresa %}la empresa contratista
       {% elif sexo_contratista == 'F' %}la contratista
       {% else %}el contratista{% endif %}
       <strong>{{ nombre_contratista }}</strong>,
+      {% if pago_numero %}
+      por la suma de <strong>{{ format_moneda(valor_total) }}</strong>
+      (<strong>{{ valor_letras }}</strong>), correspondiente al <strong>{{ pago_nota }}</strong>,
+      conforme a la forma de pago establecida ({{ forma_pago }}) en el
+      contrato N.° <strong>{{ numero }}</strong>.
+      {% else %}
       por la suma de <strong>{{ format_moneda(valor_total) }}</strong>
       (<strong>{{ valor_letras }}</strong>), toda vez que el objeto contractual
       fue ejecutado a satisfacción conforme a las condiciones pactadas en el
       contrato N.° <strong>{{ numero }}</strong>.
+      {% endif %}
     </p>
     <p>
       El valor neto a pagar, descontada la retención en la fuente de

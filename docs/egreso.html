@@ -19,7 +19,7 @@
   text-align: center;
   font-size: 10.5pt;
   font-weight: bold;
-  color: #1a6b3c;
+  color: #333;
   margin: -8px 0 14px;
   letter-spacing: 0.5px;
 }
@@ -35,9 +35,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -69,7 +69,7 @@ table.ce-tabla {
   break-inside: avoid;
 }
 table.ce-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -98,11 +98,11 @@ table.ce-data {
   break-inside: avoid;
 }
 table.ce-data thead th {
-  background: #1a6b3c;
-  color: #fff;
+  background: #eee;
+  color: #000;
   font-weight: bold;
   padding: 6px 9px;
-  border: 1.5px solid #1a6b3c;
+  border: 1.5px solid #333;
   text-align: center;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -115,14 +115,14 @@ table.ce-data tbody td {
   line-height: 1.4;
 }
 table.ce-data tbody tr:nth-child(even) td {
-  background: #f7faf7;
+  background: #f5f5f5;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 table.ce-data tfoot td {
   padding: 6px 9px;
   border: 1.5px solid #bbb;
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   font-size: 9.5pt;
   -webkit-print-color-adjust: exact;
@@ -135,7 +135,7 @@ table.ce-data tfoot td {
   border-radius: 3px;
   padding: 8px 12px;
   margin: 6px 0 0;
-  background: #f9fdf9;
+  background: #fff;
   font-size: 9.5pt;
   line-height: 1.6;
   page-break-inside: avoid;
@@ -147,11 +147,11 @@ table.ce-data tfoot td {
 
 /* ── Declaración de recibo ────────────────────────── */
 .ce-declaracion {
-  border: 2px solid #1a6b3c;
+  border: 2px solid #333;
   border-radius: 3px;
   padding: 10px 14px;
   margin: 4px 0;
-  background: #f0f7f0;
+  background: #fff;
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.6;
@@ -230,14 +230,14 @@ table.ce-firma-tabla td {
     </tr>
     <tr>
       <th>
-        {% if sexo_contratista == 'E' %}Empresa / Beneficiario
+        {% if es_empresa %}Empresa / Beneficiario
         {% elif sexo_contratista == 'F' %}Beneficiaria
         {% else %}Beneficiario{% endif %}
       </th>
       <td colspan="3">
         <strong>{{ nombre_contratista }}</strong>
-        {% if sexo_contratista == 'E' and rep_legal_nombre %}
-          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
+        {% if es_empresa and rep_legal_nombre %}
+          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, C.C. {{ format_id(rep_legal_cc) }}</small>
         {% endif %}
       </td>
     </tr>
@@ -255,7 +255,7 @@ table.ce-firma-tabla td {
     </tr>
     <tr>
       <th>Concepto</th>
-      <td colspan="3">Pago contrato N.° <strong>{{ numero }}</strong> — {{ objeto }}</td>
+      <td colspan="3">{% if pago_numero %}{{ pago_nota }} — {% endif %}Pago contrato N.° <strong>{{ numero }}</strong> — {{ objeto }}</td>
     </tr>
     <tr>
       <th>CDP N.°</th>
@@ -405,7 +405,7 @@ table.ce-firma-tabla td {
     <p>
       Revisada la documentación soporte y verificado el cumplimiento del objeto
       contractual del contrato N.° <strong>{{ numero }}</strong>,
-      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% if es_empresa %}la empresa contratista
       {% elif sexo_contratista == 'F' %}la contratista
       {% else %}el contratista{% endif %}
       <strong>{{ nombre_contratista }}</strong> declara haber recibido
@@ -413,7 +413,7 @@ table.ce-firma-tabla td {
       ({{ neto_letras }}) mediante transferencia a la cuenta
       <strong>{{ tipo_cuenta }}</strong> N.° <strong>{{ cuenta_banco }}</strong>
       del banco <strong>{{ banco_contratista }}</strong>,
-      en calidad de pago del contrato referenciado.
+      en calidad de {% if pago_numero %}{{ pago_nota }} del{% else %}pago del{% endif %} contrato referenciado.
     </p>
   </div>
 </div>
@@ -435,8 +435,19 @@ table.ce-firma-tabla td {
       <!-- Recibí conforme -->
       <td>
         <div class="ce-firma-linea">
-          <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
-          <p class="ce-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+          {% if es_empresa and rep_legal_nombre %}
+            <p class="ce-firma-nombre">{{ rep_legal_nombre }}</p>
+            <p class="ce-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
+            <p class="ce-firma-cargo">Representante Legal</p>
+            <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ce-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% elif es_empresa %}
+            <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ce-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% else %}
+            <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ce-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+          {% endif %}
           <p class="ce-firma-cargo">Beneficiario(a)</p>
           <p class="ce-firma-cargo"><strong>RECIBÍ CONFORME</strong></p>
         </div>

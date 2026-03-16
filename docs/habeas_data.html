@@ -34,9 +34,9 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  background: #e8f5e9;
+  background: #eee;
   padding: 5px 10px;
-  border-left: 5px solid #1a6b3c;
+  border-left: 5px solid #333;
   margin-bottom: 8px;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -70,7 +70,7 @@ table.hd-tabla {
   break-inside: avoid;
 }
 table.hd-tabla th {
-  background: #e8f5e9;
+  background: #eee;
   font-weight: bold;
   padding: 5px 9px;
   border: 1.5px solid #aaa;
@@ -91,11 +91,11 @@ table.hd-tabla td {
 
 /* ── Caja de Autorización ─────────────────────────── */
 .hd-autorizacion {
-  border: 2px solid #1a6b3c;
+  border: 2px solid #333;
   border-radius: 3px;
   padding: 12px 16px;
   margin: 12px 0 6px;
-  background: #f0f7f0;
+  background: #fff;
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.6;
@@ -152,7 +152,7 @@ table.hd-firma-tabla td {
   <p>
     De conformidad con lo establecido en la <strong>Ley Estatutaria 1581 de 2012</strong>
     (Ley de Protección de Datos Personales) y su decreto reglamentario
-    <strong>Decreto 1377 de 2013</strong>, la <strong>{{ inst_nombre }}</strong>,
+    <strong>Decreto 1377 de 2013</strong>, {{ inst_art }} <strong>{{ inst_nombre }}</strong>,
     NIT <strong>{{ format_id(inst_nit) }}</strong>, en calidad de responsable del tratamiento
     de datos personales, informa y solicita al titular la siguiente autorización.
   </p>
@@ -209,7 +209,7 @@ table.hd-firma-tabla td {
       <th>Número</th>
       <td>{{ format_id(num_id_contratista) }}</td>
     </tr>
-    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    {% if es_empresa and rep_legal_nombre %}
     <tr>
       <th>Representante Legal</th>
       <td colspan="3">{{ rep_legal_nombre }}</td>
@@ -336,7 +336,7 @@ table.hd-firma-tabla td {
       {{ habeas_autorizacion_html }}
       mediante la suscripción del presente documento, de manera libre, previa,
       expresa, informada e inequívoca, <strong>AUTORIZO</strong> a
-      {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+      {{ inst_art }}
       <strong>{{ inst_nombre }}</strong>, NIT {{ format_id(inst_nit) }}, para recolectar,
       almacenar, usar, circular y suprimir mis datos personales con las
       finalidades descritas en el presente documento y de conformidad con la
