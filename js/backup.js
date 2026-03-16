@@ -105,11 +105,24 @@ function recargarApp(){
   });
 }
 
-function cambiarInstitucion(id){
-  DB.setActive(id).then(() => {
-    recargarApp();
-    toast('Institución cargada');
-  });
+async function cambiarInstitucion(id){
+  await DB.setActive(id);
+  // Forzar sync del activeId a Supabase antes de recargar
+  if(typeof SB !== 'undefined' && SB.isActive()){
+    try { await SB.saveMeta(DB._meta); } catch(e){}
+  }
+  // Recargar datos de la nueva institución
+  DB._mem = null;
+  if(typeof SB !== 'undefined' && SB.isActive()){
+    const data = await SB.fetchInstData(id);
+    DB._mem = data || DB.initVacio();
+  } else {
+    await DB.preload();
+  }
+  navUpdate();
+  _renderPage(_currentPage);
+  renderListaInstituciones();
+  toast('Institución cargada');
 }
 
 /* ── Multi-Institución ── */
