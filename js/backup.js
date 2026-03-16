@@ -111,18 +111,8 @@ async function cambiarInstitucion(id){
   if(typeof SB !== 'undefined' && SB.isActive()){
     try { await SB.saveMeta(DB._meta); } catch(e){}
   }
-  // Recargar datos de la nueva institución
-  DB._mem = null;
-  if(typeof SB !== 'undefined' && SB.isActive()){
-    const data = await SB.fetchInstData(id);
-    DB._mem = data || DB.initVacio();
-  } else {
-    await DB.preload();
-  }
-  navUpdate();
-  _renderPage(_currentPage);
-  renderListaInstituciones();
-  toast('Institución cargada');
+  // Recarga completa de la página para garantizar que todo se actualice
+  location.reload();
 }
 
 /* ── Multi-Institución ── */
