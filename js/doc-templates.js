@@ -3677,275 +3677,216 @@ table.ct-firma-tabla td {
   </p>
 </div>
 
-<!-- ── CLÁUSULA SEGUNDA ───────────────────────────────────────── -->
+<!-- ── CLÁUSULA SEGUNDA — SERVICIOS INCLUIDOS ─────────────────── -->
 <div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Segunda — Valor</div>
-  <p>
-    El valor total del presente contrato es la suma de
-    <strong>{{ format_moneda(valor_total) }}</strong>
-    (<strong>{{ valor_letras }}</strong>), incluido el IVA y demás
-    impuestos que apliquen, suma que será pagada con cargo al rubro
-    presupuestal <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
-    fuente <strong>{{ fuente }}</strong>, amparado en el CDP N.°
-    <strong>{{ num_cdp }}</strong> expedido el
-    <strong>{{ fecha_cdp_larga }}</strong>.
-  </p>
-</div>
+  <div class="ct-clausula-titulo">Cláusula Segunda — Servicios Incluidos</div>
+  <p>Los servicios objeto del presente contrato comprenden:</p>
 
-<!-- ── CLÁUSULA TERCERA ───────────────────────────────────────── -->
-<div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Tercera — Forma de Pago</div>
-  {% set fp = forma_pago or 'Pago único' %}
-  <p>
-    {% if fp == 'Pagos mensuales' %}
-      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
-      el valor del contrato en <strong>pagos mensuales</strong>, dentro de los
-      quince (15) días hábiles siguientes al vencimiento de cada mes de ejecución,
-      previa presentación de la factura o cuenta de cobro y suscripción del acta
-      parcial de cumplimiento por parte del supervisor.
-    {% elif fp == 'Pagos bimestrales' %}
-      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
-      el valor del contrato en <strong>pagos bimestrales</strong>, dentro de los
-      veinte (20) días hábiles siguientes al vencimiento de cada bimestre de
-      ejecución, previa presentación de la factura o cuenta de cobro y suscripción
-      del acta parcial de cumplimiento por parte del supervisor.
-    {% elif fp == 'Pagos trimestrales' %}
-      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
-      el valor del contrato en <strong>pagos trimestrales</strong>, dentro de los
-      veinte (20) días hábiles siguientes al vencimiento de cada trimestre de
-      ejecución, previa presentación de la factura o cuenta de cobro y suscripción
-      del acta parcial de cumplimiento por parte del supervisor.
-    {% elif fp == 'Pagos semestrales' %}
-      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
-      el valor del contrato en <strong>pagos semestrales</strong>, dentro de los
-      treinta (30) días hábiles siguientes al vencimiento de cada semestre de
-      ejecución, previa presentación de la factura o cuenta de cobro y suscripción
-      del acta parcial de cumplimiento por parte del supervisor.
-    {% elif fp == 'Anticipos y saldo' %}
-      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
-      el valor del contrato mediante <strong>anticipo y pago del saldo</strong>.
-      El anticipo, equivalente al cincuenta por ciento (50%) del valor total, se
-      desembolsará dentro de los quince (15) días hábiles siguientes a la
-      suscripción del acta de inicio. El saldo restante se pagará dentro de los
-      treinta (30) días hábiles siguientes a la presentación de los documentos
-      que acrediten la ejecución total del objeto contractual, previa suscripción
-      del acta de recibido a satisfacción por parte del supervisor.
-    {% else %}
-      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
-      el valor del contrato en un <strong>único pago</strong>, dentro de los
-      dos (2) días hábiles siguientes a la presentación de los documentos
-      que acrediten la ejecución total del objeto contractual, previa suscripción
-      del acta de recibido a satisfacción por parte del supervisor.
-    {% endif %}
-    {% if fp != 'Anticipos y saldo' %}
-      Para el trámite del pago deberán cumplirse los siguientes requisitos:
-    {% endif %}
-  </p>
+  <p class="ct-sub-titulo">A. Contabilidad del FOSE:</p>
   <ol>
-    <li>Factura o cuenta de cobro debidamente expedida a nombre {{ inst_del }} <strong>{{ inst_nombre }}</strong>.</li>
-    <li>Acta de recibido a satisfacción firmada por el supervisor.</li>
-    <li>Informe de actividades contables del período correspondiente.</li>
-    <li>Certificado de pago de aportes al Sistema General de Seguridad Social (cuando aplique).</li>
-    <li>Certificación bancaria vigente.</li>
-    <li>Copia de la Tarjeta Profesional de Contador Público vigente (primera vez).</li>
+    <li>Registro contable de todas las operaciones del FOSE bajo el Marco Normativo para Entidades de Gobierno (CGN): ingresos, gastos, activos, pasivos y patrimonio.</li>
+    <li>Aplicación del Plan de Cuentas para Entidades de Gobierno (Catálogo General de Cuentas — CGN).</li>
+    <li>Registro y control de los activos fijos de la institución (propiedad, planta y equipo) con aplicación de depreciaciones según normativa CGN.</li>
+    <li>Conciliaciones bancarias mensuales de las cuentas del FOSE.</li>
+    <li>Control y registro de los fondos rotatorios o cajas menores cuando existan.</li>
+    <li>Archivo y custodia digital de los soportes contables.</li>
   </ol>
-  <p>
-    {{ inst_Art }} <strong>{{ inst_nombre }}</strong> efectuará las retenciones en la fuente y demás descuentos
-    de ley que correspondan. El pago neto estimado, descontada la retención
-    en la fuente de <strong>{{ format_moneda(retencion) }}</strong>, es de
-    <strong>{{ format_moneda(neto) }}</strong>
-    (<strong>{{ neto_letras }}</strong>).
-  </p>
+
+  <p class="ct-sub-titulo">B. Estados Financieros:</p>
+  <ol start="7">
+    <li>Elaboración periódica del Estado de Situación Financiera (Balance General).</li>
+    <li>Estado de Resultados del Período (Estado de Actividad Financiera, Económica, Social y Ambiental).</li>
+    <li>Estado de Cambios en el Patrimonio.</li>
+    <li>Estado de Flujos de Efectivo.</li>
+    <li>Notas a los estados financieros conforme a la normativa CGN.</li>
+  </ol>
+
+  <p class="ct-sub-titulo">C. Reportes al CHIP y Entes de Control:</p>
+  <ol start="12">
+    <li>Captura y envío de información contable al sistema CHIP (Consolidador de Hacienda e Información Pública) en los plazos fijados por la CGN.</li>
+    <li>Elaboración y presentación de los informes contables periódicos a la Secretaría de Educación Departamental o Municipal.</li>
+    <li>Atención de requerimientos de la Contraloría General de la República, Contraloría Departamental o Municipal, Personería y demás entes de control.</li>
+    <li>Apoyo en la preparación de la rendición de cuentas ante los entes de control fiscal.</li>
+  </ol>
+
+  <p class="ct-sub-titulo">D. Gestión Presupuestal del FOSE:</p>
+  <ol start="16">
+    <li>Elaboración y seguimiento del Presupuesto de Ingresos y Gastos del FOSE, conforme al Decreto 4791 de 2008.</li>
+    <li>Registro de las operaciones presupuestales: disponibilidades, registros, compromisos y obligaciones.</li>
+    <li>Elaboración del Plan Anual de Adquisiciones (Plan de Compras) del FOSE.</li>
+    <li>Elaboración de los informes de ejecución presupuestal mensual y anual.</li>
+    <li>Apoyo en el cierre presupuestal y contable de fin de año fiscal.</li>
+  </ol>
+
+  <p class="ct-sub-titulo">E. Nómina y Seguridad Social (si aplica):</p>
+  <ol start="21">
+    <li>Liquidación mensual de la nómina del personal pagado con recursos del FOSE (servicios generales, vigilancia u otros cargos financiados con FOSE).</li>
+    <li>Elaboración de planillas de seguridad social y parafiscales.</li>
+  </ol>
+
+  <p class="ct-sub-titulo">F. Otros Servicios:</p>
+  <ol start="23">
+    <li>Asesoría en materia contractual y presupuestal del FOSE conforme al Decreto 4791 de 2008.</li>
+    <li>Acompañamiento en auditorías internas o externas relacionadas con el FOSE.</li>
+    <li>Los demás servicios que las partes acuerden mediante otrosí.</li>
+  </ol>
+
+  <p class="ct-paragrafo"><strong>PARÁGRAFO:</strong> Los servicios de los literales E y F se prestarán únicamente si las partes lo acuerdan expresamente. Los literales A, B, C y D son parte integral del contrato.</p>
 </div>
 
-<!-- ── CLÁUSULA CUARTA ────────────────────────────────────────── -->
+<!-- ── CLÁUSULA TERCERA — PROFESIONAL ASIGNADO ───────────────── -->
 <div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Cuarta — Duración</div>
+  <div class="ct-clausula-titulo">Cláusula Tercera — Ejecución del Servicio mediante Profesional Asignado</div>
   <p>
-    El plazo de ejecución del presente contrato es de
+    <strong>EL CONTRATISTA</strong> prestará los servicios pactados a través de un contador público asignado internamente con conocimiento y experiencia en contabilidad pública y normativa CGN. Dicho profesional actuará en nombre, bajo la dirección y en representación exclusiva de <strong>EL CONTRATISTA</strong>, siendo la empresa la única responsable del servicio frente a <strong>EL CONTRATANTE</strong>.
+  </p>
+  <p class="ct-paragrafo"><strong>PARÁGRAFO:</strong> La identidad del profesional asignado podrá ser informada a <strong>EL CONTRATANTE</strong> a título de referencia. Sin embargo, toda comunicación, instrucción o acuerdo sobre el servicio deberá canalizarse a través de <strong>EL CONTRATISTA</strong>. El profesional asignado no tendrá relación contractual, laboral ni comercial directa con <strong>EL CONTRATANTE</strong>.</p>
+</div>
+
+<!-- ── CLÁUSULA CUARTA — SUSTITUCIÓN DEL PROFESIONAL ─────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Cuarta — Sustitución del Profesional Asignado</div>
+  <p>
+    <strong>EL CONTRATISTA</strong> se reserva el derecho de sustituir en cualquier momento al profesional asignado, siempre que el nuevo profesional cuente con las mismas calidades técnicas, profesionales y con conocimiento en contabilidad pública y normativa CGN. El cambio de profesional no constituirá incumplimiento del contrato, siempre que se garantice la continuidad y calidad del servicio.
+  </p>
+  <p class="ct-paragrafo"><strong>PARÁGRAFO:</strong> <strong>EL CONTRATISTA</strong> notificará a <strong>EL CONTRATANTE</strong> cualquier cambio de profesional con cinco (5) días hábiles de anticipación, salvo en casos de fuerza mayor o retiro intempestivo, en cuyo caso la sustitución podrá ser inmediata.</p>
+</div>
+
+<!-- ── CLÁUSULA QUINTA — PROHIBICIÓN CONTRATACIÓN DIRECTA ────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Quinta — Prohibición de Contratación Directa del Profesional Asignado</div>
+  <p>
+    <strong>EL CONTRATANTE</strong> se obliga a no contratar directa ni indirectamente, bajo ninguna modalidad, al profesional que <strong>EL CONTRATISTA</strong> le asigne, ni durante la vigencia del contrato ni dentro de los dos (2) años siguientes a su terminación.
+  </p>
+  <p class="ct-paragrafo"><strong>PARÁGRAFO — CLÁUSULA PENAL:</strong> El incumplimiento de esta prohibición generará a favor de <strong>EL CONTRATISTA</strong> una pena convencional equivalente a doce (12) mensualidades del valor del presente contrato, sin perjuicio de las demás acciones legales que procedan.</p>
+</div>
+
+<!-- ── CLÁUSULA SEXTA — OBLIGACIONES DEL CONTRATANTE ─────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Sexta — Obligaciones de EL CONTRATANTE</div>
+  <p><strong>EL CONTRATANTE</strong> se obliga a:</p>
+  <ol>
+    <li>Suministrar oportunamente a <strong>EL CONTRATISTA</strong> todos los soportes contables, extractos bancarios, facturas, contratos, actos administrativos y demás documentos necesarios para el registro contable del FOSE.</li>
+    <li>Entregar los soportes con suficiente anticipación a las fechas de cierre y presentación de informes ante el CHIP y los entes de control.</li>
+    <li>Pagar los honorarios en los plazos y condiciones pactadas.</li>
+    <li>Informar oportunamente a <strong>EL CONTRATISTA</strong> sobre requerimientos de entes de control, auditorías o visitas fiscales relacionadas con la contabilidad del FOSE.</li>
+    <li>Garantizar acceso al sistema contable y a las plataformas institucionales requeridas para la prestación del servicio (CHIP, sistema de gestión institucional, entre otros).</li>
+    <li>Autorizar al profesional asignado por <strong>EL CONTRATISTA</strong> para el ingreso a las instalaciones y sistemas de <strong>EL CONTRATANTE</strong> en los horarios acordados.</li>
+    <li>Cumplir la prohibición de contratación directa del profesional asignado, conforme a la cláusula quinta.</li>
+    <li>Proveer la firma del Rector(a) y del ordenador del gasto en los documentos contables y presupuestales que así lo requieran, dentro de los plazos establecidos.</li>
+  </ol>
+</div>
+
+<!-- ── CLÁUSULA SÉPTIMA — OBLIGACIONES DEL CONTRATISTA ────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Séptima — Obligaciones de EL CONTRATISTA</div>
+  <p><strong>EL CONTRATISTA</strong> se obliga a:</p>
+  <ol>
+    <li>Prestar los servicios con idoneidad, diligencia y estricto cumplimiento del Marco Normativo para Entidades de Gobierno y demás normas aplicables al FOSE.</li>
+    <li>Entregar los estados financieros, informes de ejecución presupuestal y demás reportes en los plazos acordados con <strong>EL CONTRATANTE</strong> y dentro de los términos exigidos por la CGN, la Secretaría de Educación y los entes de control.</li>
+    <li>Asegurar la correcta y oportuna transmisión de la información al sistema CHIP.</li>
+    <li>Asignar un profesional con conocimiento y experiencia en contabilidad pública sector educativo y garantizar su sustitución en caso necesario.</li>
+    <li>Mantener estricta confidencialidad sobre la información financiera, presupuestal y contable de <strong>EL CONTRATANTE</strong>.</li>
+    <li>Informar oportunamente a <strong>EL CONTRATANTE</strong> sobre cambios normativos de la CGN, la Secretaría de Educación o entes de control que afecten el manejo contable del FOSE.</li>
+    <li>Responder por errores u omisiones en el servicio que sean directamente imputables a <strong>EL CONTRATISTA</strong>, siempre que <strong>EL CONTRATANTE</strong> haya entregado la información completa y oportuna.</li>
+  </ol>
+</div>
+
+<!-- ── CLÁUSULA OCTAVA — DURACIÓN ────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Octava — Duración</div>
+  <p>
+    El presente contrato tendrá una duración de
     <strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong>, contados a partir de
-    la suscripción del acta de inicio, previo cumplimiento de los requisitos
-    de perfeccionamiento y ejecución del contrato.
+    la suscripción del acta de inicio, prorrogable de mutuo acuerdo mediante comunicación escrita con al menos quince (15) días de antelación a su vencimiento.
   </p>
   <p>
     <strong>Fecha estimada de inicio:</strong> {{ fecha_inicio_larga }}&nbsp;&nbsp;
     <strong>Fecha estimada de terminación:</strong> {{ fecha_fin_larga }}
   </p>
+  <p class="ct-paragrafo"><strong>PARÁGRAFO:</strong> En caso de que el contrato finalice antes del cierre contable y presupuestal del año fiscal en curso, <strong>EL CONTRATISTA</strong> se obliga a entregar a <strong>EL CONTRATANTE</strong> todos los archivos, registros contables, claves de acceso al CHIP y demás documentación en su poder, dentro de los diez (10) días hábiles siguientes a la terminación.</p>
+</div>
+
+<!-- ── CLÁUSULA NOVENA — VALOR Y FORMA DE PAGO ───────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Novena — Valor y Forma de Pago</div>
   <p>
-    Este plazo podrá ser prorrogado por mutuo acuerdo entre las partes,
-    mediante adición o modificación del contrato, siempre que exista
-    disponibilidad presupuestal y justificación suficiente.
+    El valor total del presente contrato es la suma de
+    <strong>{{ format_moneda(valor_total) }}</strong>
+    (<strong>{{ valor_letras }}</strong>), con cargo al rubro
+    presupuestal <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
+    fuente <strong>{{ fuente }}</strong>, amparado en el CDP N.°
+    <strong>{{ num_cdp }}</strong> expedido el
+    <strong>{{ fecha_cdp_larga }}</strong>.
+  </p>
+  {% set fp = forma_pago or 'Pagos mensuales' %}
+  <p>
+    <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
+    {% if fp == 'Pagos mensuales' %}
+      en <strong>pagos mensuales</strong>, dentro de los primeros diez (10) días hábiles de cada mes, previa presentación de la factura de venta y del informe de actividades del mes anterior.
+    {% elif fp == 'Pagos bimestrales' %}
+      en <strong>pagos bimestrales</strong>, dentro de los veinte (20) días hábiles siguientes al vencimiento de cada bimestre de ejecución, previa presentación de la factura de venta y del informe de actividades.
+    {% elif fp == 'Pagos trimestrales' %}
+      en <strong>pagos trimestrales</strong>, dentro de los veinte (20) días hábiles siguientes al vencimiento de cada trimestre, previa presentación de la factura de venta y del informe de actividades.
+    {% else %}
+      en un <strong>único pago</strong>, dentro de los quince (15) días hábiles siguientes a la terminación del contrato, previa presentación de la factura de venta y del informe final de actividades.
+    {% endif %}
+  </p>
+  <p class="ct-paragrafo"><strong>PARÁGRAFO PRIMERO:</strong> El pago está sujeto a las disponibilidades presupuestales del FOSE y al cumplimiento del procedimiento de contratación establecido en el Decreto 4791 de 2008 y las directrices de la Secretaría de Educación.</p>
+  <p class="ct-paragrafo"><strong>PARÁGRAFO SEGUNDO:</strong> Sobre el valor del contrato se aplicará retención en la fuente a título de renta y de ICA conforme a las tarifas legales vigentes. El pago neto estimado, descontada la retención en la fuente de <strong>{{ format_moneda(retencion) }}</strong>, es de <strong>{{ format_moneda(neto) }}</strong> (<strong>{{ neto_letras }}</strong>).</p>
+</div>
+
+<!-- ── CLÁUSULA DÉCIMA — CONFIDENCIALIDAD ────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Décima — Confidencialidad</div>
+  <p>
+    Ambas partes se obligan a mantener en estricta reserva toda la información financiera, contable, presupuestal e institucional a la que accedan con ocasión del presente contrato. Esta obligación subsistirá por tres (3) años contados desde la terminación del contrato.
   </p>
 </div>
 
-<!-- ── CLÁUSULA QUINTA ────────────────────────────────────────── -->
+<!-- ── CLÁUSULA DÉCIMA PRIMERA — NATURALEZA DEL CONTRATO ──────── -->
 <div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Quinta — Obligaciones del Contratista</div>
+  <div class="ct-clausula-titulo">Cláusula Décima Primera — Naturaleza del Contrato e Independencia</div>
   <p>
-    Además de las obligaciones generales derivadas del presente contrato,
-    <strong>EL CONTRATISTA</strong> se compromete a:
+    El presente contrato es de naturaleza civil y NO genera relación laboral entre las partes ni entre <strong>EL CONTRATANTE</strong> y el profesional asignado por <strong>EL CONTRATISTA</strong>. <strong>EL CONTRATISTA</strong> es el único responsable de las obligaciones laborales y de seguridad social del personal que asigne para la prestación del servicio.
   </p>
-  {% if obligaciones %}
-  <p>{{ obligaciones }}</p>
-  {% else %}
+</div>
+
+<!-- ── CLÁUSULA DÉCIMA SEGUNDA — CAUSALES DE TERMINACIÓN ──────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Décima Segunda — Causales de Terminación</div>
+  <p>El presente contrato podrá terminarse por:</p>
   <ol>
-    <li>Registrar oportunamente en el sistema contable de la entidad todas las operaciones financieras, económicas, sociales y ambientales, de conformidad con el Marco Normativo para Entidades de Gobierno (Resolución 533 de 2015 CGN).</li>
-    <li>Elaborar y presentar los estados financieros mensuales, trimestrales y anuales requeridos por la Contaduría General de la Nación, la Secretaría de Educación y demás entidades de control.</li>
-    <li>Efectuar las conciliaciones bancarias mensuales de todas las cuentas del Fondo de Servicios Educativos.</li>
-    <li>Realizar los reportes exógenos a la DIAN (Información Exógena) dentro de los plazos establecidos.</li>
-    <li>Elaborar y presentar las declaraciones tributarias (retención en la fuente, ICA, IVA y demás que apliquen) dentro de los plazos legales.</li>
-    <li>Mantener actualizado el catálogo de cuentas y los auxiliares contables conforme al plan de cuentas vigente para entidades de gobierno.</li>
-    <li>Elaborar las notas a los estados financieros y las revelaciones requeridas por las normas.</li>
-    <li>Atender los requerimientos de información contable de los entes de control (Contraloría, Contaduría General de la Nación).</li>
-    <li>Reportar oportunamente al CHIP (Consolidador de Hacienda e Información Pública) la información contable requerida.</li>
-    <li>Llevar el registro y control de la depreciación de bienes muebles e inmuebles de la institución.</li>
-    <li>Apoyar la gestión del presupuesto del FSE en lo relacionado con registros contables de ingresos, gastos y ejecución presupuestal.</li>
-    <li>Firmar los estados financieros en calidad de Contador Público, de acuerdo con la Ley 43 de 1990.</li>
-    <li>Guardar confidencialidad sobre la información financiera y contable a la que tenga acceso.</li>
-    <li>Mantener vigente la Tarjeta Profesional de Contador Público expedida por la Junta Central de Contadores.</li>
-    <li>Mantener al día los aportes al Sistema General de Seguridad Social, cuando sea aplicable.</li>
-    <li>Presentar los informes, soportes y actas requeridas por el supervisor.</li>
-    <li>Informar oportunamente cualquier circunstancia que pueda afectar la ejecución del contrato.</li>
-    <li>Suscribir el acta de inicio, los informes y el acta de liquidación del contrato.</li>
-  </ol>
-  {% endif %}
-</div>
-
-<!-- ── CLÁUSULA SEXTA ─────────────────────────────────────────── -->
-<div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Sexta — Obligaciones del Contratante</div>
-  <p><strong>EL CONTRATANTE</strong> se obliga a:</p>
-  <ol>
-    <li>Pagar el valor del contrato en los términos y condiciones pactadas en la Cláusula Tercera.</li>
-    <li>Suministrar oportunamente la información, documentación y soportes contables necesarios para el cumplimiento del objeto contractual.</li>
-    <li>Facilitar el acceso a los sistemas de información contable y financiera de la institución.</li>
-    <li>Designar un supervisor que realice el seguimiento técnico, financiero, contable y jurídico del contrato.</li>
-    <li>Expedir las certificaciones y constancias que el contratista requiera dentro del marco del contrato.</li>
-    <li>Tramitar oportunamente los documentos necesarios para el perfeccionamiento, legalización y ejecución del contrato.</li>
-    <li>Recibir a satisfacción los servicios objeto del contrato, una vez verificado el cumplimiento de las condiciones pactadas.</li>
-  </ol>
-</div>
-
-<!-- ── CLÁUSULA SÉPTIMA ───────────────────────────────────────── -->
-<div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Séptima — Supervisión</div>
-  <p>
-    La supervisión del presente contrato estará a cargo de
-    <strong>{{ rector }}</strong>, identificado(a) con C.C. N.°
-    <strong>{{ format_id(cc_rector) }}</strong>, en su calidad de Rector(a) y
-    Ordenador del Gasto {{ inst_del }} <strong>{{ inst_nombre }}</strong>,
-    o de quien este designe o haga sus veces. El supervisor ejercerá seguimiento
-    y control sobre los aspectos técnicos, financieros, contables, jurídicos y
-    administrativos del contrato, verificando el cumplimiento del objeto, las
-    obligaciones pactadas y los plazos establecidos, de conformidad con lo
-    dispuesto en la Ley 1474 de 2011 y el Manual de Supervisión e Interventoría
-    {{ inst_del }} <strong>{{ inst_nombre }}</strong>.
-  </p>
-</div>
-
-<!-- ── CLÁUSULA OCTAVA ────────────────────────────────────────── -->
-<div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Octava — Idoneidad y Experiencia</div>
-  <p>
-    <strong>EL CONTRATISTA</strong> declara que cuenta con la idoneidad y
-    experiencia profesional requerida para la prestación de los servicios
-    contratados, acreditada con título profesional de <strong>Contador(a) Público(a)</strong>
-    y Tarjeta Profesional vigente expedida por la Junta Central de Contadores,
-    de conformidad con lo dispuesto en la Ley 43 de 1990 y el artículo 2.2.1.2.1.4.9
-    del Decreto 1082 de 2015, que permite la contratación directa de servicios
-    profesionales y de apoyo a la gestión con personas de reconocida idoneidad y experiencia.
-  </p>
-</div>
-
-<!-- ── CLÁUSULA NOVENA ────────────────────────────────────────── -->
-<div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Novena — Inhabilidades e Incompatibilidades</div>
-  <p>
-    <strong>EL CONTRATISTA</strong> declara, bajo la gravedad del juramento,
-    que no se encuentra incurso en ninguna de las inhabilidades,
-    incompatibilidades o conflictos de interés previstos en la Constitución
-    Política y en la ley, especialmente en los artículos 8 y 9 de la Ley 80
-    de 1993, la Ley 1474 de 2011 y demás normas concordantes. Asimismo, declara
-    que no tiene sanciones vigentes ante la Junta Central de Contadores que le
-    impidan ejercer la profesión. El incumplimiento de esta declaración acarreará
-    la nulidad absoluta del contrato y las sanciones previstas en la ley.
-  </p>
-</div>
-
-<!-- ── CLÁUSULA DÉCIMA ────────────────────────────────────────── -->
-<div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Décima — Prohibición de Cesión</div>
-  <p>
-    <strong>EL CONTRATISTA</strong> no podrá ceder total ni parcialmente
-    el presente contrato sin la previa autorización expresa y escrita de
-    <strong>EL CONTRATANTE</strong>. Dada la naturaleza <em>intuitu personae</em>
-    de los servicios profesionales contables, la cesión sin autorización
-    dará lugar a la terminación unilateral del contrato y a las acciones
-    legales pertinentes.
-  </p>
-</div>
-
-<!-- ── CLÁUSULA DÉCIMA PRIMERA ────────────────────────────────── -->
-<div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Décima Primera — Cláusula Penal Compensatoria</div>
-  <p>
-    En caso de incumplimiento imputable a <strong>EL CONTRATISTA</strong>,
-    este deberá pagar a <strong>EL CONTRATANTE</strong> a título de
-    cláusula penal compensatoria, una suma equivalente al
-    <strong>diez por ciento (10%)</strong> del valor total del contrato,
-    es decir, la suma de
-    <strong>{{ format_moneda(penal_10pct) }}</strong>
-    (<strong>{{ penal_10pct_letras }}</strong>).
-    Este valor podrá hacerse efectivo directamente por {{ inst_art }} <strong>{{ inst_nombre }}</strong>,
-    mediante descuento de las sumas que se le adeuden al contratista o
-    mediante los mecanismos establecidos en la ley, sin perjuicio de las
-    demás acciones a que haya lugar.
-  </p>
-</div>
-
-<!-- ── CLÁUSULA DÉCIMA SEGUNDA ────────────────────────────────── -->
-<div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Décima Segunda — Documentos del Contrato</div>
-  <p>
-    Forman parte integral del presente contrato y tienen igual valor
-    jurídico que él, los siguientes documentos:
-  </p>
-  <ol>
-    <li>El Estudio Previo y de Conveniencia.</li>
-    <li>La invitación a cotizar y sus anexos.</li>
-    <li>La propuesta presentada por el contratista.</li>
-    <li>El informe de evaluación y recomendación de adjudicación.</li>
-    <li>El CDP N.° {{ num_cdp }} y el RP N.° {{ num_rp }}.</li>
-    <li>Copia de la Tarjeta Profesional de Contador Público.</li>
-    <li>Los demás documentos que se generen durante la ejecución del contrato.</li>
+    <li>Mutuo acuerdo entre las partes.</li>
+    <li>Incumplimiento de las obligaciones de cualquiera de las partes, previa notificación escrita con quince (15) días de antelación.</li>
+    <li>Mora en el pago de dos (2) o más mensualidades consecutivas.</li>
+    <li>Violación de la prohibición de contratación directa del profesional asignado.</li>
+    <li>Supresión o liquidación del Fondo de Servicios Educativos por disposición legal o administrativa.</li>
+    <li>Vencimiento del plazo sin prórroga.</li>
+    <li>Fuerza mayor o caso fortuito debidamente comprobado.</li>
   </ol>
 </div>
 
-<!-- ── CLÁUSULA DÉCIMA TERCERA ─────────────────────────────────── -->
+<!-- ── CLÁUSULA DÉCIMA TERCERA — ENTREGA DE INFORMACIÓN ────────── -->
 <div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Décima Tercera — Perfeccionamiento y Ejecución</div>
+  <div class="ct-clausula-titulo">Cláusula Décima Tercera — Entrega de Información al Finalizar el Contrato</div>
   <p>
-    El presente contrato se perfecciona con la firma de las partes. Para su
-    ejecución se requiere:
+    A la terminación del contrato, por cualquier causa, <strong>EL CONTRATISTA</strong> entregará a <strong>EL CONTRATANTE</strong> en un plazo máximo de diez (10) días hábiles:
   </p>
   <ol>
-    <li>La existencia del CDP y del RP que amparen el compromiso presupuestal.</li>
-    <li>La suscripción del acta de inicio por las partes y el supervisor.</li>
-    <li>El cumplimiento de los demás requisitos establecidos en la ley y en el presente contrato.</li>
+    <li>Los libros contables del FOSE actualizados a la fecha de terminación (en formato físico y/o digital).</li>
+    <li>Los archivos del sistema contable utilizado, incluyendo copias de seguridad.</li>
+    <li>Las credenciales y claves de acceso al CHIP y demás plataformas.</li>
+    <li>Los soportes físicos y digitales de las operaciones registradas durante la vigencia del contrato.</li>
+    <li>Un informe de empalme que permita la continuidad del servicio contable.</li>
   </ol>
 </div>
 
-<!-- ── CLÁUSULA DÉCIMA CUARTA ──────────────────────────────────── -->
+<!-- ── CLÁUSULA DÉCIMA CUARTA — SOLUCIÓN DE CONTROVERSIAS ──────── -->
 <div class="ct-clausula">
-  <div class="ct-clausula-titulo">Cláusula Décima Cuarta — Naturaleza del Contrato</div>
+  <div class="ct-clausula-titulo">Cláusula Décima Cuarta — Solución de Controversias</div>
   <p>
-    El presente contrato es de prestación de servicios profesionales y no genera
-    relación laboral ni prestaciones sociales entre <strong>EL CONTRATANTE</strong>
-    y <strong>EL CONTRATISTA</strong>, de conformidad con lo dispuesto en el
-    numeral 3 del artículo 32 de la Ley 80 de 1993 y el artículo 2.2.1.2.1.4.9
-    del Decreto 1082 de 2015. <strong>EL CONTRATISTA</strong> actúa como profesional
-    independiente y asume la responsabilidad por el pago de sus aportes al Sistema
-    General de Seguridad Social Integral.
+    Las controversias serán resueltas en primera instancia de manera directa entre las partes. De no lograrse acuerdo, se acudirá a los jueces competentes de {{ inst_municipio }}, {{ inst_departamento }}, sin perjuicio de los mecanismos alternativos de solución de conflictos.
   </p>
 </div>
 
