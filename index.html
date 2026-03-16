@@ -17,39 +17,77 @@
       <!-- Panel izquierdo: Ilustración -->
       <div class="col-md-5 d-none d-md-flex flex-column align-items-center justify-content-center text-center text-white p-4"
            style="background:linear-gradient(160deg,#0d2b6b 0%,#1a4fa0 50%,#2979e8 100%);min-height:440px">
-        <div style="margin-bottom:18px">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="150" height="150">
-            <!-- Edificio -->
-            <rect x="55" y="60" width="90" height="110" rx="4" fill="#fff" opacity=".15"/>
-            <rect x="60" y="65" width="80" height="105" rx="3" fill="#fff" opacity=".2"/>
-            <!-- Columnas -->
-            <rect x="70" y="80" width="8" height="70" rx="2" fill="#ffd54f" opacity=".7"/>
-            <rect x="96" y="80" width="8" height="70" rx="2" fill="#ffd54f" opacity=".7"/>
-            <rect x="122" y="80" width="8" height="70" rx="2" fill="#ffd54f" opacity=".7"/>
-            <!-- Techo triangular -->
-            <polygon points="50,65 100,30 150,65" fill="#ffd54f" opacity=".8"/>
-            <!-- Bandera -->
-            <rect x="97" y="18" width="3" height="16" fill="#fff" opacity=".6"/>
-            <rect x="100" y="18" width="14" height="9" rx="1" fill="#ef5350" opacity=".7"/>
-            <!-- Monedas / gráficos -->
-            <circle cx="40" cy="150" r="18" fill="#4caf50" opacity=".3"/>
-            <text x="40" y="156" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">$</text>
-            <circle cx="160" cy="140" r="15" fill="#ff9800" opacity=".3"/>
-            <text x="160" y="146" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">%</text>
-            <!-- Barras de gráfico -->
-            <rect x="30" y="175" width="12" height="15" rx="2" fill="#66bb6a" opacity=".6"/>
-            <rect x="46" y="168" width="12" height="22" rx="2" fill="#42a5f5" opacity=".6"/>
-            <rect x="62" y="160" width="12" height="30" rx="2" fill="#ffd54f" opacity=".6"/>
-            <rect x="78" y="165" width="12" height="25" rx="2" fill="#ef5350" opacity=".5"/>
-            <!-- Línea de tendencia -->
-            <polyline points="36,180 52,172 68,162 84,170" fill="none" stroke="#fff" stroke-width="2" opacity=".4"/>
-          </svg>
+        <!-- Título -->
+        <div class="mb-3">
+          <i class="bi bi-bank2" style="font-size:2.5rem;color:#ffd54f"></i>
+          <h4 class="fw-bold mt-2 mb-1" style="letter-spacing:.5px">FOSE Unified</h4>
+          <p class="small mb-0" style="opacity:.7">Sistema de Control Presupuestal</p>
         </div>
-        <h4 class="fw-bold mb-2" style="letter-spacing:.5px">FOSE Unified</h4>
-        <p class="small mb-3" style="opacity:.75;line-height:1.5">Sistema de Control Presupuestal<br>para Fondos de Servicios Educativos</p>
-        <div class="d-flex gap-3 justify-content-center" style="opacity:.5;font-size:12px">
+
+        <!-- Mini dashboard con cifras -->
+        <div style="width:100%;max-width:260px">
+          <!-- Gráfico de barras trimestral -->
+          <div class="d-flex align-items-end justify-content-center gap-2 mb-2" style="height:80px">
+            <div class="text-center">
+              <div style="width:30px;height:25px;background:#66bb6a;border-radius:4px 4px 0 0;opacity:.85"></div>
+              <span style="font-size:8px;opacity:.6">T1</span>
+            </div>
+            <div class="text-center">
+              <div style="width:30px;height:42px;background:#42a5f5;border-radius:4px 4px 0 0;opacity:.85"></div>
+              <span style="font-size:8px;opacity:.6">T2</span>
+            </div>
+            <div class="text-center">
+              <div style="width:30px;height:62px;background:#ffd54f;border-radius:4px 4px 0 0;opacity:.85"></div>
+              <span style="font-size:8px;opacity:.6">T3</span>
+            </div>
+            <div class="text-center">
+              <div style="width:30px;height:76px;background:#ef5350;border-radius:4px 4px 0 0;opacity:.85"></div>
+              <span style="font-size:8px;opacity:.6">T4</span>
+            </div>
+          </div>
+
+          <!-- Tarjetas de cifras -->
+          <div class="row g-2 mb-3" style="font-size:11px">
+            <div class="col-6">
+              <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px">
+                <div style="opacity:.6;font-size:9px"><i class="bi bi-wallet2 me-1"></i>Presupuesto</div>
+                <div class="fw-bold" style="color:#ffd54f;font-size:14px">$ 120.9M</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px">
+                <div style="opacity:.6;font-size:9px"><i class="bi bi-graph-up me-1"></i>Ejecutado</div>
+                <div class="fw-bold" style="color:#66bb6a;font-size:14px">$ 3.0M</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px">
+                <div style="opacity:.6;font-size:9px"><i class="bi bi-cash-stack me-1"></i>Disponible</div>
+                <div class="fw-bold" style="color:#42a5f5;font-size:14px">$ 117.9M</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px">
+                <div style="opacity:.6;font-size:9px"><i class="bi bi-pie-chart me-1"></i>% Ejecución</div>
+                <div class="fw-bold" style="color:#ef5350;font-size:14px">2.5 %</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra de progreso -->
+          <div style="background:rgba(255,255,255,.1);border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px">
+            <div style="width:25%;height:100%;background:linear-gradient(90deg,#66bb6a,#ffd54f);border-radius:8px"></div>
+          </div>
+          <div class="d-flex justify-content-between" style="font-size:9px;opacity:.5">
+            <span>Recaudo ingresos 26%</span>
+            <span>Vigencia 2026</span>
+          </div>
+        </div>
+
+        <!-- Indicadores -->
+        <div class="d-flex gap-3 justify-content-center mt-3" style="opacity:.5;font-size:11px">
           <span><i class="bi bi-shield-check me-1"></i>Seguro</span>
-          <span><i class="bi bi-cloud-check me-1"></i>En la nube</span>
+          <span><i class="bi bi-cloud-check me-1"></i>Nube</span>
           <span><i class="bi bi-phone me-1"></i>Multi-dispositivo</span>
         </div>
       </div>
