@@ -334,6 +334,61 @@ async function eliminarInstitucion(id){
   toast('Institución eliminada','warning');
 }
 
+/* ── Copiar rubros a institución existente ── */
+async function copiarRubrosDesdeOtra(){
+  const list = DB.getInstituciones();
+  const actId = DB.getActiveId();
+  const otras = list.filter(i => i.id !== actId);
+  if(!otras.length){ toast('No hay otras instituciones para copiar','warning'); return; }
+
+  const opciones = otras.map(i => i.nombre).join('\n');
+  const selNombre = prompt('Copiar rubros desde:\n\n' + otras.map((i,idx) => (idx+1)+'. '+i.nombre).join('\n') + '\n\nEscriba el número:');
+  if(!selNombre) return;
+  const idx = parseInt(selNombre) - 1;
+  if(isNaN(idx) || idx < 0 || idx >= otras.length){ toast('Opción inválida','danger'); return; }
+
+  const origen = otras[idx];
+  if(!confirm(`¿Copiar rubros de "${origen.nombre}" a la institución activa?\n\nEsto REEMPLAZARÁ los rubros actuales (si existen).`)) return;
+
+  try {
+    // Cargar datos de la institución origen
+    let origenData;
+    if(typeof SB !== 'undefined' && SB.isActive()){
+      origenData = await SB.fetchInstData(origen.id);
+    } else {
+      origenData = await DB._get('instituciones', origen.id);
+    }
+    if(!origenData){ toast('No se pudieron cargar datos de origen','danger'); return; }
+
+    const d = DB.load();
+    // Copiar rubros de egresos (con valores en 0)
+    d.rubros = (origenData.rubros||[]).map(r => ({
+      cod:r.cod, guia:r.guia||'', con:r.con, tipo:r.tipo||'fun', esGrupo:r.esGrupo||false, ini:0,
+      cuenta_contable:r.cuenta_contable||'', sifse_fuente:r.sifse_fuente||'', sifse_item:r.sifse_item||''
+    }));
+    // Copiar rubros de ingresos (con valores en 0)
+    d.rubros_ing = (origenData.rubros_ing||[]).map(r => ({
+      cod:r.cod, guia:r.guia||'', con:r.con, esGrupo:r.esGrupo||false, ini:0,
+      en_banco:r.en_banco||false, sifse_fuente:r.sifse_fuente||''
+    }));
+    // Copiar mapeo SIFSE si existe
+    if(origenData.sifse_mapeo) d.sifse_mapeo = JSON.parse(JSON.stringify(origenData.sifse_mapeo));
+    if(origenData.sifse_catalogo) d.sifse_catalogo = JSON.parse(JSON.stringify(origenData.sifse_catalogo));
+    // Inicializar modificaciones vacías
+    d.mods = {};
+    d.rubros.forEach(r => {
+      d.mods[r.cod] = {1:{adi:0,red:0,cre:0,cco:0},2:{adi:0,red:0,cre:0,cco:0},3:{adi:0,red:0,cre:0,cco:0},4:{adi:0,red:0,cre:0,cco:0}};
+    });
+
+    DB.save(d);
+    toast(`✅ Rubros copiados desde "${origen.nombre}" — ${d.rubros.length} egresos, ${d.rubros_ing.length} ingresos`, 'success');
+    _renderPage(_currentPage);
+  } catch(e){
+    console.error('Error copiando rubros:', e);
+    toast('Error al copiar rubros: ' + e.message, 'danger');
+  }
+}
+
 /* ── Cierre presupuestal ── */
 function cuentaRowHTML(i){
   return `<div class="ci-row row g-1 mb-1 align-items-center" data-idx="${i}">

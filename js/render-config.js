@@ -58,6 +58,7 @@ R.config = function(){
       </div>`:''}
       <div class="mt-2">
         <button class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:10px" onclick="abrirModalInstForm(DB.getActiveId())"><i class="bi bi-pencil me-1"></i>Editar Institución</button>
+        <button class="btn btn-sm btn-outline-success py-0 px-2 ms-2" style="font-size:10px" onclick="copiarRubrosDesdeOtra()"><i class="bi bi-clipboard-data me-1"></i>Copiar Rubros desde otra Institución</button>
       </div>
     </div>`;
 
