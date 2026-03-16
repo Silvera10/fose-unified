@@ -33,6 +33,9 @@ async function _initApp(){
       const btnLogout = document.getElementById('btn-logout');
       if (btnLogout) btnLogout.style.display = '';
 
+      // Cargar meta LOCAL primero para respetar activeId cambiado por cambiarInstitucion()
+      await DB.loadMeta();
+
       // Intentar cargar desde Supabase
       setProgress(15, 'Descargando datos del servidor...');
       const loadedFromCloud = await DB.loadFromSupabase();
