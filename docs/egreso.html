@@ -1,0 +1,448 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Comprobante de Egreso — {{ numero }}{% endblock %}
+{% block doc_titulo %}COMPROBANTE DE EGRESO{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   COMPROBANTE DE EGRESO  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.ce-numero {
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #1a6b3c;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.ce-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.ce-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ce-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+.ce-section ol {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0 8px;
+  line-height: 1.6;
+}
+.ce-section ol li {
+  margin-bottom: 4px;
+  text-align: justify;
+}
+
+/* ── Tabla de datos generales ─────────────────────── */
+table.ce-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ce-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 22%;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ce-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+/* ── Tablas de datos financieros ──────────────────── */
+table.ce-data {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ce-data thead th {
+  background: #1a6b3c;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 9px;
+  border: 1.5px solid #1a6b3c;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ce-data tbody td {
+  padding: 5px 9px;
+  border: 1.5px solid #bbb;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+table.ce-data tbody tr:nth-child(even) td {
+  background: #f7faf7;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ce-data tfoot td {
+  padding: 6px 9px;
+  border: 1.5px solid #bbb;
+  background: #e8f5e9;
+  font-weight: bold;
+  font-size: 9.5pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Caja de letras / declaración ─────────────────── */
+.ce-letras-box {
+  border: 1.5px solid #aaa;
+  border-radius: 3px;
+  padding: 8px 12px;
+  margin: 6px 0 0;
+  background: #f9fdf9;
+  font-size: 9.5pt;
+  line-height: 1.6;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ce-letras-box p { margin: 3px 0; }
+
+/* ── Declaración de recibo ────────────────────────── */
+.ce-declaracion {
+  border: 2px solid #1a6b3c;
+  border-radius: 3px;
+  padding: 10px 14px;
+  margin: 4px 0;
+  background: #f0f7f0;
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.6;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ce-declaracion p { margin: 4px 0; }
+
+/* ── Firma ────────────────────────────────────────── */
+.ce-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ce-firma-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+table.ce-firma-tabla td {
+  width: 50%;
+  text-align: center;
+  padding: 0 12px;
+  border: none;
+  vertical-align: bottom;
+}
+.ce-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.ce-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.ce-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+{% set supervisor = nombre_supervisor if nombre_supervisor else rector %}
+{% set cargo_sup  = cargo_supervisor  if cargo_supervisor  else 'Rector(a)' %}
+
+<p class="ce-numero">
+  Egreso N.° <strong>{{ num_egreso or '—' }}</strong>
+  <span style="font-weight:normal; color:#555; font-size:9pt">&nbsp;·&nbsp; Contrato N.° {{ numero }}</span>
+</p>
+
+<!-- ── 1. DATOS GENERALES ─────────────────────────────────────── -->
+<div class="ce-section">
+  <div class="ce-section-titulo">1. Datos Generales</div>
+  <table class="ce-tabla">
+    <tr>
+      <th>Institución</th>
+      <td colspan="3">{{ inst_nombre }}</td>
+    </tr>
+    <tr>
+      <th>NIT Institución</th>
+      <td>{{ format_id(inst_nit) }}</td>
+      <th>Fecha de egreso</th>
+      <td>{{ fecha_egreso_larga or fecha_fin_larga }}</td>
+    </tr>
+    <tr>
+      <th>N.° de Egreso</th>
+      <td><strong>{{ num_egreso or numero }}</strong></td>
+      <th>Tipo de contrato</th>
+      <td>{{ tipo_contrato }}</td>
+    </tr>
+    <tr>
+      <th>
+        {% if sexo_contratista == 'E' %}Empresa / Beneficiario
+        {% elif sexo_contratista == 'F' %}Beneficiaria
+        {% else %}Beneficiario{% endif %}
+      </th>
+      <td colspan="3">
+        <strong>{{ nombre_contratista }}</strong>
+        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>{{ tipo_id_contratista }}</td>
+      <th>Número</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    <tr>
+      <th>Teléfono</th>
+      <td>{{ celular_contratista }}</td>
+      <th>Municipio</th>
+      <td>{{ municipio_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Concepto</th>
+      <td colspan="3">Pago contrato N.° <strong>{{ numero }}</strong> — {{ objeto }}</td>
+    </tr>
+    <tr>
+      <th>CDP N.°</th>
+      <td>{{ num_cdp }} &nbsp;·&nbsp; {{ fecha_cdp_larga }}</td>
+      <th>RP N.°</th>
+      <td>{{ num_rp }} &nbsp;·&nbsp; {{ fecha_rp_larga }}</td>
+    </tr>
+    <tr>
+      <th>N.° Factura / Cta. de Cobro</th>
+      <td colspan="3">{{ num_factura or '—' }}</td>
+    </tr>
+    <tr>
+      <th>Rubro presupuestal</th>
+      <td colspan="3">{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 2. VALORES ─────────────────────────────────────────────── -->
+<div class="ce-section">
+  <div class="ce-section-titulo">2. Valores</div>
+  <table class="ce-data">
+    <thead>
+      <tr>
+        <th style="width:65%">Concepto</th>
+        <th style="width:35%">Valor</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Valor bruto del contrato</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+      </tr>
+      {% if valor_iva and valor_iva > 0 %}
+      <tr>
+        <td style="padding-left:24px; color:#555">Del cual IVA discriminado</td>
+        <td style="text-align:right; color:#555">{{ format_moneda(valor_iva) }}</td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td>(−) Retención en la Fuente (Cta. {{ ret_cuenta or '236505' }})</td>
+        <td style="text-align:right">− {{ format_moneda(retencion) }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td><strong>VALOR NETO PAGADO</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(neto) }}</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="ce-letras-box">
+    <p><strong>Valor neto en letras:</strong> {{ neto_letras }}</p>
+  </div>
+</div>
+
+<!-- ── 3. INFORMACIÓN BANCARIA DEL BENEFICIARIO ───────────────── -->
+<div class="ce-section">
+  <div class="ce-section-titulo">3. Información Bancaria del Beneficiario</div>
+  <table class="ce-tabla">
+    <tr>
+      <th>Banco</th>
+      <td>{{ banco_contratista }}</td>
+      <th>Tipo de cuenta</th>
+      <td>{{ tipo_cuenta }}</td>
+    </tr>
+    <tr>
+      <th>N.° de cuenta</th>
+      <td colspan="3"><strong>{{ cuenta_banco }}</strong></td>
+    </tr>
+    <tr>
+      <th>Titular</th>
+      <td colspan="3">{{ nombre_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Forma de pago</th>
+      <td colspan="3">Transferencia electrónica / ACH</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 4. COMPROBANTE CONTABLE ────────────────────────────────── -->
+<div class="ce-section">
+  <div class="ce-section-titulo">4. Comprobante Contable</div>
+  <table class="ce-data">
+    <thead>
+      <tr>
+        <th style="width:16%">Código Cuenta</th>
+        <th style="width:44%">Nombre de la Cuenta</th>
+        <th style="width:20%">DEBE</th>
+        <th style="width:20%">HABER</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Fila 1: cuenta contable del rubro -->
+      <tr>
+        <td style="text-align:center">{{ cuenta_contable or rubro_codigo }}</td>
+        <td>{{ nombre_cuenta or rubro_nombre }}</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+        <td style="text-align:right"></td>
+      </tr>
+      <!-- Fila 2: banco institucional seleccionado -->
+      <tr>
+        <td style="text-align:center">111005</td>
+        <td>{{ banco_sel or 'BANCOS — Cuenta Institucional' }}{% if cta_sel %} — Cta. {{ cta_sel }}{% endif %}</td>
+        <td style="text-align:right"></td>
+        <td style="text-align:right">{{ format_moneda(neto) }}</td>
+      </tr>
+      <!-- Fila 3: retención en la fuente -->
+      <tr>
+        <td style="text-align:center">{{ ret_cuenta or '236505' }}</td>
+        <td>{{ ret_concepto or 'Retención en la Fuente por Pagar' }}</td>
+        <td style="text-align:right"></td>
+        <td style="text-align:right">{{ format_moneda(retencion) }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2" style="text-align:right"><strong>TOTALES:</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(valor_total) }}</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(valor_total) }}</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- ── 5. DOCUMENTOS SOPORTE ─────────────────────────────────── -->
+<div class="ce-section">
+  <div class="ce-section-titulo">5. Documentos Soporte</div>
+  <p>Se adjuntan los siguientes documentos soporte:</p>
+  <ol>
+    <li>Factura o cuenta de cobro del contratista.</li>
+    <li>Acta de recibido a satisfacción suscrita por el supervisor.</li>
+    <li>Informe de supervisión del contrato N.° {{ numero }}.</li>
+    <li>Informe de actividades del contratista.</li>
+    <li>CDP N.° {{ num_cdp }} del {{ fecha_cdp_larga }}.</li>
+    <li>RP N.° {{ num_rp }} del {{ fecha_rp_larga }}.</li>
+    <li>Comprobante de pago de seguridad social (cuando aplique).</li>
+    <li>Certificación bancaria del beneficiario.</li>
+  </ol>
+</div>
+
+<!-- ── 6. DECLARACIÓN ─────────────────────────────────────────── -->
+<div class="ce-section">
+  <div class="ce-section-titulo">6. Declaración</div>
+  <div class="ce-declaracion">
+    <p>
+      Revisada la documentación soporte y verificado el cumplimiento del objeto
+      contractual del contrato N.° <strong>{{ numero }}</strong>,
+      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% elif sexo_contratista == 'F' %}la contratista
+      {% else %}el contratista{% endif %}
+      <strong>{{ nombre_contratista }}</strong> declara haber recibido
+      conforme la suma de <strong>{{ format_moneda(neto) }}</strong>
+      ({{ neto_letras }}) mediante transferencia a la cuenta
+      <strong>{{ tipo_cuenta }}</strong> N.° <strong>{{ cuenta_banco }}</strong>
+      del banco <strong>{{ banco_contratista }}</strong>,
+      en calidad de pago del contrato referenciado.
+    </p>
+  </div>
+</div>
+
+<!-- ── FIRMAS ─────────────────────────────────────────────────── -->
+<div class="ce-firma-section">
+  <table class="ce-firma-tabla">
+    <tr>
+      <!-- Aprobó -->
+      <td>
+        <div class="ce-firma-linea">
+          <p class="ce-firma-nombre">{{ rector }}</p>
+          <p class="ce-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+          <p class="ce-firma-cargo">Rector(a) — Ordenador del Gasto</p>
+          <p class="ce-firma-cargo">{{ inst_nombre }}</p>
+          <p class="ce-firma-cargo"><strong>APROBÓ</strong></p>
+        </div>
+      </td>
+      <!-- Recibí conforme -->
+      <td>
+        <div class="ce-firma-linea">
+          <p class="ce-firma-nombre">{{ nombre_contratista }}</p>
+          <p class="ce-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+          <p class="ce-firma-cargo">Beneficiario(a)</p>
+          <p class="ce-firma-cargo"><strong>RECIBÍ CONFORME</strong></p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

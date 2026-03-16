@@ -1,0 +1,433 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Acta de Recibido a Satisfacción — {{ numero }}{% endblock %}
+{% block doc_titulo %}ACTA DE RECIBIDO A SATISFACCIÓN{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   ACTA DE RECIBIDO A SATISFACCIÓN  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.ar-numero {
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #1a6b3c;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Párrafo introductorio ────────────────────────── */
+.ar-intro {
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.65;
+  margin: 0 0 12px;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.ar-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.ar-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ar-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+
+/* ── Tabla de identificación ──────────────────────── */
+table.ar-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ar-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 22%;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ar-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+/* ── Tabla de bienes/servicios ────────────────────── */
+table.ar-items {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9pt;
+  page-break-inside: auto;
+}
+table.ar-items thead th {
+  background: #1a6b3c;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 8px;
+  border: 1.5px solid #1a6b3c;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ar-items tbody td {
+  padding: 5px 8px;
+  border: 1.5px solid #bbb;
+  vertical-align: top;
+  font-size: 9pt;
+  line-height: 1.4;
+}
+table.ar-items tbody tr:nth-child(even) td {
+  background: #f7faf7;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ar-items tfoot td {
+  padding: 5px 8px;
+  border: 1.5px solid #bbb;
+  background: #e8f5e9;
+  font-weight: bold;
+  font-size: 9pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Tabla de verificación ────────────────────────── */
+table.ar-verif {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ar-verif thead th {
+  background: #1a6b3c;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 9px;
+  border: 1.5px solid #1a6b3c;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ar-verif tbody td {
+  padding: 5px 9px;
+  border: 1.5px solid #bbb;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+table.ar-verif tbody tr:nth-child(even) td {
+  background: #f7faf7;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Estados ──────────────────────────────────────── */
+.ar-si {
+  text-align: center;
+  font-weight: bold;
+  color: #1a5c1a;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ar-conforme {
+  text-align: center;
+  font-weight: bold;
+  color: #1a5c1a;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Caja de satisfacción ─────────────────────────── */
+.ar-satisfaccion {
+  border: 2px solid #1a6b3c;
+  border-radius: 3px;
+  padding: 10px 14px;
+  margin: 4px 0;
+  background: #f0f7f0;
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.65;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ar-satisfaccion p { margin: 5px 0; }
+
+/* ── Lugar y fecha ────────────────────────────────── */
+.ar-lugar {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 10px 0 6px;
+  line-height: 1.6;
+}
+
+/* ── Firmas (2 columnas) ──────────────────────────── */
+.ar-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ar-firma-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+table.ar-firma-tabla td {
+  width: 50%;
+  text-align: center;
+  padding: 0 20px;
+  border: none;
+  vertical-align: bottom;
+}
+.ar-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.ar-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.ar-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+{% set supervisor = nombre_supervisor if nombre_supervisor else rector %}
+{% set cargo_sup  = cargo_supervisor  if cargo_supervisor  else 'Rector(a)' %}
+
+<p class="ar-numero">Contrato N.° {{ numero }}</p>
+
+<!-- ── ENCABEZADO ─────────────────────────────────────────────── -->
+<p class="ar-intro">
+  En el municipio de <strong>{{ inst_municipio }}</strong>,
+  {{ inst_departamento }}, siendo el día <strong>{{ fecha_fin_larga }}</strong>,
+  el suscrito supervisor y
+  {% if sexo_contratista == 'E' %}la empresa contratista
+  {% elif sexo_contratista == 'F' %}la contratista
+  {% else %}el contratista{% endif %}
+  del contrato referenciado, proceden a suscribir la presente acta de recibido
+  a satisfacción.
+</p>
+
+<!-- ── 1. IDENTIFICACIÓN DEL CONTRATO ────────────────────────── -->
+<div class="ar-section">
+  <div class="ar-section-titulo">1. Identificación del Contrato</div>
+  <table class="ar-tabla">
+    <tr>
+      <th>Institución</th>
+      <td colspan="3">{{ inst_nombre }}</td>
+    </tr>
+    <tr>
+      <th>NIT Institución</th>
+      <td>{{ format_id(inst_nit) }}</td>
+      <th>Contrato N.°</th>
+      <td>{{ numero }}</td>
+    </tr>
+    <tr>
+      <th>Objeto del contrato</th>
+      <td colspan="3">{{ objeto }}</td>
+    </tr>
+    <tr>
+      <th>
+        {% if sexo_contratista == 'E' %}Empresa contratista
+        {% elif sexo_contratista == 'F' %}Contratista
+        {% else %}Contratista{% endif %}
+      </th>
+      <td colspan="3">
+        {{ nombre_contratista }}
+        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>{{ tipo_id_contratista }}</td>
+      <th>Número</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    <tr>
+      <th>Valor total</th>
+      <td>{{ format_moneda(valor_total) }}</td>
+      <th>Duración</th>
+      <td>{{ dias_duracion }} días hábiles</td>
+    </tr>
+    <tr>
+      <th>Fecha de inicio</th>
+      <td>{{ fecha_inicio_larga }}</td>
+      <th>Fecha de terminación</th>
+      <td>{{ fecha_fin_larga }}</td>
+    </tr>
+    <tr>
+      <th>Supervisor</th>
+      <td>{{ supervisor }}</td>
+      <th>Cargo</th>
+      <td>{{ cargo_sup }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 2. VERIFICACIÓN DE CUMPLIMIENTO ───────────────────────── -->
+<div class="ar-section">
+  <div class="ar-section-titulo">2. Verificación de Cumplimiento</div>
+  <table class="ar-verif">
+    <thead>
+      <tr>
+        <th style="width:57%">Criterio de Verificación</th>
+        <th style="width:13%">Resultado</th>
+        <th style="width:30%">Observación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>El bien / servicio corresponde al objeto contractual</td>
+        <td class="ar-si">SÍ</td>
+        <td>Verificado conforme al contrato.</td>
+      </tr>
+      <tr>
+        <td>Las cantidades coinciden con lo pactado</td>
+        <td class="ar-si">SÍ</td>
+        <td>Verificado.</td>
+      </tr>
+      <tr>
+        <td>La calidad cumple las especificaciones técnicas</td>
+        <td class="ar-si">SÍ</td>
+        <td>Sin observaciones técnicas.</td>
+      </tr>
+      <tr>
+        <td>Entregado dentro del plazo pactado</td>
+        <td class="ar-si">SÍ</td>
+        <td>Entregado en término.</td>
+      </tr>
+      <tr>
+        <td>Documentación completa y en orden</td>
+        <td class="ar-si">SÍ</td>
+        <td>Factura / cuenta de cobro presentada.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── 3. DECLARACIÓN DE RECIBIDO ────────────────────────────── -->
+<div class="ar-section">
+  <div class="ar-section-titulo">3. Declaración de Recibido a Satisfacción</div>
+  <div class="ar-satisfaccion">
+    <p>
+      El supervisor del contrato N.° <strong>{{ numero }}</strong>,
+      <strong>{{ supervisor }}</strong>, en calidad de {{ cargo_sup }}, certifica que
+      los bienes y/o servicios entregados por
+      {% if sexo_contratista == 'E' and rep_legal_nombre %}
+        la empresa contratista <strong>{{ nombre_contratista }}</strong>
+        (NIT {{ format_id(num_id_contratista) }}),
+        representada por <strong>{{ rep_legal_nombre }}</strong>,
+        CC N.° {{ format_id(rep_legal_cc) }},
+      {% elif sexo_contratista == 'F' %}
+        la contratista <strong>{{ nombre_contratista }}</strong>,
+        {{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }},
+      {% else %}
+        el contratista <strong>{{ nombre_contratista }}</strong>,
+        {{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }},
+      {% endif %}
+      correspondientes al objeto contractual: <em>{{ objeto }}</em>, han sido
+      recibidos a <strong>ENTERA SATISFACCIÓN</strong>, cumpliendo con las
+      especificaciones técnicas, condiciones de calidad y demás requisitos
+      establecidos en el contrato.
+    </p>
+    <p>
+      <strong>No se presentan observaciones ni inconformidades.</strong>
+      En consecuencia, se avala el trámite del pago correspondiente por la suma de
+      <strong>{{ format_moneda(valor_total) }}</strong>
+      ({{ valor_letras }}).
+    </p>
+  </div>
+</div>
+
+<!-- ── Lugar y fecha ──────────────────────────────────────────── -->
+<p class="ar-lugar">
+  En constancia de lo anterior, las partes suscriben la presente acta en
+  <strong>{{ inst_municipio }}</strong>, el <strong>{{ fecha_fin_larga }}</strong>.
+</p>
+
+<!-- ── FIRMAS (2 columnas) ───────────────────────────────────── -->
+<div class="ar-firma-section">
+  <table class="ar-firma-tabla">
+    <tr>
+      <!-- Supervisor -->
+      <td>
+        <div class="ar-firma-linea">
+          <p class="ar-firma-nombre">{{ supervisor }}</p>
+          <p class="ar-firma-cargo">{{ cargo_sup }}</p>
+          <p class="ar-firma-cargo">{{ inst_nombre }}</p>
+          <p class="ar-firma-cargo"><strong>SUPERVISOR DEL CONTRATO</strong></p>
+        </div>
+      </td>
+      <!-- Contratista -->
+      <td>
+        <div class="ar-firma-linea">
+          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+            <p class="ar-firma-nombre">{{ rep_legal_nombre }}</p>
+            <p class="ar-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
+            <p class="ar-firma-cargo">Representante Legal</p>
+            <p class="ar-firma-cargo">{{ nombre_contratista }}</p>
+            <p class="ar-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% else %}
+            <p class="ar-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ar-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+            <p class="ar-firma-cargo">Cel.: {{ celular_contratista }}</p>
+          {% endif %}
+          <p class="ar-firma-cargo"><strong>
+            {% if sexo_contratista == 'E' %}LA EMPRESA CONTRATISTA
+            {% elif sexo_contratista == 'F' %}LA CONTRATISTA
+            {% else %}EL CONTRATISTA{% endif %}
+          </strong></p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

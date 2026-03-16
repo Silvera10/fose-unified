@@ -1,0 +1,517 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES DE APOYO A LA GESTIÓN CONTABLE N.° {{ numero }}{% endblock %}
+{% block doc_titulo %}CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES DE APOYO A LA GESTIÓN CONTABLE{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   CONTRATO PRESTACIÓN SERVICIOS CONTABLES  ·  estilos
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.ct-numero {
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #333;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Párrafo introductorio ────────────────────────── */
+.ct-intro {
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.65;
+  margin: 0 0 14px;
+}
+
+/* ── Cláusulas ────────────────────────────────────── */
+.ct-clausula {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.ct-clausula-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #eee;
+  padding: 5px 10px;
+  border-left: 5px solid #333;
+  margin-bottom: 7px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ct-clausula p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+.ct-clausula ol,
+.ct-clausula ul {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0 8px;
+  line-height: 1.6;
+}
+.ct-clausula ol li,
+.ct-clausula ul li {
+  margin-bottom: 4px;
+  text-align: justify;
+}
+
+/* ── Tabla Ítems / Bienes y Servicios (UNSPSC) ────── */
+table.ct-unspsc {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ct-unspsc thead th {
+  background: #555;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  padding: 6px 6px;
+  border: 1.5px solid #555;
+  letter-spacing: 0.3px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ct-unspsc tbody td {
+  padding: 5px 6px;
+  border: 1.5px solid #aaa;
+  text-align: center;
+  font-size: 9pt;
+  line-height: 1.4;
+}
+table.ct-unspsc tbody td.ct-unspsc-nombre {
+  text-align: left;
+}
+
+/* ── Lugar y fecha de suscripción ─────────────────── */
+.ct-lugar {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 4px 0 10px;
+  line-height: 1.6;
+}
+
+/* ── Firmas ───────────────────────────────────────── */
+.ct-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ct-firma-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+table.ct-firma-tabla td {
+  width: 50%;
+  text-align: center;
+  padding: 0 20px;
+  border: none;
+  vertical-align: bottom;
+}
+.ct-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.ct-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.ct-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<p class="ct-numero">N.° {{ numero }}</p>
+
+<!-- ── PARTES ────────────────────────────────────────────────── -->
+<p class="ct-intro">
+  Entre los suscritos, a saber: <strong>{{ rector }}</strong>, mayor de edad,
+  identificado(a) con C.C. N.° <strong>{{ format_id(cc_rector) }}</strong>, actuando en
+  calidad de Rector(a) y Ordenador del Gasto de
+  {{ inst_art }}
+  <strong>{{ inst_nombre }}</strong>,
+  NIT <strong>{{ format_id(inst_nit) }}</strong>, con domicilio en {{ inst_dir }},
+  {{ inst_municipio }}, {{ inst_departamento }}, correo electrónico {{ inst_email }},
+  quien en adelante se denominará <strong>"EL CONTRATANTE"</strong>; y de otra parte,
+  {% if es_empresa and rep_legal_nombre %}
+    la empresa <strong>{{ nombre_contratista }}</strong>,
+    NIT <strong>{{ format_id(num_id_contratista) }}</strong>,
+    representada legalmente por <strong>{{ rep_legal_nombre }}</strong>,
+    identificado(a) con C.C. N.° <strong>{{ format_id(rep_legal_cc) }}</strong>,
+  {% elif es_empresa %}
+    la empresa <strong>{{ nombre_contratista }}</strong>,
+    NIT <strong>{{ format_id(num_id_contratista) }}</strong>,
+  {% elif sexo_contratista == 'F' %}
+    <strong>{{ nombre_contratista }}</strong>, mayor de edad, identificada
+    con {{ tipo_id_contratista }} N.° <strong>{{ format_id(num_id_contratista) }}</strong>,
+  {% else %}
+    <strong>{{ nombre_contratista }}</strong>, mayor de edad, identificado
+    con {{ tipo_id_contratista }} N.° <strong>{{ format_id(num_id_contratista) }}</strong>,
+  {% endif %}
+  con domicilio en {{ direccion_contratista }}, {{ municipio_contratista }},
+  teléfono {{ celular_contratista }}, correo electrónico {{ email_contratista }},
+  quien en adelante se denominará <strong>"EL CONTRATISTA"</strong>, hemos convenido
+  en celebrar el presente <strong>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES
+  DE APOYO A LA GESTIÓN CONTABLE</strong>, que se regirá por las siguientes cláusulas y,
+  en lo no previsto, por las normas generales del derecho y especialmente por la
+  Ley 80 de 1993, la Ley 1150 de 2007, el Decreto 1082 de 2015, el Decreto 4791 de 2008,
+  la Resolución 533 de 2015 de la Contaduría General de la Nación y demás normas concordantes:
+</p>
+
+<!-- ── CLÁUSULA PRIMERA ───────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Primera — Objeto</div>
+  <p>
+    <strong>EL CONTRATISTA</strong> se obliga para con
+    <strong>EL CONTRATANTE</strong> a: <strong>{{ objeto }}</strong>,
+    de conformidad con las condiciones técnicas establecidas en el estudio
+    previo, la propuesta presentada por el contratista y las instrucciones
+    impartidas por el supervisor del contrato, en cumplimiento del Marco Normativo
+    para Entidades de Gobierno adoptado mediante Resolución 533 de 2015 de la
+    Contaduría General de la Nación y sus modificaciones.
+  </p>
+</div>
+
+<!-- ── CLÁUSULA SEGUNDA ───────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Segunda — Valor</div>
+  <p>
+    El valor total del presente contrato es la suma de
+    <strong>{{ format_moneda(valor_total) }}</strong>
+    (<strong>{{ valor_letras }}</strong>), incluido el IVA y demás
+    impuestos que apliquen, suma que será pagada con cargo al rubro
+    presupuestal <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
+    fuente <strong>{{ fuente }}</strong>, amparado en el CDP N.°
+    <strong>{{ num_cdp }}</strong> expedido el
+    <strong>{{ fecha_cdp_larga }}</strong>.
+  </p>
+</div>
+
+<!-- ── CLÁUSULA TERCERA ───────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Tercera — Forma de Pago</div>
+  {% set fp = forma_pago or 'Pago único' %}
+  <p>
+    {% if fp == 'Pagos mensuales' %}
+      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
+      el valor del contrato en <strong>pagos mensuales</strong>, dentro de los
+      quince (15) días hábiles siguientes al vencimiento de cada mes de ejecución,
+      previa presentación de la factura o cuenta de cobro y suscripción del acta
+      parcial de cumplimiento por parte del supervisor.
+    {% elif fp == 'Pagos bimestrales' %}
+      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
+      el valor del contrato en <strong>pagos bimestrales</strong>, dentro de los
+      veinte (20) días hábiles siguientes al vencimiento de cada bimestre de
+      ejecución, previa presentación de la factura o cuenta de cobro y suscripción
+      del acta parcial de cumplimiento por parte del supervisor.
+    {% elif fp == 'Pagos trimestrales' %}
+      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
+      el valor del contrato en <strong>pagos trimestrales</strong>, dentro de los
+      veinte (20) días hábiles siguientes al vencimiento de cada trimestre de
+      ejecución, previa presentación de la factura o cuenta de cobro y suscripción
+      del acta parcial de cumplimiento por parte del supervisor.
+    {% elif fp == 'Pagos semestrales' %}
+      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
+      el valor del contrato en <strong>pagos semestrales</strong>, dentro de los
+      treinta (30) días hábiles siguientes al vencimiento de cada semestre de
+      ejecución, previa presentación de la factura o cuenta de cobro y suscripción
+      del acta parcial de cumplimiento por parte del supervisor.
+    {% elif fp == 'Anticipos y saldo' %}
+      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
+      el valor del contrato mediante <strong>anticipo y pago del saldo</strong>.
+      El anticipo, equivalente al cincuenta por ciento (50%) del valor total, se
+      desembolsará dentro de los quince (15) días hábiles siguientes a la
+      suscripción del acta de inicio. El saldo restante se pagará dentro de los
+      treinta (30) días hábiles siguientes a la presentación de los documentos
+      que acrediten la ejecución total del objeto contractual, previa suscripción
+      del acta de recibido a satisfacción por parte del supervisor.
+    {% else %}
+      <strong>EL CONTRATANTE</strong> pagará a <strong>EL CONTRATISTA</strong>
+      el valor del contrato en un <strong>único pago</strong>, dentro de los
+      dos (2) días hábiles siguientes a la presentación de los documentos
+      que acrediten la ejecución total del objeto contractual, previa suscripción
+      del acta de recibido a satisfacción por parte del supervisor.
+    {% endif %}
+    {% if fp != 'Anticipos y saldo' %}
+      Para el trámite del pago deberán cumplirse los siguientes requisitos:
+    {% endif %}
+  </p>
+  <ol>
+    <li>Factura o cuenta de cobro debidamente expedida a nombre {{ inst_del }} <strong>{{ inst_nombre }}</strong>.</li>
+    <li>Acta de recibido a satisfacción firmada por el supervisor.</li>
+    <li>Informe de actividades contables del período correspondiente.</li>
+    <li>Certificado de pago de aportes al Sistema General de Seguridad Social (cuando aplique).</li>
+    <li>Certificación bancaria vigente.</li>
+    <li>Copia de la Tarjeta Profesional de Contador Público vigente (primera vez).</li>
+  </ol>
+  <p>
+    {{ inst_Art }} <strong>{{ inst_nombre }}</strong> efectuará las retenciones en la fuente y demás descuentos
+    de ley que correspondan. El pago neto estimado, descontada la retención
+    en la fuente de <strong>{{ format_moneda(retencion) }}</strong>, es de
+    <strong>{{ format_moneda(neto) }}</strong>
+    (<strong>{{ neto_letras }}</strong>).
+  </p>
+</div>
+
+<!-- ── CLÁUSULA CUARTA ────────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Cuarta — Duración</div>
+  <p>
+    El plazo de ejecución del presente contrato es de
+    <strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong>, contados a partir de
+    la suscripción del acta de inicio, previo cumplimiento de los requisitos
+    de perfeccionamiento y ejecución del contrato.
+  </p>
+  <p>
+    <strong>Fecha estimada de inicio:</strong> {{ fecha_inicio_larga }}&nbsp;&nbsp;
+    <strong>Fecha estimada de terminación:</strong> {{ fecha_fin_larga }}
+  </p>
+  <p>
+    Este plazo podrá ser prorrogado por mutuo acuerdo entre las partes,
+    mediante adición o modificación del contrato, siempre que exista
+    disponibilidad presupuestal y justificación suficiente.
+  </p>
+</div>
+
+<!-- ── CLÁUSULA QUINTA ────────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Quinta — Obligaciones del Contratista</div>
+  <p>
+    Además de las obligaciones generales derivadas del presente contrato,
+    <strong>EL CONTRATISTA</strong> se compromete a:
+  </p>
+  {% if obligaciones %}
+  <p>{{ obligaciones }}</p>
+  {% else %}
+  <ol>
+    <li>Registrar oportunamente en el sistema contable de la entidad todas las operaciones financieras, económicas, sociales y ambientales, de conformidad con el Marco Normativo para Entidades de Gobierno (Resolución 533 de 2015 CGN).</li>
+    <li>Elaborar y presentar los estados financieros mensuales, trimestrales y anuales requeridos por la Contaduría General de la Nación, la Secretaría de Educación y demás entidades de control.</li>
+    <li>Efectuar las conciliaciones bancarias mensuales de todas las cuentas del Fondo de Servicios Educativos.</li>
+    <li>Realizar los reportes exógenos a la DIAN (Información Exógena) dentro de los plazos establecidos.</li>
+    <li>Elaborar y presentar las declaraciones tributarias (retención en la fuente, ICA, IVA y demás que apliquen) dentro de los plazos legales.</li>
+    <li>Mantener actualizado el catálogo de cuentas y los auxiliares contables conforme al plan de cuentas vigente para entidades de gobierno.</li>
+    <li>Elaborar las notas a los estados financieros y las revelaciones requeridas por las normas.</li>
+    <li>Atender los requerimientos de información contable de los entes de control (Contraloría, Contaduría General de la Nación).</li>
+    <li>Reportar oportunamente al CHIP (Consolidador de Hacienda e Información Pública) la información contable requerida.</li>
+    <li>Llevar el registro y control de la depreciación de bienes muebles e inmuebles de la institución.</li>
+    <li>Apoyar la gestión del presupuesto del FSE en lo relacionado con registros contables de ingresos, gastos y ejecución presupuestal.</li>
+    <li>Firmar los estados financieros en calidad de Contador Público, de acuerdo con la Ley 43 de 1990.</li>
+    <li>Guardar confidencialidad sobre la información financiera y contable a la que tenga acceso.</li>
+    <li>Mantener vigente la Tarjeta Profesional de Contador Público expedida por la Junta Central de Contadores.</li>
+    <li>Mantener al día los aportes al Sistema General de Seguridad Social, cuando sea aplicable.</li>
+    <li>Presentar los informes, soportes y actas requeridas por el supervisor.</li>
+    <li>Informar oportunamente cualquier circunstancia que pueda afectar la ejecución del contrato.</li>
+    <li>Suscribir el acta de inicio, los informes y el acta de liquidación del contrato.</li>
+  </ol>
+  {% endif %}
+</div>
+
+<!-- ── CLÁUSULA SEXTA ─────────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Sexta — Obligaciones del Contratante</div>
+  <p><strong>EL CONTRATANTE</strong> se obliga a:</p>
+  <ol>
+    <li>Pagar el valor del contrato en los términos y condiciones pactadas en la Cláusula Tercera.</li>
+    <li>Suministrar oportunamente la información, documentación y soportes contables necesarios para el cumplimiento del objeto contractual.</li>
+    <li>Facilitar el acceso a los sistemas de información contable y financiera de la institución.</li>
+    <li>Designar un supervisor que realice el seguimiento técnico, financiero, contable y jurídico del contrato.</li>
+    <li>Expedir las certificaciones y constancias que el contratista requiera dentro del marco del contrato.</li>
+    <li>Tramitar oportunamente los documentos necesarios para el perfeccionamiento, legalización y ejecución del contrato.</li>
+    <li>Recibir a satisfacción los servicios objeto del contrato, una vez verificado el cumplimiento de las condiciones pactadas.</li>
+  </ol>
+</div>
+
+<!-- ── CLÁUSULA SÉPTIMA ───────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Séptima — Supervisión</div>
+  <p>
+    La supervisión del presente contrato estará a cargo de
+    <strong>{{ rector }}</strong>, identificado(a) con C.C. N.°
+    <strong>{{ format_id(cc_rector) }}</strong>, en su calidad de Rector(a) y
+    Ordenador del Gasto {{ inst_del }} <strong>{{ inst_nombre }}</strong>,
+    o de quien este designe o haga sus veces. El supervisor ejercerá seguimiento
+    y control sobre los aspectos técnicos, financieros, contables, jurídicos y
+    administrativos del contrato, verificando el cumplimiento del objeto, las
+    obligaciones pactadas y los plazos establecidos, de conformidad con lo
+    dispuesto en la Ley 1474 de 2011 y el Manual de Supervisión e Interventoría
+    {{ inst_del }} <strong>{{ inst_nombre }}</strong>.
+  </p>
+</div>
+
+<!-- ── CLÁUSULA OCTAVA ────────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Octava — Idoneidad y Experiencia</div>
+  <p>
+    <strong>EL CONTRATISTA</strong> declara que cuenta con la idoneidad y
+    experiencia profesional requerida para la prestación de los servicios
+    contratados, acreditada con título profesional de <strong>Contador(a) Público(a)</strong>
+    y Tarjeta Profesional vigente expedida por la Junta Central de Contadores,
+    de conformidad con lo dispuesto en la Ley 43 de 1990 y el artículo 2.2.1.2.1.4.9
+    del Decreto 1082 de 2015, que permite la contratación directa de servicios
+    profesionales y de apoyo a la gestión con personas de reconocida idoneidad y experiencia.
+  </p>
+</div>
+
+<!-- ── CLÁUSULA NOVENA ────────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Novena — Inhabilidades e Incompatibilidades</div>
+  <p>
+    <strong>EL CONTRATISTA</strong> declara, bajo la gravedad del juramento,
+    que no se encuentra incurso en ninguna de las inhabilidades,
+    incompatibilidades o conflictos de interés previstos en la Constitución
+    Política y en la ley, especialmente en los artículos 8 y 9 de la Ley 80
+    de 1993, la Ley 1474 de 2011 y demás normas concordantes. Asimismo, declara
+    que no tiene sanciones vigentes ante la Junta Central de Contadores que le
+    impidan ejercer la profesión. El incumplimiento de esta declaración acarreará
+    la nulidad absoluta del contrato y las sanciones previstas en la ley.
+  </p>
+</div>
+
+<!-- ── CLÁUSULA DÉCIMA ────────────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Décima — Prohibición de Cesión</div>
+  <p>
+    <strong>EL CONTRATISTA</strong> no podrá ceder total ni parcialmente
+    el presente contrato sin la previa autorización expresa y escrita de
+    <strong>EL CONTRATANTE</strong>. Dada la naturaleza <em>intuitu personae</em>
+    de los servicios profesionales contables, la cesión sin autorización
+    dará lugar a la terminación unilateral del contrato y a las acciones
+    legales pertinentes.
+  </p>
+</div>
+
+<!-- ── CLÁUSULA DÉCIMA PRIMERA ────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Décima Primera — Cláusula Penal Compensatoria</div>
+  <p>
+    En caso de incumplimiento imputable a <strong>EL CONTRATISTA</strong>,
+    este deberá pagar a <strong>EL CONTRATANTE</strong> a título de
+    cláusula penal compensatoria, una suma equivalente al
+    <strong>diez por ciento (10%)</strong> del valor total del contrato,
+    es decir, la suma de
+    <strong>{{ format_moneda(penal_10pct) }}</strong>
+    (<strong>{{ penal_10pct_letras }}</strong>).
+    Este valor podrá hacerse efectivo directamente por {{ inst_art }} <strong>{{ inst_nombre }}</strong>,
+    mediante descuento de las sumas que se le adeuden al contratista o
+    mediante los mecanismos establecidos en la ley, sin perjuicio de las
+    demás acciones a que haya lugar.
+  </p>
+</div>
+
+<!-- ── CLÁUSULA DÉCIMA SEGUNDA ────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Décima Segunda — Documentos del Contrato</div>
+  <p>
+    Forman parte integral del presente contrato y tienen igual valor
+    jurídico que él, los siguientes documentos:
+  </p>
+  <ol>
+    <li>El Estudio Previo y de Conveniencia.</li>
+    <li>La invitación a cotizar y sus anexos.</li>
+    <li>La propuesta presentada por el contratista.</li>
+    <li>El informe de evaluación y recomendación de adjudicación.</li>
+    <li>El CDP N.° {{ num_cdp }} y el RP N.° {{ num_rp }}.</li>
+    <li>Copia de la Tarjeta Profesional de Contador Público.</li>
+    <li>Los demás documentos que se generen durante la ejecución del contrato.</li>
+  </ol>
+</div>
+
+<!-- ── CLÁUSULA DÉCIMA TERCERA ─────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Décima Tercera — Perfeccionamiento y Ejecución</div>
+  <p>
+    El presente contrato se perfecciona con la firma de las partes. Para su
+    ejecución se requiere:
+  </p>
+  <ol>
+    <li>La existencia del CDP y del RP que amparen el compromiso presupuestal.</li>
+    <li>La suscripción del acta de inicio por las partes y el supervisor.</li>
+    <li>El cumplimiento de los demás requisitos establecidos en la ley y en el presente contrato.</li>
+  </ol>
+</div>
+
+<!-- ── CLÁUSULA DÉCIMA CUARTA ──────────────────────────────────── -->
+<div class="ct-clausula">
+  <div class="ct-clausula-titulo">Cláusula Décima Cuarta — Naturaleza del Contrato</div>
+  <p>
+    El presente contrato es de prestación de servicios profesionales y no genera
+    relación laboral ni prestaciones sociales entre <strong>EL CONTRATANTE</strong>
+    y <strong>EL CONTRATISTA</strong>, de conformidad con lo dispuesto en el
+    numeral 3 del artículo 32 de la Ley 80 de 1993 y el artículo 2.2.1.2.1.4.9
+    del Decreto 1082 de 2015. <strong>EL CONTRATISTA</strong> actúa como profesional
+    independiente y asume la responsabilidad por el pago de sus aportes al Sistema
+    General de Seguridad Social Integral.
+  </p>
+</div>
+
+<!-- ── Lugar y fecha ──────────────────────────────────────────── -->
+<p class="ct-lugar">
+  En señal de conformidad y aceptación con el contenido del presente contrato,
+  las partes lo suscriben en {{ inst_municipio }}, el {{ fecha_inicio_larga }}.
+</p>
+
+<!-- ── FIRMAS ─────────────────────────────────────────────────── -->
+<div class="ct-firma-section">
+  <table class="ct-firma-tabla">
+    <tr>
+      <td>
+        <div class="ct-firma-linea">
+          <p class="ct-firma-nombre">{{ rector }}</p>
+          <p class="ct-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+          <p class="ct-firma-cargo">Rector(a) — Ordenador del Gasto</p>
+          <p class="ct-firma-cargo">{{ inst_nombre }}</p>
+          <p class="ct-firma-cargo">NIT {{ format_id(inst_nit) }}</p>
+          <p class="ct-firma-cargo"><strong>EL CONTRATANTE</strong></p>
+        </div>
+      </td>
+      <td>
+        <div class="ct-firma-linea">
+          {% if es_empresa and rep_legal_nombre %}
+            <p class="ct-firma-nombre">{{ rep_legal_nombre }}</p>
+            <p class="ct-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
+            <p class="ct-firma-cargo">Representante Legal</p>
+            <p class="ct-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ct-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% elif es_empresa %}
+            <p class="ct-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ct-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% else %}
+            <p class="ct-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ct-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+            <p class="ct-firma-cargo">Contador(a) Público(a)</p>
+            <p class="ct-firma-cargo">T.P. N.° _______________</p>
+            <p class="ct-firma-cargo">Cel.: {{ celular_contratista }}</p>
+          {% endif %}
+          <p class="ct-firma-cargo"><strong>EL CONTRATISTA</strong></p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

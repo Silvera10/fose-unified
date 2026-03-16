@@ -1,0 +1,463 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Informe de Supervisión — {{ numero }}{% endblock %}
+{% block doc_titulo %}INFORME DE SUPERVISIÓN DEL CONTRATO{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   INFORME SUPERVISOR  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.is-numero {
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #1a6b3c;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.is-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.is-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.is-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+.is-section ul {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0 8px;
+  line-height: 1.6;
+}
+.is-section ul li {
+  margin-bottom: 4px;
+  text-align: justify;
+}
+
+/* ── Tabla de datos ───────────────────────────────── */
+table.is-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.is-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 24%;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.is-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+/* ── Tablas de seguimiento ────────────────────────── */
+table.is-data {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.is-data thead th {
+  background: #1a6b3c;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 8px;
+  border: 1.5px solid #1a6b3c;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.is-data tbody td {
+  padding: 5px 8px;
+  border: 1.5px solid #bbb;
+  vertical-align: top;
+  font-size: 9pt;
+  line-height: 1.4;
+}
+table.is-data tbody tr:nth-child(even) td {
+  background: #f7faf7;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.is-data tfoot td {
+  padding: 5px 8px;
+  border: 1.5px solid #bbb;
+  background: #e8f5e9;
+  font-weight: bold;
+  font-size: 9pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Estados CUMPLE / NO CUMPLE ───────────────────── */
+.is-cumple {
+  text-align: center;
+  font-weight: bold;
+  color: #1a5c1a;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.is-no-cumple {
+  text-align: center;
+  font-weight: bold;
+  color: #8b0000;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.is-completado {
+  text-align: center;
+  font-weight: bold;
+  color: #1a5c1a;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Caja de concepto ─────────────────────────────── */
+.is-concepto {
+  border: 2px solid #1a6b3c;
+  border-radius: 3px;
+  padding: 10px 14px;
+  margin: 4px 0;
+  background: #f0f7f0;
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.6;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.is-concepto p { margin: 4px 0; }
+
+/* ── Firma ────────────────────────────────────────── */
+.is-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.is-firma-tabla {
+  width: 50%;
+  margin: 0;
+  border-collapse: collapse;
+  border: none;
+}
+table.is-firma-tabla td {
+  text-align: center;
+  padding: 0;
+  border: none;
+  vertical-align: bottom;
+}
+.is-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.is-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.is-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+{% set supervisor = nombre_supervisor if nombre_supervisor else rector %}
+{% set cargo_sup  = cargo_supervisor  if cargo_supervisor  else 'Rector(a)' %}
+
+<p class="is-numero">Contrato N.° {{ numero }}</p>
+
+<!-- ── 1. IDENTIFICACIÓN DEL CONTRATO ────────────────────────── -->
+<div class="is-section">
+  <div class="is-section-titulo">1. Identificación del Contrato</div>
+  <table class="is-tabla">
+    <tr>
+      <th>Institución</th>
+      <td colspan="3">{{ inst_nombre }}</td>
+    </tr>
+    <tr>
+      <th>NIT Institución</th>
+      <td>{{ format_id(inst_nit) }}</td>
+      <th>Contrato N.°</th>
+      <td>{{ numero }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de contrato</th>
+      <td>{{ tipo_contrato }}</td>
+      <th>Modalidad</th>
+      <td>{{ modalidad_seleccion }}</td>
+    </tr>
+    <tr>
+      <th>Objeto</th>
+      <td colspan="3">{{ objeto }}</td>
+    </tr>
+    <tr>
+      <th>
+        {% if sexo_contratista == 'E' %}Empresa contratista
+        {% elif sexo_contratista == 'F' %}Contratista
+        {% else %}Contratista{% endif %}
+      </th>
+      <td colspan="3">
+        {{ nombre_contratista }}
+        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>{{ tipo_id_contratista }}</td>
+      <th>Número</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    <tr>
+      <th>Valor total</th>
+      <td>{{ format_moneda(valor_total) }}</td>
+      <th>Duración</th>
+      <td>{{ dias_duracion }} días hábiles</td>
+    </tr>
+    <tr>
+      <th>Fecha de inicio</th>
+      <td>{{ fecha_inicio_larga }}</td>
+      <th>Fecha de terminación</th>
+      <td>{{ fecha_fin_larga }}</td>
+    </tr>
+    <tr>
+      <th>CDP N.°</th>
+      <td>{{ num_cdp }}</td>
+      <th>RP N.°</th>
+      <td>{{ num_rp }}</td>
+    </tr>
+    <tr>
+      <th>Supervisor</th>
+      <td>{{ supervisor }}</td>
+      <th>Cargo</th>
+      <td>{{ cargo_sup }}</td>
+    </tr>
+    <tr>
+      <th>Fecha del informe</th>
+      <td colspan="3">{{ fecha_fin_larga }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 2. SEGUIMIENTO FINANCIERO ──────────────────────────────── -->
+<div class="is-section">
+  <div class="is-section-titulo">2. Seguimiento Financiero</div>
+  <table class="is-data">
+    <thead>
+      <tr>
+        <th style="width:36%">Concepto</th>
+        <th style="width:16%">Valor Pactado</th>
+        <th style="width:16%">Valor Ejecutado</th>
+        <th style="width:16%">Valor Pendiente</th>
+        <th style="width:16%">% Avance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ objeto }}</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+        <td style="text-align:right">{{ format_moneda(0) }}</td>
+        <td style="text-align:center"><strong>100%</strong></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td><strong>TOTAL</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(valor_total) }}</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(valor_total) }}</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(0) }}</strong></td>
+        <td style="text-align:center"><strong>100%</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- ── 3. VERIFICACIÓN DE CUMPLIMIENTO ───────────────────────── -->
+<div class="is-section">
+  <div class="is-section-titulo">3. Verificación de Cumplimiento Contractual</div>
+  <table class="is-data">
+    <thead>
+      <tr>
+        <th style="width:55%">Obligación / Condición</th>
+        <th style="width:15%">Estado</th>
+        <th style="width:30%">Observación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cumplimiento del objeto contractual</td>
+        <td class="is-cumple">CUMPLE</td>
+        <td>El objeto fue ejecutado satisfactoriamente.</td>
+      </tr>
+      <tr>
+        <td>Cumplimiento del plazo de ejecución</td>
+        <td class="is-cumple">CUMPLE</td>
+        <td>Entregado dentro del plazo pactado.</td>
+      </tr>
+      <tr>
+        <td>Calidad técnica de los bienes / servicios</td>
+        <td class="is-cumple">CUMPLE</td>
+        <td>Los entregables cumplen las especificaciones requeridas.</td>
+      </tr>
+      <tr>
+        <td>Pago de aportes a Seguridad Social (si aplica)</td>
+        <td class="is-cumple">CUMPLE</td>
+        <td>Aportes verificados y al día.</td>
+      </tr>
+      <tr>
+        <td>Presentación de informes requeridos</td>
+        <td class="is-cumple">CUMPLE</td>
+        <td>Informe del contratista presentado y verificado.</td>
+      </tr>
+      <tr>
+        <td>Prohibición de cesión del contrato</td>
+        <td class="is-cumple">CUMPLE</td>
+        <td>No se evidenció cesión no autorizada.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── 4. SEGUIMIENTO AL PLAN DE TRABAJO ─────────────────────── -->
+<div class="is-section">
+  <div class="is-section-titulo">4. Seguimiento al Plan de Trabajo</div>
+  <table class="is-data">
+    <thead>
+      <tr>
+        <th style="width:36%">Actividad</th>
+        <th style="width:22%">Fecha Programada</th>
+        <th style="width:22%">Fecha Real</th>
+        <th style="width:20%">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ objeto }}</td>
+        <td style="text-align:center">{{ fecha_inicio_larga }}<br>— {{ fecha_fin_larga }}</td>
+        <td style="text-align:center">{{ fecha_inicio_larga }}<br>— {{ fecha_fin_larga }}</td>
+        <td class="is-completado">COMPLETADO</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── 5. OBSERVACIONES DEL SUPERVISOR ───────────────────────── -->
+<div class="is-section">
+  <div class="is-section-titulo">5. Observaciones del Supervisor</div>
+  <p>
+    El suscrito supervisor, una vez verificado el cumplimiento del objeto
+    contractual, los informes presentados por
+    {% if sexo_contratista == 'E' %}la empresa contratista
+    {% elif sexo_contratista == 'F' %}la contratista
+    {% else %}el contratista{% endif %}
+    y los documentos soporte correspondientes, conceptúa favorablemente sobre
+    la ejecución del contrato N.° <strong>{{ numero }}</strong> y recomienda:
+  </p>
+  <ul>
+    <li>Proceder al trámite de la orden de pago correspondiente, toda vez que el objeto contractual fue ejecutado a satisfacción.</li>
+    <li>Suscribir el acta de recibido a satisfacción y la liquidación del contrato.</li>
+  </ul>
+</div>
+
+<!-- ── 6. CONCEPTO DEL SUPERVISOR ────────────────────────────── -->
+<div class="is-section">
+  <div class="is-section-titulo">6. Concepto del Supervisor</div>
+  <div class="is-concepto">
+    <p>
+      El supervisor <strong>AVALA</strong> el pago a
+      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% elif sexo_contratista == 'F' %}la contratista
+      {% else %}el contratista{% endif %}
+      <strong>{{ nombre_contratista }}</strong>,
+      por la suma de <strong>{{ format_moneda(valor_total) }}</strong>
+      (<strong>{{ valor_letras }}</strong>), toda vez que el objeto contractual
+      fue ejecutado a satisfacción conforme a las condiciones pactadas en el
+      contrato N.° <strong>{{ numero }}</strong>.
+    </p>
+    <p>
+      El valor neto a pagar, descontada la retención en la fuente de
+      <strong>{{ format_moneda(retencion) }}</strong>, es de
+      <strong>{{ format_moneda(neto) }}</strong>
+      (<strong>{{ neto_letras }}</strong>).
+    </p>
+  </div>
+</div>
+
+<!-- ── FIRMA ──────────────────────────────────────────────────── -->
+<div class="is-firma-section">
+  <table class="is-firma-tabla">
+    <tr>
+      <td>
+        <div class="is-firma-linea">
+          <p class="is-firma-nombre">{{ supervisor }}</p>
+          <p class="is-firma-cargo">{{ cargo_sup }}</p>
+          <p class="is-firma-cargo">Supervisor — Contrato N.° {{ numero }}</p>
+          <p class="is-firma-cargo">{{ inst_nombre }}</p>
+          <p class="is-firma-cargo"><strong>SUPERVISOR DEL CONTRATO</strong></p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

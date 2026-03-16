@@ -1,0 +1,293 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}RP N.° {{ num_rp }} — {{ numero }}{% endblock %}
+{% block doc_titulo %}REGISTRO PRESUPUESTAL{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ══════════════════════════════════════════════
+     RP — estilos específicos de impresión
+     ══════════════════════════════════════════════ */
+
+  .rp-numero {
+    text-align: center;
+    font-size: 13pt;
+    font-weight: bold;
+    color: #1a6b3c;
+    letter-spacing: 1px;
+    margin: 8px 0 14px;
+  }
+
+  /* Tabla cabecera institucional */
+  table.rp-info {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 14px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.rp-info th {
+    background: #f0f7f0;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 20%;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.rp-info td {
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+  }
+
+  /* Secciones genéricas */
+  .rp-section {
+    margin: 12px 0;
+    page-break-inside: avoid;
+  }
+  .rp-section-titulo {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-left: 4px solid #1a6b3c;
+    margin-bottom: 7px;
+  }
+  .rp-section p {
+    font-size: 10pt;
+    text-align: justify;
+    margin: 6px 0;
+    line-height: 1.5;
+  }
+
+  /* Tabla detalle presupuestal */
+  table.rp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 10px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.rp-table thead th {
+    background: #1a6b3c;
+    color: #fff;
+    padding: 5px 7px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #145530;
+  }
+  table.rp-table thead th.left { text-align: left; }
+  table.rp-table tbody td {
+    padding: 5px 7px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+  }
+  table.rp-table tfoot td {
+    padding: 5px 7px;
+    border: 1px solid #aaa;
+    font-weight: bold;
+    background: #e8f5e9;
+  }
+  .rp-table td.right  { text-align: right; font-weight: bold; }
+  .rp-table td.center { text-align: center; }
+
+  /* Valor destacado */
+  .rp-valor-box {
+    border: 2px solid #1a6b3c;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #1a6b3c;
+    page-break-inside: avoid;
+  }
+  .rp-valor-box .letras {
+    font-size: 9.5pt;
+    font-weight: normal;
+    color: #333;
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* Firmas dos columnas */
+  .rp-firma-section {
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+  .rp-firma-grid {
+    display: flex;
+    gap: 40px;
+    margin-top: 10px;
+  }
+  .rp-firma-block {
+    flex: 1;
+    text-align: center;
+  }
+  .rp-firma-linea {
+    border-top: 1px solid #000;
+    margin-top: 65px;
+    padding-top: 5px;
+  }
+  .rp-firma-block p {
+    font-size: 10pt;
+    margin: 2px 0;
+  }
+
+  @media print {
+    .rp-section        { page-break-inside: avoid; }
+    table.rp-table     { page-break-inside: avoid; }
+    table.rp-info      { page-break-inside: avoid; }
+    .rp-firma-section  { page-break-inside: avoid; }
+    .rp-valor-box      { page-break-inside: avoid; }
+  }
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- Tabla de datos institucionales -->
+<table class="rp-info">
+  <tr>
+    <th>Institución</th>
+    <td colspan="3">{{ inst_nombre }}</td>
+  </tr>
+  <tr>
+    <th>NIT</th>
+    <td>{{ format_id(inst_nit) }}</td>
+    <th>Fecha de Expedición</th>
+    <td>{{ fecha_rp_larga if fecha_rp_larga is defined else fecha_rp }}</td>
+  </tr>
+  <tr>
+    <th>Municipio</th>
+    <td>{{ inst_municipio }}, {{ inst_departamento }}</td>
+    <th>N.° RP</th>
+    <td><strong>{{ num_rp }}</strong></td>
+  </tr>
+  <tr>
+    <th>CDP de Respaldo</th>
+    <td>{{ num_cdp }}</td>
+    <th>Fecha CDP</th>
+    <td>{{ fecha_cdp_larga }}</td>
+  </tr>
+</table>
+
+<!-- Párrafo de certificación -->
+<div class="rp-section">
+  <p>
+    El (la) suscrito(a) Rector(a), en uso de sus facultades legales y en especial
+    las conferidas por el Decreto Ley 111 de 1996 (artículo 71), y de conformidad
+    con el Decreto 4791 de 2008 y el artículo 11 de la Ley 715 de 2001, certifica
+    que, una vez revisados los saldos presupuestales correspondientes a la vigencia
+    <strong>{{ anio }}</strong> y elaborado el Certificado de Disponibilidad
+    Presupuestal (CDP) previo, se expide el presente Registro Presupuestal (RP)
+    dejando afectado el presupuesto del Fondo de Servicios Educativos – FOSE, así:
+  </p>
+</div>
+
+<!-- Datos del Compromiso Contractual -->
+<div class="rp-section">
+  <div class="rp-section-titulo">Datos del Compromiso Contractual</div>
+  <table class="rp-info">
+    <tr>
+      <th>Contrato N.°</th>
+      <td>{{ numero }}</td>
+      <th>Tipo de Contrato</th>
+      <td>{{ tipo_contrato }}</td>
+    </tr>
+    <tr>
+      <th>Contratista</th>
+      <td>{{ nombre_contratista }}</td>
+      <th>{{ tipo_id_contratista }}</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    <tr>
+      <th>Objeto</th>
+      <td colspan="3">{{ objeto }}</td>
+    </tr>
+    <tr>
+      <th>Fecha de Inicio</th>
+      <td>{{ fecha_inicio_larga }}</td>
+      <th>Fecha de Terminación</th>
+      <td>{{ fecha_fin_larga }}</td>
+    </tr>
+    <tr>
+      <th>Duración</th>
+      <td colspan="3">{{ dias_duracion }} días hábiles</td>
+    </tr>
+  </table>
+</div>
+
+<!-- Valor comprometido -->
+<div class="rp-valor-box">
+  {{ format_moneda(valor_total) }}
+  <span class="letras">{{ valor_letras }}</span>
+</div>
+
+<!-- Detalle Presupuestal -->
+<div class="rp-section">
+  <div class="rp-section-titulo">Detalle del Registro Presupuestal</div>
+  <table class="rp-table">
+    <thead>
+      <tr>
+        <th class="left" style="width:45%">Rubro Presupuestal</th>
+        <th style="width:25%">Fuente de Financiación</th>
+        <th style="width:30%; text-align:right">Valor Comprometido</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+        <td class="center">{{ fuente }}</td>
+        <td class="right">{{ format_moneda(valor_total) }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2" style="text-align:right">TOTAL COMPROMETIDO:</td>
+        <td class="right">{{ format_moneda(valor_total) }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- Certificación -->
+<div class="rp-section">
+  <div class="rp-section-titulo">Certificación</div>
+  <p>
+    El (la) suscrito(a) Rector(a) de la <strong>{{ inst_nombre }}</strong>,
+    NIT <strong>{{ format_id(inst_nit) }}</strong>, certifica que se ha efectuado el
+    <strong>REGISTRO PRESUPUESTAL</strong> del compromiso contractual descrito,
+    afectando definitivamente el presupuesto del Fondo de Servicios Educativos – FOSE
+    por la suma de <strong>{{ format_moneda(valor_total) }}</strong>
+    (<strong>{{ valor_letras }}</strong>), de conformidad con el
+    CDP N.° <strong>{{ num_cdp }}</strong> de fecha
+    <strong>{{ fecha_cdp_larga }}</strong>.
+  </p>
+  <p>
+    Con la expedición del presente Registro Presupuestal queda en firme el compromiso
+    presupuestal de la institución frente al contratista
+    <strong>{{ nombre_contratista }}</strong>, en los términos del contrato
+    N.° <strong>{{ numero }}</strong>. Este documento se expide en cumplimiento de lo
+    dispuesto en el Decreto Ley 111 de 1996 y demás normas del Estatuto Orgánico del
+    Presupuesto.
+  </p>
+</div>
+
+<!-- Firmas -->
+<div class="rp-firma-section">
+  <div class="rp-firma-grid">
+    <div class="rp-firma-block">
+      <div class="rp-firma-linea">
+        <p><strong>{{ rector | upper }}</strong></p>
+        <p>C.C. {{ format_id(cc_rector) }}</p>
+        <p>Rector(a) — Ordenador del Gasto</p>
+        <p>{{ inst_nombre }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

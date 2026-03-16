@@ -1,0 +1,332 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Declaración Juramentada — {{ numero }}{% endblock %}
+{% block doc_titulo %}DECLARACIÓN JURAMENTADA DE INEXISTENCIA DE INHABILIDADES, INCOMPATIBILIDADES Y CONFLICTOS DE INTERÉS{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   CARTA JURAMENTADA  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.cj-numero {
+  text-align: center;
+  font-size: 10pt;
+  font-weight: bold;
+  color: #1a6b3c;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Lugar y fecha / Destinatario ────────────────── */
+.cj-lugar {
+  font-size: 9.5pt;
+  margin: 0 0 10px;
+  line-height: 1.6;
+}
+.cj-destinatario {
+  font-size: 9.5pt;
+  margin: 0 0 12px;
+  line-height: 1.7;
+}
+.cj-saludo {
+  font-size: 9.5pt;
+  margin: 0 0 8px;
+}
+
+/* ── Párrafo introductorio ────────────────────────── */
+.cj-intro {
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.65;
+  margin: 0 0 14px;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.cj-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.cj-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.cj-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+.cj-section ul {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0 8px;
+  line-height: 1.6;
+}
+.cj-section ul li {
+  margin-bottom: 4px;
+  text-align: justify;
+}
+
+/* ── Ítem de declaración ──────────────────────────── */
+.cj-item {
+  margin: 8px 0 10px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.cj-item-titulo {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 0 0 4px;
+  color: #1a4a28;
+}
+.cj-item p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 3px 0;
+  line-height: 1.6;
+}
+.cj-item ul {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 4px 0 6px;
+  line-height: 1.6;
+}
+.cj-item ul li {
+  margin-bottom: 3px;
+  text-align: justify;
+}
+
+/* ── Nota legal ───────────────────────────────────── */
+.cj-nota {
+  border: 2px solid #8b0000;
+  border-radius: 3px;
+  padding: 10px 14px;
+  margin: 14px 0 6px;
+  background: #fff8f8;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.cj-nota-titulo {
+  font-size: 9.5pt;
+  font-weight: bold;
+  color: #8b0000;
+  text-align: center;
+  margin: 0 0 6px;
+}
+.cj-nota p {
+  font-size: 9pt;
+  color: #8b0000;
+  text-align: justify;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Firma ────────────────────────────────────────── */
+.cj-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.cj-firma-tabla {
+  width: 50%;
+  margin: 0;
+  border-collapse: collapse;
+  border: none;
+}
+table.cj-firma-tabla td {
+  text-align: center;
+  padding: 0;
+  border: none;
+  vertical-align: bottom;
+}
+.cj-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.cj-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.cj-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<p class="cj-numero">Contrato N.° {{ numero }}</p>
+
+<!-- ── Lugar y fecha ──────────────────────────────────────────── -->
+<p class="cj-lugar">
+  <strong>Lugar y fecha:</strong>
+  {{ municipio_contratista }}, {{ fecha_inicio_larga }}
+</p>
+
+<!-- ── Destinatario ───────────────────────────────────────────── -->
+<p class="cj-destinatario">
+  <strong>Señor(a):</strong><br>
+  <strong>{{ rector | upper }}</strong><br>
+  Rector(a)<br>
+  {{ inst_nombre }}<br>
+  NIT {{ format_id(inst_nit) }}<br>
+  {{ inst_municipio }}, {{ inst_departamento }}
+</p>
+
+<!-- ── Saludo ─────────────────────────────────────────────────── -->
+<p class="cj-saludo">Respetado(a) señor(a) Rector(a):</p>
+
+<!-- ── Párrafo introductorio ──────────────────────────────────── -->
+<p class="cj-intro">
+  {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    El(La) suscrito(a), <strong>{{ rep_legal_nombre }}</strong>,
+    identificado(a) con CC N.° <strong>{{ format_id(rep_legal_cc) }}</strong>,
+    actuando en representación legal de <strong>{{ nombre_contratista }}</strong>
+    (NIT {{ format_id(num_id_contratista) }}),
+    domiciliado(a) en {{ direccion_contratista }}, {{ municipio_contratista }},
+  {% elif sexo_contratista == 'F' %}
+    La suscrita, <strong>{{ nombre_contratista }}</strong>, mayor de edad,
+    domiciliada en {{ direccion_contratista }}, {{ municipio_contratista }},
+    identificada con {{ tipo_id_contratista }} N.°
+    <strong>{{ format_id(num_id_contratista) }}</strong>,
+  {% else %}
+    El suscrito, <strong>{{ nombre_contratista }}</strong>, mayor de edad,
+    domiciliado en {{ direccion_contratista }}, {{ municipio_contratista }},
+    identificado con {{ tipo_id_contratista }} N.°
+    <strong>{{ format_id(num_id_contratista) }}</strong>,
+  {% endif %}
+  en el marco del proceso de contratación N.° <strong>{{ numero }}</strong>
+  adelantado por
+  {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+  <strong>{{ inst_nombre }}</strong>, por medio del presente documento y
+  <strong>BAJO LA GRAVEDAD DEL JURAMENTO</strong>, manifiesto y declaro lo siguiente:
+</p>
+
+<!-- ── DECLARACIONES ──────────────────────────────────────────── -->
+<div class="cj-section">
+  <div class="cj-section-titulo">Declaraciones</div>
+
+  <div class="cj-item">
+    <p class="cj-item-titulo">PRIMERO — Inexistencia de Inhabilidades (Art. 8, Ley 80 de 1993)</p>
+    <p>Que <strong>NO</strong> me encuentro incurso(a) en ninguna de las causales de inhabilidad previstas en el artículo 8 de la Ley 80 de 1993, en especial:</p>
+    <ul>
+      <li>No he sido condenado(a) mediante sentencia ejecutoriada por delitos contra la administración pública, cohecho, concusión, enriquecimiento ilícito u otros delitos que impliquen pérdida de derechos políticos.</li>
+      <li>No me encuentro sancionado(a) disciplinariamente con destitución o inhabilidad general.</li>
+      <li>No estoy reportado(a) en el Boletín de Responsables Fiscales de la Contraloría General de la República.</li>
+      <li>No he sido declarado(a) responsable de actos de corrupción ni sancionado(a) con inhabilidad para contratar con el Estado.</li>
+      <li>No tengo la calidad de funcionario(a) público(a) o empleado(a) oficial, ni relación de parentesco con los funcionarios de la institución que pueda generar una inhabilidad.</li>
+    </ul>
+  </div>
+
+  <div class="cj-item">
+    <p class="cj-item-titulo">SEGUNDO — Inexistencia de Incompatibilidades (Art. 9, Ley 80 de 1993)</p>
+    <p>
+      Que <strong>NO</strong> me encuentro incurso(a) en ninguna de las causales de incompatibilidad
+      establecidas en el artículo 9 de la Ley 80 de 1993 ni en ninguna otra norma que me impida
+      contratar con {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }} {{ inst_nombre }}.
+    </p>
+  </div>
+
+  <div class="cj-item">
+    <p class="cj-item-titulo">TERCERO — Inexistencia de Conflictos de Interés</p>
+    <p>
+      Que <strong>NO</strong> existe ninguna situación que pueda generar un conflicto de interés con
+      {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+      <strong>{{ inst_nombre }}</strong> o con los funcionarios vinculados al proceso de contratación
+      N.° <strong>{{ numero }}</strong>. En caso de que durante la ejecución del contrato surja algún
+      conflicto de interés, me comprometo a informarlo de manera inmediata a la institución.
+    </p>
+  </div>
+
+  <div class="cj-item">
+    <p class="cj-item-titulo">CUARTO — Cumplimiento de Obligaciones con el Sistema General de Seguridad Social</p>
+    <p>
+      Que me encuentro al día en el pago de mis aportes al Sistema General de Seguridad Social en
+      Salud, Pensión y Riesgos Laborales, cuando dicha obligación me aplica de acuerdo con la
+      normativa vigente.
+    </p>
+  </div>
+
+  <div class="cj-item">
+    <p class="cj-item-titulo">QUINTO — Veracidad de la Información</p>
+    <p>
+      Que toda la información y documentación aportada en el marco del proceso de contratación
+      N.° <strong>{{ numero }}</strong> es veraz, completa y verificable. Soy consciente de que la
+      falsedad en la presente declaración acarreará las consecuencias legales previstas en el
+      Código Penal colombiano.
+    </p>
+  </div>
+</div>
+
+<!-- ── FUNDAMENTO LEGAL ───────────────────────────────────────── -->
+<div class="cj-section">
+  <div class="cj-section-titulo">Fundamento Legal</div>
+  <p>La presente declaración se realiza en cumplimiento de lo dispuesto en:</p>
+  <ul>
+    <li>Artículo 8 de la Ley 80 de 1993 — Inhabilidades para contratar con el Estado.</li>
+    <li>Artículo 9 de la Ley 80 de 1993 — Incompatibilidades para contratar.</li>
+    <li>Ley 1474 de 2011 — Estatuto Anticorrupción.</li>
+    <li>Artículo 40 de la Ley 734 de 2002 — Código Disciplinario Único.</li>
+    <li>Demás normas concordantes y complementarias vigentes.</li>
+  </ul>
+</div>
+
+<!-- ── NOTA LEGAL ─────────────────────────────────────────────── -->
+<div class="cj-nota">
+  <p class="cj-nota-titulo">NOTA IMPORTANTE</p>
+  <p>
+    La suscripción del presente documento tiene valor jurídico de declaración bajo la gravedad del
+    juramento, de conformidad con lo establecido en el artículo 294 del Código General del Proceso
+    (Ley 1564 de 2012). La falsedad en esta declaración constituye delito de falsedad en documento
+    privado y/o fraude procesal, sancionados por el Código Penal colombiano.
+  </p>
+</div>
+
+<!-- ── FIRMA ─────────────────────────────────────────────────── -->
+<div class="cj-firma-section">
+  <table class="cj-firma-tabla">
+    <tr>
+      <td>
+        <div class="cj-firma-linea">
+          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+            <p class="cj-firma-nombre">{{ rep_legal_nombre }}</p>
+            <p class="cj-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
+            <p class="cj-firma-cargo">Representante Legal</p>
+            <p class="cj-firma-nombre" style="font-size:8.5pt;font-weight:normal">{{ nombre_contratista }}</p>
+            <p class="cj-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% else %}
+            <p class="cj-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="cj-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+            <p class="cj-firma-cargo">{{ direccion_contratista }}, {{ municipio_contratista }}</p>
+            <p class="cj-firma-cargo">Cel.: {{ celular_contratista }}</p>
+          {% endif %}
+          <p class="cj-firma-cargo"><strong>DECLARANTE</strong></p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

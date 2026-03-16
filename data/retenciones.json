@@ -1,0 +1,9 @@
+[
+  {"id": 1, "concepto": "Retención compras ND",       "porcentaje": 2.5,  "cuenta": "243608"},
+  {"id": 2, "concepto": "Retención DC",                "porcentaje": 3.5,  "cuenta": "243609"},
+  {"id": 3, "concepto": "Retención servicios ND",      "porcentaje": 6.0,  "cuenta": "24360502"},
+  {"id": 4, "concepto": "Retención 4%",                "porcentaje": 4.0,  "cuenta": "24360501"},
+  {"id": 5, "concepto": "Retención Honorarios",        "porcentaje": 10.0, "cuenta": "2436030"},
+  {"id": 6, "concepto": "Retención 0",                 "porcentaje": 0.0,  "cuenta": ""},
+  {"id": 7, "concepto": "Retención IVA Régimen Simple","porcentaje": 15.0, "cuenta": "243625"}
+]

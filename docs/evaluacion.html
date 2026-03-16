@@ -1,0 +1,446 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Evaluación de Oferta — {{ numero }}{% endblock %}
+{% block doc_titulo %}EVALUACIÓN DE OFERTA{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   EVALUACIÓN DE OFERTA  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Tabla cabecera institucional ─────────────────── */
+table.ev-info {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 14px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ev-info th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  width: 19%;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ev-info td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+/* ── Secciones numeradas ──────────────────────────── */
+.ev-section {
+  margin: 12px 0 16px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.ev-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ev-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.5;
+}
+.ev-section ol {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0 8px;
+  line-height: 1.5;
+}
+.ev-section ol li {
+  margin-bottom: 5px;
+  text-align: justify;
+}
+
+/* ── Tablas de evaluación ─────────────────────────── */
+table.ev-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0 8px;
+  font-size: 9pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ev-table thead th {
+  background: #1a6b3c;
+  color: #fff;
+  padding: 6px 8px;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #155430;
+  line-height: 1.35;
+  font-size: 9pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ev-table thead th.left {
+  text-align: left;
+}
+table.ev-table tbody td {
+  padding: 5px 8px;
+  border: 1px solid #c0c0c0;
+  vertical-align: middle;
+  font-size: 9pt;
+  line-height: 1.35;
+}
+table.ev-table tbody tr:nth-child(even) td {
+  background: #f7faf7;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ev-table tfoot td {
+  padding: 6px 8px;
+  border: 1.5px solid #999;
+  font-weight: bold;
+  background: #e8f5e9;
+  font-size: 9pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Fila del proponente seleccionado ─────────────── */
+tr.ev-fila-sel td {
+  background: #fff9c4 !important;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+td.ev-seleccion {
+  color: #4e342e;
+  font-weight: bold;
+  text-align: center;
+  font-size: 8.5pt;
+}
+td.ev-item {
+  text-align: center;
+  font-weight: bold;
+  color: #444;
+}
+td.ev-valor {
+  text-align: right;
+}
+td.ev-valor small {
+  display: block;
+  font-size: 7.5pt;
+  color: #555;
+  font-style: italic;
+  margin-top: 2px;
+  text-align: left;
+  line-height: 1.3;
+}
+td.ev-hora {
+  text-align: center;
+  white-space: nowrap;
+}
+td.ev-fecha {
+  text-align: center;
+  font-size: 8.5pt;
+}
+
+/* ── Bloque NOTA de cotizaciones ─────────────────── */
+.ev-nota {
+  background: #fafafa;
+  border: 1px solid #ccc;
+  border-left: 4px solid #1a6b3c;
+  padding: 9px 13px;
+  margin: 8px 0 4px;
+  font-size: 9.5pt;
+  line-height: 1.5;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ev-nota p { margin: 4px 0; text-align: justify; }
+.ev-cumple-txt  { color: #145214; font-weight: bold; }
+.ev-nocumple-txt{ color: #8b0000; font-weight: bold; }
+
+/* ── Caja de recomendación ────────────────────────── */
+.ev-recomendacion {
+  margin: 9px 0 4px;
+  padding: 10px 14px;
+  border: 2px solid #1a6b3c;
+  border-radius: 3px;
+  background: #f0f7f0;
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.5;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Firmas (tabla para compatibilidad print) ─────── */
+.ev-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ev-firma-tabla {
+  width: 82%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border: none;
+}
+table.ev-firma-tabla td {
+  width: 50%;
+  text-align: center;
+  padding: 0 24px;
+  border: none;
+  vertical-align: bottom;
+}
+.ev-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.ev-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.ev-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- ── ENCABEZADO INSTITUCIONAL ─────────────────────────────── -->
+<table class="ev-info">
+  <tr>
+    <th>Institución</th>
+    <td colspan="3">{{ inst_nombre }}</td>
+  </tr>
+  <tr>
+    <th>NIT</th>
+    <td>{{ format_id(inst_nit) }}</td>
+    <th>Municipio</th>
+    <td>{{ inst_municipio }}, {{ inst_departamento }}</td>
+  </tr>
+  <tr>
+    <th>Fecha Evaluación</th>
+    <td colspan="3">{{ fecha_evaluacion_larga if fecha_evaluacion_larga is defined else hoy_largo }}</td>
+  </tr>
+</table>
+
+<!-- ── 1. PROPUESTAS RECIBIDAS / EVALUACIÓN ECONÓMICA ───────── -->
+<div class="ev-section">
+  <div class="ev-section-titulo">1. Propuestas Recibidas y Evaluación Económica</div>
+  <p>
+    En el marco del proceso de <strong>{{ modalidad_seleccion }}</strong> se recibieron
+    las siguientes propuestas económicas, evaluadas con base en el criterio de
+    <strong>menor precio que cumpla los requisitos habilitantes</strong>,
+    conforme a lo establecido en la invitación a cotizar:
+  </p>
+
+  <table class="ev-table">
+    <colgroup>
+      <col style="width:5%">
+      <col style="width:28%">
+      <col style="width:20%">
+      <col style="width:11%">
+      <col style="width:27%">
+      <col style="width:9%">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Ítem</th>
+        <th class="left">Proponente</th>
+        <th>Fecha de Presentación</th>
+        <th>Hora</th>
+        <th>Valor de la Propuesta</th>
+        <th>Resultado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {# ── Lista de cotizantes (cot1, cot2, cot3) ── #}
+      {% set ns = namespace(item=0) %}
+      {% for cot in [
+          (cot1_nombre, cot1_cc, cot1_fecha, cot1_hora, cot1_ampm, cot1_valor),
+          (cot2_nombre, cot2_cc, cot2_fecha, cot2_hora, cot2_ampm, cot2_valor),
+          (cot3_nombre, cot3_cc, cot3_fecha, cot3_hora, cot3_ampm, cot3_valor),
+      ] %}
+      {% if cot[0] %}
+      {% set ns.item = ns.item + 1 %}
+      {% set es_sel = (cot[0] == nombre_contratista) %}
+      <tr {% if es_sel %}class="ev-fila-sel"{% endif %}>
+        <td class="ev-item">{{ ns.item }}</td>
+        <td>
+          <strong>{{ cot[0] }}</strong>
+          {% if cot[1] %}<br><small style="color:#555">CC/NIT {{ format_id(cot[1]) }}</small>{% endif %}
+        </td>
+        <td class="ev-fecha">
+          {{ format_fecha_larga(cot[2]) if cot[2] else '—' }}
+        </td>
+        <td class="ev-hora">
+          {{ cot[3] if cot[3] else '—' }}
+          {{ cot[4] if cot[4] else '' }}
+        </td>
+        <td class="ev-valor">
+          <strong>{{ format_moneda(cot[5]) if cot[5] else '—' }}</strong>
+          {% if cot[5] %}
+          <small>({{ format_letras(cot[5]) }})</small>
+          {% endif %}
+        </td>
+        <td class="{% if es_sel %}ev-seleccion{% endif %}" style="text-align:center">
+          {% if es_sel %}✔ SELECCIONADO{% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" style="text-align:right">Valor oferta seleccionada:</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- ── 2. VERIFICACIÓN DE REQUISITOS HABILITANTES ───────────── -->
+<div class="ev-section">
+  <div class="ev-section-titulo">2. Verificación de Requisitos Habilitantes</div>
+  <p>
+    Revisada la documentación aportada por los proponentes participantes en el proceso,
+    se verificó el cumplimiento de los requisitos jurídicos, técnicos y económicos exigidos
+    en la invitación pública. Los resultados de dicha verificación se presentan a
+    continuación:
+  </p>
+
+  {# Contar cotizantes registrados #}
+  {% set ns2 = namespace(total=0) %}
+  {% for n in [cot1_nombre, cot2_nombre, cot3_nombre] %}
+    {% if n %}{% set ns2.total = ns2.total + 1 %}{% endif %}
+  {% endfor %}
+
+  <div class="ev-nota">
+    <p>{{ eval_nota_html }}</p>
+    {% set ns3 = namespace(i=0) %}
+    {% for nombre in [cot1_nombre, cot2_nombre, cot3_nombre] %}
+      {% if nombre %}
+        {% set ns3.i = ns3.i + 1 %}
+        <p>
+          — <strong>Proponente {{ ns3.i }}: {{ nombre }}</strong> —
+          {% if nombre == nombre_contratista %}
+            <span class="ev-cumple-txt">CUMPLE</span>
+            con todos los requisitos técnicos, jurídicos y económicos exigidos.
+          {% else %}
+            <span class="ev-nocumple-txt">NO CUMPLE</span>.
+            Documentación incompleta o no subsanada dentro del plazo establecido.
+          {% endif %}
+        </p>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ── 3. ANÁLISIS Y RECOMENDACIÓN ──────────────────────────── -->
+<div class="ev-section">
+  <div class="ev-section-titulo">3. Análisis y Recomendación</div>
+  <p>Efectuada la evaluación de las propuestas recibidas, se concluye lo siguiente:</p>
+  <ol>
+    <li>
+      {% if sexo_contratista == 'E' %}La empresa proponente
+      {% elif sexo_contratista == 'F' %}La proponente
+      {% else %}El proponente{% endif %}
+      <strong>{{ nombre_contratista }}</strong>,
+      {{ tipo_id_contratista }} N.° <strong>{{ format_id(num_id_contratista) }}</strong>,
+      presentó la propuesta de menor valor dentro del presupuesto oficial establecido y
+      cumplió con la totalidad de los requisitos habilitantes exigidos en la invitación.
+    </li>
+    <li>
+      El valor propuesto de <strong>{{ format_moneda(valor_total) }}</strong>
+      (<em>{{ valor_letras }}</em>) se ajusta al presupuesto oficial y resulta razonable
+      conforme al estudio previo de mercado.
+    </li>
+    <li>
+      No se presentaron observaciones ni impedimentos que afecten la selección del proponente.
+    </li>
+  </ol>
+
+  <div class="ev-recomendacion">
+    En consecuencia, se <strong>RECOMIENDA</strong> a la Rectoría de
+    {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+    <strong>{{ inst_nombre }}</strong> proceder a la
+    <strong>ACEPTACIÓN DE LA OFERTA</strong> presentada por
+    <strong>{{ nombre_contratista }}</strong>, por la suma de
+    <strong>{{ format_moneda(valor_total) }}</strong>
+    (<em>{{ valor_letras }}</em>), para la ejecución del objeto:
+    <em>{{ objeto }}</em>.
+  </div>
+</div>
+
+<!-- ── 4. OBSERVACIONES ──────────────────────────────────────── -->
+<div class="ev-section">
+  <div class="ev-section-titulo">4. Observaciones</div>
+  <p>
+    El presente informe de evaluación queda disponible para consulta de los interesados,
+    en cumplimiento de los principios de transparencia y publicidad que rigen la
+    contratación estatal en Colombia.
+  </p>
+</div>
+
+<!-- ── 5. PUBLICACIÓN ─────────────────────────────────────────── -->
+<div class="ev-section">
+  <div class="ev-section-titulo">5. Publicación</div>
+  <p>
+    La presente evaluación se publicará en el portal del SECOP II.
+  </p>
+</div>
+
+<!-- ── FIRMAS ────────────────────────────────────────────────── -->
+<div class="ev-firma-section">
+  <table class="ev-firma-tabla">
+    <tr>
+      <td>
+        <div class="ev-firma-linea">
+          <p class="ev-firma-nombre">ELABORÓ Y EVALUÓ</p>
+          <p class="ev-firma-cargo">Responsable del Proceso</p>
+          <p class="ev-firma-cargo">{{ inst_nombre }}</p>
+        </div>
+      </td>
+      <td>
+        <div class="ev-firma-linea">
+          <p class="ev-firma-nombre">{{ rector }}</p>
+          <p class="ev-firma-cargo">CC N.° {{ format_id(cc_rector) }}</p>
+          <p class="ev-firma-cargo">Rector(a) — Ordenador del Gasto</p>
+          <p class="ev-firma-cargo">{{ inst_nombre }}</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

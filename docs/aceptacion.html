@@ -1,0 +1,337 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Aceptación de Oferta — {{ numero }}{% endblock %}
+{% block doc_titulo %}ACEPTACIÓN DE OFERTA{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   ACEPTACIÓN DE OFERTA  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Fecha y lugar ────────────────────────────────── */
+.ao-fecha {
+  text-align: right;
+  font-size: 9.5pt;
+  margin: 0 0 14px;
+}
+
+/* ── Bloque destinatario ──────────────────────────── */
+.ao-destinatario {
+  margin: 0 0 12px;
+  font-size: 9.5pt;
+  line-height: 1.7;
+}
+.ao-destinatario p { margin: 0; }
+
+/* ── Asunto ───────────────────────────────────────── */
+.ao-asunto {
+  margin: 0 0 14px;
+  font-size: 9.5pt;
+  line-height: 1.5;
+  border-left: 4px solid #1a6b3c;
+  padding-left: 10px;
+  background: #f0f7f0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Cuerpo de la carta ───────────────────────────── */
+.ao-body {
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.6;
+}
+.ao-body p { margin: 0 0 9px; }
+
+/* ── Secciones ────────────────────────────────────── */
+.ao-section {
+  margin: 12px 0;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.ao-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Tabla de términos ────────────────────────────── */
+table.ao-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0 8px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ao-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  width: 22%;
+  white-space: nowrap;
+  vertical-align: top;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ao-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+/* ── Lista de requisitos ──────────────────────────── */
+.ao-section ol {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+.ao-section ol li { margin-bottom: 4px; text-align: justify; }
+.ao-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.55;
+}
+
+/* ── Cierre y firma ───────────────────────────────── */
+.ao-cierre {
+  font-size: 9.5pt;
+  margin: 12px 0 6px;
+  line-height: 1.6;
+}
+.ao-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ao-firma-tabla {
+  width: 50%;
+  margin: 0;
+  border-collapse: collapse;
+  border: none;
+}
+table.ao-firma-tabla td {
+  text-align: center;
+  padding: 0;
+  border: none;
+  vertical-align: bottom;
+}
+.ao-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.ao-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.ao-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- ── Fecha y lugar ──────────────────────────────────────────── -->
+<p class="ao-fecha">
+  {{ inst_municipio }},
+  {{ fecha_evaluacion_larga if fecha_evaluacion_larga is defined else hoy_largo }}
+</p>
+
+<!-- ── Destinatario ──────────────────────────────────────────── -->
+<div class="ao-destinatario">
+  <p>
+    {% if sexo_contratista == 'F' %}Señora:
+    {% elif sexo_contratista == 'E' %}Señor(a):
+    {% else %}Señor:{% endif %}
+  </p>
+  {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    <p><strong>{{ rep_legal_nombre }}</strong></p>
+    <p>CC N.° {{ format_id(rep_legal_cc) }}</p>
+    <p>Representante Legal de <strong>{{ nombre_contratista }}</strong></p>
+    <p>NIT {{ format_id(num_id_contratista) }}</p>
+  {% else %}
+    <p><strong>{{ nombre_contratista }}</strong></p>
+    <p>{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+  {% endif %}
+  <p>{{ direccion_contratista }}</p>
+  <p>{{ municipio_contratista }}</p>
+</div>
+
+<!-- ── Asunto ────────────────────────────────────────────────── -->
+<div class="ao-asunto">
+  <strong>Asunto:</strong> Notificación de Aceptación de Oferta —
+  Proceso de {{ modalidad_seleccion }} — Contrato N.° {{ numero }}.
+</div>
+
+<!-- ── Cuerpo ────────────────────────────────────────────────── -->
+<div class="ao-body">
+  <p>
+    {% if sexo_contratista == 'F' %}Apreciada señora:
+    {% elif sexo_contratista == 'E' %}Apreciado(a) señor(a):
+    {% else %}Apreciado señor:{% endif %}
+  </p>
+
+  <p>
+    En nombre de {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+    <strong>{{ inst_nombre }}</strong>, NIT <strong>{{ format_id(inst_nit) }}</strong>,
+    y en mi calidad de Rector(a) de la misma, me complace comunicarle que, surtido el
+    proceso de selección correspondiente a la modalidad de
+    <strong>{{ modalidad_seleccion }}</strong>, y de conformidad con el informe de
+    evaluación de ofertas, su propuesta ha sido seleccionada como la más favorable
+    para los intereses de la institución.
+  </p>
+
+  <p>
+    En consecuencia, se le notifica formalmente la
+    <strong>ACEPTACIÓN DE SU OFERTA</strong> y se le comunica que procederemos a la
+    suscripción del contrato correspondiente, en los siguientes términos:
+  </p>
+</div>
+
+<!-- ── TÉRMINOS DE LA CONTRATACIÓN ─────────────────────────── -->
+<div class="ao-section">
+  <div class="ao-section-titulo">Términos de la Contratación</div>
+  <table class="ao-tabla">
+    <tr>
+      <th>Objeto</th>
+      <td colspan="3">{{ objeto }}</td>
+    </tr>
+    <tr>
+      <th>Valor del contrato</th>
+      <td colspan="3">
+        <strong>{{ format_moneda(valor_total) }}</strong>
+        ({{ valor_letras }})
+      </td>
+    </tr>
+    <tr>
+      <th>Plazo de ejecución</th>
+      <td colspan="3">
+        {{ dias_duracion }} días hábiles, contados desde la suscripción del acta de inicio.
+      </td>
+    </tr>
+    <tr>
+      <th>Fecha inicio estimada</th>
+      <td>{{ fecha_inicio_larga }}</td>
+      <th>Fecha terminación estimada</th>
+      <td>{{ fecha_fin_larga }}</td>
+    </tr>
+    <tr>
+      <th>CDP de respaldo</th>
+      <td>N.° {{ num_cdp }} del {{ fecha_cdp_larga }}</td>
+      <th>Rubro presupuestal</th>
+      <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+    </tr>
+    <tr>
+      <th>Fuente</th>
+      <td colspan="3">{{ fuente }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── FORMA DE PAGO ────────────────────────────────────────── -->
+<div class="ao-section">
+  <div class="ao-section-titulo">Forma de Pago</div>
+  {% set fp = forma_pago or 'Pago único' %}
+  <p>
+    {% if fp == 'Pagos mensuales' %}
+      El pago se realizará en <strong>pagos mensuales</strong>, dentro de los quince (15)
+      días hábiles siguientes al vencimiento de cada mes de ejecución, previa verificación
+      del cumplimiento parcial por parte del supervisor designado.
+    {% elif fp == 'Pagos bimestrales' %}
+      El pago se realizará en <strong>pagos bimestrales</strong>, dentro de los veinte (20)
+      días hábiles siguientes al vencimiento de cada bimestre de ejecución, previa verificación
+      del cumplimiento parcial por parte del supervisor designado.
+    {% elif fp == 'Pagos trimestrales' %}
+      El pago se realizará en <strong>pagos trimestrales</strong>, dentro de los veinte (20)
+      días hábiles siguientes al vencimiento de cada trimestre de ejecución, previa verificación
+      del cumplimiento parcial por parte del supervisor designado.
+    {% elif fp == 'Pagos semestrales' %}
+      El pago se realizará en <strong>pagos semestrales</strong>, dentro de los treinta (30)
+      días hábiles siguientes al vencimiento de cada semestre de ejecución, previa verificación
+      del cumplimiento parcial por parte del supervisor designado.
+    {% elif fp == 'Anticipos y saldo' %}
+      El pago se realizará mediante <strong>anticipo y pago del saldo</strong>. El anticipo,
+      equivalente al cincuenta por ciento (50%) del valor total, se desembolsará dentro de los
+      quince (15) días hábiles siguientes a la suscripción del acta de inicio. El saldo se
+      pagará dentro de los treinta (30) días hábiles siguientes a la entrega total del objeto contractual.
+    {% else %}
+      El pago se realizará en un <strong>único pago</strong>, dentro de los dos (2)
+      días hábiles siguientes a la presentación de los documentos requeridos, previa verificación
+      del cumplimiento del objeto contractual por parte del supervisor designado.
+    {% endif %}
+    Se aplicarán las retenciones de ley correspondientes.
+  </p>
+  <p>
+    El pago neto estimado, descontadas las retenciones de ley por valor de
+    <strong>{{ format_moneda(total_deducciones) }}</strong>, es de
+    <strong>{{ format_moneda(neto) }}</strong>
+    ({{ neto_letras }}).
+  </p>
+</div>
+
+<!-- ── Citación ───────────────────────────────────────────────── -->
+<div class="ao-body" style="margin-top:10px;">
+  <p>
+    Se solicita
+    {% if sexo_contratista == 'F' %}a la contratista
+    {% elif sexo_contratista == 'E' %}a la empresa contratista
+    {% else %}al contratista{% endif %}
+    presentarse en las instalaciones de la Institución Educativa para la suscripción
+    del contrato o emisión de la orden de compra,
+    dentro de los <strong>dos (2) días hábiles</strong> siguientes a la recepción de la
+    presente comunicación.
+  </p>
+</div>
+
+<!-- ── Cierre ────────────────────────────────────────────────── -->
+<div class="ao-cierre">
+  <p>
+    Agradecemos su participación en el proceso y esperamos contar con su disposición
+    para iniciar prontamente la ejecución contractual.
+  </p>
+  <p>Cordialmente,</p>
+</div>
+
+<!-- ── Firma ─────────────────────────────────────────────────── -->
+<div class="ao-firma-section">
+  <table class="ao-firma-tabla">
+    <tr>
+      <td>
+        <div class="ao-firma-linea">
+          <p class="ao-firma-nombre">{{ rector }}</p>
+          <p class="ao-firma-cargo">CC N.° {{ format_id(cc_rector) }}</p>
+          <p class="ao-firma-cargo">Rector(a) — Ordenador del Gasto</p>
+          <p class="ao-firma-cargo">{{ inst_nombre }}</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

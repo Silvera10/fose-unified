@@ -1,0 +1,488 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Acta de Liquidación — {{ numero }}{% endblock %}
+{% block doc_titulo %}ACTA DE LIQUIDACIÓN BILATERAL{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   ACTA DE LIQUIDACIÓN  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.al-numero {
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #1a6b3c;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Texto de apertura ────────────────────────────── */
+.al-apertura {
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.7;
+  margin: 0 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.al-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.al-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.al-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+.al-section ol {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0 8px;
+  line-height: 1.6;
+}
+.al-section ol li {
+  margin-bottom: 5px;
+  text-align: justify;
+}
+
+/* ── Tabla de datos generales ─────────────────────── */
+table.al-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.al-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 22%;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.al-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+/* Sub-encabezados de partes */
+.al-parte-hdr {
+  background: #1a6b3c;
+  color: #fff;
+  font-weight: bold;
+  font-size: 9.5pt;
+  padding: 5px 9px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Tabla financiera ─────────────────────────────── */
+table.al-data {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.al-data thead th {
+  background: #1a6b3c;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 9px;
+  border: 1.5px solid #1a6b3c;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.al-data tbody td {
+  padding: 5px 9px;
+  border: 1.5px solid #bbb;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+table.al-data tbody tr:nth-child(even) td {
+  background: #f7faf7;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.al-data tfoot td {
+  padding: 6px 9px;
+  border: 1.5px solid #bbb;
+  background: #e8f5e9;
+  font-weight: bold;
+  font-size: 9.5pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Caja de cierre ───────────────────────────────── */
+.al-cierre {
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.7;
+  margin: 10px 0 0;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* ── Firma ────────────────────────────────────────── */
+.al-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.al-firma-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+table.al-firma-tabla td {
+  width: 50%;
+  text-align: center;
+  padding: 0 12px;
+  border: none;
+  vertical-align: bottom;
+}
+table.al-firma-tabla.al-firma-tres td {
+  width: 33.33%;
+}
+.al-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.al-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.al-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+
+/* ── Firma supervisor (fila inferior centrada) ────── */
+.al-firma-sup {
+  margin-top: 30px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.al-firma-sup-tabla {
+  width: 60%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border: none;
+}
+table.al-firma-sup-tabla td {
+  text-align: center;
+  padding: 0 12px;
+  border: none;
+  vertical-align: bottom;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+{% set supervisor = nombre_supervisor if nombre_supervisor else rector %}
+{% set cargo_sup  = cargo_supervisor  if cargo_supervisor  else 'Rector(a)' %}
+
+<p class="al-numero">Contrato N.° {{ numero }}</p>
+
+<!-- ── APERTURA ───────────────────────────────────────────────── -->
+<p class="al-apertura">
+  En el municipio de <strong>{{ inst_municipio }}</strong>,
+  departamento de <strong>{{ inst_departamento or 'Bolívar' }}</strong>,
+  a los <strong>{{ fecha_fin_larga }}</strong>, en las instalaciones de la
+  <strong>{{ inst_nombre }}</strong>, se reunieron las partes del contrato
+  referenciado con el fin de proceder a su liquidación bilateral, de
+  conformidad con lo establecido en la Ley 80 de 1993 y el artículo
+  2.2.1.2.8.1 del Decreto 1082 de 2015.
+</p>
+
+<!-- ── 1. PARTES INTERVINIENTES ──────────────────────────────── -->
+<div class="al-section">
+  <div class="al-section-titulo">1. Partes Intervinientes</div>
+  <table class="al-tabla">
+    <!-- LA INSTITUCIÓN -->
+    <tr>
+      <td colspan="4" class="al-parte-hdr">LA INSTITUCIÓN</td>
+    </tr>
+    <tr>
+      <th>Nombre</th>
+      <td>{{ inst_nombre }}</td>
+      <th>NIT</th>
+      <td>{{ format_id(inst_nit) }}</td>
+    </tr>
+    <tr>
+      <th>Representante Legal</th>
+      <td>{{ rector }}</td>
+      <th>C.C.</th>
+      <td>{{ format_id(cc_rector) }}</td>
+    </tr>
+    <tr>
+      <th>Cargo</th>
+      <td colspan="3">Rector(a) — Ordenador del Gasto</td>
+    </tr>
+    <!-- EL CONTRATISTA -->
+    <tr>
+      <td colspan="4" class="al-parte-hdr">
+        {% if sexo_contratista == 'E' %}LA EMPRESA CONTRATISTA
+        {% elif sexo_contratista == 'F' %}LA CONTRATISTA
+        {% else %}EL CONTRATISTA{% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Nombre</th>
+      <td>{{ nombre_contratista }}</td>
+      <th>{{ tipo_id_contratista }}</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    <tr>
+      <th>Dirección</th>
+      <td>{{ direccion_contratista }}</td>
+      <th>Municipio</th>
+      <td>{{ municipio_contratista }}</td>
+    </tr>
+    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    <tr>
+      <th>Repr. Legal</th>
+      <td>{{ rep_legal_nombre }}</td>
+      <th>C.C.</th>
+      <td>{{ format_id(rep_legal_cc) }}</td>
+    </tr>
+    {% endif %}
+  </table>
+</div>
+
+<!-- ── 2. IDENTIFICACIÓN DEL CONTRATO ─────────────────────────── -->
+<div class="al-section">
+  <div class="al-section-titulo">2. Identificación del Contrato</div>
+  <table class="al-tabla">
+    <tr>
+      <th>Contrato N.°</th>
+      <td>{{ numero }}</td>
+      <th>Tipo</th>
+      <td>{{ tipo_contrato }}</td>
+    </tr>
+    <tr>
+      <th>Objeto</th>
+      <td colspan="3">{{ objeto }}</td>
+    </tr>
+    <tr>
+      <th>Modalidad</th>
+      <td>{{ modalidad_seleccion }}</td>
+      <th>Fecha de suscripción</th>
+      <td>{{ fecha_inicio_larga }}</td>
+    </tr>
+    <tr>
+      <th>Fecha de inicio</th>
+      <td>{{ fecha_inicio_larga }}</td>
+      <th>Fecha de terminación</th>
+      <td>{{ fecha_fin_larga }}</td>
+    </tr>
+    <tr>
+      <th>Duración pactada</th>
+      <td>{{ dias_duracion }} días hábiles</td>
+      <th>Supervisor</th>
+      <td>{{ supervisor }}</td>
+    </tr>
+    <tr>
+      <th>CDP N.°</th>
+      <td>{{ num_cdp }} &nbsp;·&nbsp; {{ fecha_cdp_larga }}</td>
+      <th>RP N.°</th>
+      <td>{{ num_rp }} &nbsp;·&nbsp; {{ fecha_rp_larga }}</td>
+    </tr>
+    <tr>
+      <th>Rubro presupuestal</th>
+      <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+      <th>Fuente</th>
+      <td>{{ fuente }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 3. BALANCE FINANCIERO DEL CONTRATO ─────────────────────── -->
+<div class="al-section">
+  <div class="al-section-titulo">3. Balance Financiero del Contrato</div>
+  <table class="al-data">
+    <thead>
+      <tr>
+        <th style="width:70%">Concepto</th>
+        <th style="width:30%">Valor</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Valor total del contrato</td>
+        <td style="text-align:right"><strong>{{ format_moneda(valor_total) }}</strong></td>
+      </tr>
+      <tr>
+        <td>(−) Retención en la Fuente aplicada (Cta. {{ ret_cuenta or '236505' }})</td>
+        <td style="text-align:right">− {{ format_moneda(retencion) }}</td>
+      </tr>
+      <tr>
+        <td>Valor neto cancelado
+          {% if sexo_contratista == 'E' %}a la empresa contratista
+          {% elif sexo_contratista == 'F' %}a la contratista
+          {% else %}al contratista{% endif %}
+        </td>
+        <td style="text-align:right"><strong>{{ format_moneda(neto) }}</strong></td>
+      </tr>
+      <tr>
+        <td>Saldo por pagar
+          {% if sexo_contratista == 'E' %}a la empresa contratista
+          {% elif sexo_contratista == 'F' %}a la contratista
+          {% else %}al contratista{% endif %}
+        </td>
+        <td style="text-align:right; color:#1a5c1a"><strong>{{ format_moneda(0) }}</strong></td>
+      </tr>
+      <tr>
+        <td>Saldo a favor de la institución</td>
+        <td style="text-align:right; color:#1a5c1a"><strong>{{ format_moneda(0) }}</strong></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Valor total cancelado (bruto)</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+      </tr>
+    </tfoot>
+  </table>
+  <p><strong>Valor total en letras:</strong> {{ valor_letras }}.</p>
+</div>
+
+<!-- ── 4. ESTADO DE EJECUCIÓN ─────────────────────────────────── -->
+<div class="al-section">
+  <div class="al-section-titulo">4. Estado de Ejecución del Objeto Contractual</div>
+  <p>
+    Las partes declaran que el objeto del contrato N.°
+    <strong>{{ numero }}</strong> fue ejecutado en su totalidad, a entera
+    satisfacción de la institución, de conformidad con las condiciones
+    técnicas y de calidad pactadas.
+    {% if sexo_contratista == 'E' %}La empresa supervisora designada
+    {% else %}El(La) supervisor(a) designado(a){% endif %},
+    <strong>{{ supervisor }}</strong>, emitió concepto favorable sobre
+    la ejecución del contrato.
+  </p>
+</div>
+
+<!-- ── 5. DECLARACIÓN DE LIQUIDACIÓN BILATERAL ────────────────── -->
+<div class="al-section">
+  <div class="al-section-titulo">5. Declaración de Liquidación Bilateral</div>
+  <p>Las partes suscritas, de mutuo acuerdo, declaran:</p>
+  <ol>
+    <li>
+      Que el contrato N.° <strong>{{ numero }}</strong> fue ejecutado en su
+      totalidad y a satisfacción de <strong>LA INSTITUCIÓN</strong>.
+    </li>
+    <li>
+      Que se han cancelado la totalidad de las obligaciones económicas
+      derivadas del contrato, sin que existan saldos pendientes de pago a
+      favor
+      {% if sexo_contratista == 'E' %}de la empresa contratista
+      {% elif sexo_contratista == 'F' %}de la contratista
+      {% else %}del contratista{% endif %}
+      o de la institución.
+    </li>
+    <li>
+      Que con la suscripción de la presente acta queda
+      <strong>LIQUIDADO BILATERALMENTE</strong> el contrato N.°
+      <strong>{{ numero }}</strong>, no quedando ninguna obligación pendiente
+      entre las partes derivada de la ejecución del mismo.
+    </li>
+    <li>
+      Que las partes renuncian a cualquier reclamación futura derivada del
+      objeto y ejecución del presente contrato, salvo los casos de dolo o
+      culpa grave expresamente establecidos en la ley.
+    </li>
+  </ol>
+</div>
+
+<!-- ── 6. OBSERVACIONES ───────────────────────────────────────── -->
+<div class="al-section">
+  <div class="al-section-titulo">6. Observaciones</div>
+  <p>
+    Las partes manifiestan que no tienen observaciones adicionales y que la
+    liquidación del contrato se realiza de manera voluntaria y de mutuo
+    acuerdo, sin que existan reclamaciones, peticiones ni inconformidades
+    pendientes entre sí.
+  </p>
+</div>
+
+<!-- ── CIERRE ─────────────────────────────────────────────────── -->
+<p class="al-cierre">
+  En constancia de lo anterior, las partes suscriben la presente acta de
+  liquidación bilateral en <strong>{{ inst_municipio }}</strong>,
+  el <strong>{{ fecha_fin_larga }}</strong>.
+</p>
+
+<!-- ── FIRMAS — LA INSTITUCIÓN / EL CONTRATISTA ──────────────── -->
+<div class="al-firma-section">
+  <table class="al-firma-tabla">
+    <tr>
+      <!-- Rector / Institución -->
+      <td>
+        <div class="al-firma-linea">
+          <p class="al-firma-nombre">{{ rector }}</p>
+          <p class="al-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+          <p class="al-firma-cargo">Rector(a) — Ordenador del Gasto</p>
+          <p class="al-firma-cargo">{{ inst_nombre }}</p>
+          <p class="al-firma-cargo">NIT {{ format_id(inst_nit) }}</p>
+          <p class="al-firma-cargo"><strong>LA INSTITUCIÓN</strong></p>
+        </div>
+      </td>
+      <!-- Contratista -->
+      <td>
+        <div class="al-firma-linea">
+          <p class="al-firma-nombre">{{ nombre_contratista }}</p>
+          <p class="al-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+          <p class="al-firma-cargo">
+            {% if sexo_contratista == 'E' %}LA EMPRESA CONTRATISTA
+            {% elif sexo_contratista == 'F' %}LA CONTRATISTA
+            {% else %}EL CONTRATISTA{% endif %}
+          </p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

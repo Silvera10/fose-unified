@@ -1,0 +1,358 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Carta de Propuesta — {{ numero }}{% endblock %}
+{% block doc_titulo %}CARTA DE PRESENTACIÓN DE PROPUESTA{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ══════════════════════════════════════════════
+     CARTA DE PROPUESTA — estilos de impresión
+     ══════════════════════════════════════════════ */
+
+  /* Tabla cabecera institucional */
+  table.cp-info {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 14px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.cp-info th {
+    background: #f0f7f0;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 20%;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.cp-info td {
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+  }
+
+  /* Bloque lugar y fecha */
+  .cp-fecha {
+    text-align: right;
+    font-size: 10pt;
+    margin: 10px 0 12px;
+  }
+
+  /* Bloque destinatario */
+  .cp-destinatario {
+    margin: 0 0 14px;
+    padding: 8px 0 8px 18px;
+    border-left: 3px solid #1a6b3c;
+    font-size: 10pt;
+    line-height: 1.5;
+    page-break-inside: avoid;
+  }
+  .cp-destinatario p          { margin: 1px 0; }
+  .cp-destinatario p.cp-dest-label { color: #555; font-size: 9.5pt; margin-bottom: 2px; }
+  .cp-destinatario p.cp-dest-nombre { font-size: 10.5pt; font-weight: bold; text-transform: uppercase; }
+  .cp-destinatario p.cp-dest-cargo  { font-style: italic; color: #444; }
+  .cp-destinatario p.cp-dest-inst   { font-weight: bold; }
+  .cp-destinatario p.cp-dest-lugar  { color: #555; }
+
+  /* Línea "obrando en..." */
+  .cp-obrando {
+    font-size: 10pt;
+    font-style: italic;
+    color: #333;
+    border-bottom: 1px dashed #aaa;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+  }
+
+  /* Asunto */
+  .cp-asunto {
+    margin: 10px 0 14px;
+    font-size: 10pt;
+    line-height: 1.6;
+    text-align: justify;
+  }
+
+  /* Párrafos de cuerpo */
+  .cp-body {
+    margin: 0 0 12px;
+  }
+  .cp-body p {
+    font-size: 10pt;
+    text-align: justify;
+    margin: 5px 0;
+    line-height: 1.55;
+  }
+
+  /* Secciones numeradas */
+  .cp-section {
+    margin: 12px 0;
+    page-break-inside: avoid;
+  }
+  .cp-section-titulo {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-left: 4px solid #1a6b3c;
+    margin-bottom: 7px;
+  }
+  .cp-section p {
+    font-size: 10pt;
+    text-align: justify;
+    margin: 5px 0;
+    line-height: 1.55;
+  }
+  .cp-section ol {
+    font-size: 10pt;
+    padding-left: 22px;
+    margin: 5px 0;
+    line-height: 1.55;
+  }
+  .cp-section ol li {
+    margin-bottom: 4px;
+    text-align: justify;
+  }
+
+  /* Tabla de datos del proponente */
+  table.cp-data {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 10px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.cp-data th {
+    background: #f0f7f0;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 22%;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.cp-data td {
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+  }
+
+  /* Tabla de ítems / propuesta económica */
+  table.cp-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 6px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.cp-items thead th {
+    background: #1a6b3c;
+    color: #fff;
+    padding: 5px 7px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #145530;
+  }
+  table.cp-items thead th.left { text-align: left; }
+  table.cp-items tbody td {
+    padding: 4px 7px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+    line-height: 1.35;
+  }
+  table.cp-items tbody tr:nth-child(even) td { background: #f8faf8; }
+  table.cp-items tfoot td {
+    padding: 5px 7px;
+    border: 1px solid #aaa;
+    font-weight: bold;
+    background: #e8f5e9;
+  }
+
+  /* Valor en letras */
+  .cp-letras {
+    font-size: 9.5pt;
+    margin: 6px 0 10px;
+    padding: 5px 10px;
+    border-left: 3px solid #1a6b3c;
+    background: #f9fdf9;
+  }
+
+  /* Firma */
+  .cp-firma-section {
+    margin-top: 55px;
+    page-break-inside: avoid;
+  }
+  .cp-firma-block {
+    display: inline-block;
+    text-align: center;
+    min-width: 240px;
+  }
+  .cp-firma-linea {
+    border-top: 1px solid #000;
+    margin-top: 65px;
+    padding-top: 5px;
+  }
+  .cp-firma-block p {
+    font-size: 10pt;
+    margin: 2px 0;
+  }
+
+  @media print {
+    .cp-section       { page-break-inside: avoid; }
+    table.cp-items    { page-break-inside: avoid; }
+    table.cp-data     { page-break-inside: avoid; }
+    table.cp-info     { page-break-inside: avoid; }
+    .cp-firma-section { page-break-inside: avoid; }
+    .cp-destinatario  { page-break-inside: avoid; }
+  }
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- Tabla institucional -->
+<table class="cp-info">
+  <tr>
+    <th>Institución</th>
+    <td colspan="3">{{ inst_nombre }}</td>
+  </tr>
+  <tr>
+    <th>NIT</th>
+    <td>{{ format_id(inst_nit) }}</td>
+    <th>Municipio</th>
+    <td>{{ inst_municipio }}, {{ inst_departamento }}</td>
+  </tr>
+  <tr>
+    <th>Fecha de Presentación</th>
+    <td colspan="3">{{ fecha_presentacion_oferta_larga if fecha_presentacion_oferta_larga is defined else hoy_largo }}</td>
+  </tr>
+</table>
+
+<!-- Lugar y fecha -->
+<div class="cp-fecha">
+  <p>{{ municipio_contratista }}, {{ fecha_presentacion_oferta_larga if fecha_presentacion_oferta_larga is defined else hoy_largo }}</p>
+</div>
+
+<!-- Destinatario -->
+<div class="cp-destinatario">
+  <p class="cp-dest-label">Señor(a):</p>
+  <p class="cp-dest-nombre">{{ rector }}</p>
+  <p class="cp-dest-cargo">Rector(a)</p>
+  <p class="cp-dest-inst">{{ inst_nombre }}</p>
+  <p class="cp-dest-lugar">{{ inst_municipio }}, {{ inst_departamento }}</p>
+</div>
+
+<!-- Asunto -->
+<div class="cp-asunto">
+  <p>
+    <strong>Asunto:</strong> Invitación a presentar cotización para proceso de Mínima Cuantía —
+    Contratación hasta veinte (20) Salarios Mínimos Legales Mensuales Vigentes (SMLMV),
+    conforme al artículo 2.2.1.2.1.5.2 del Decreto 1082 de 2015.
+  </p>
+</div>
+
+<!-- Cuerpo -->
+<div class="cp-body">
+  <p>
+    {% if tipo_id_contratista == 'NIT' and rep_legal_nombre %}
+      Yo, <strong>{{ rep_legal_nombre }}</strong>, identificado(a) con
+      CC N.° <strong>{{ format_id(rep_legal_cc) }}</strong>, actuando en representación de
+      <strong>{{ nombre_contratista }}</strong>,
+      NIT N.° <strong>{{ format_id(num_id_contratista) }}</strong>,
+      en mi calidad de oferente, presento formalmente mi oferta dentro del
+      procedimiento de contratación de la referencia, manifestando lo siguiente:
+    {% else %}
+      Yo, <strong>{{ nombre_contratista }}</strong>, identificado(a) con
+      {{ tipo_id_contratista }} N.° <strong>{{ format_id(num_id_contratista) }}</strong>,
+      actuando en nombre propio, en mi calidad de oferente, presento formalmente
+      mi oferta dentro del procedimiento de contratación de la referencia,
+      manifestando lo siguiente:
+    {% endif %}
+  </p>
+</div>
+
+<!-- Declaraciones a–g -->
+<div class="cp-section">
+  <ol type="a">
+    <li>
+      Declaro haber leído y comprendido en su totalidad los documentos de la
+      invitación pública y sus anexos, sin formular reservas o condicionamientos.
+    </li>
+    <li>
+      Me comprometo a ejecutar el objeto contractual consistente en:
+      &ldquo;<strong>{{ objeto }}</strong>&rdquo;,
+      garantizando la continuidad del servicio durante la vigencia contractual.
+      El servicio deberá cumplir con los requerimientos funcionales, técnicos y
+      de seguridad definidos por
+      {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+      <strong>{{ inst_nombre }}</strong>, así como permitir la correcta
+      administración de la información institucional.
+    </li>
+    <li>
+      Declaro contar con la idoneidad, capacidad técnica y jurídica necesarias
+      para cumplir las obligaciones derivadas del contrato.
+    </li>
+    <li>
+      Manifiesto que tengo plena capacidad legal para contratar y que no me
+      encuentro incurso(a) en causales de inhabilidad o incompatibilidad
+      previstas en la Constitución y la ley.
+    </li>
+    <li>
+      Declaro que presento una única oferta dentro del presente proceso y que
+      la información y documentos aportados son veraces y verificables.
+    </li>
+    <li>
+      La presente oferta tendrá una vigencia de treinta (30) días calendario,
+      contados a partir de la fecha de cierre de la invitación.
+    </li>
+    <li>
+      Entiendo que la aceptación de esta oferta por parte de
+      {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+      <strong>{{ inst_nombre }}</strong> constituye la manifestación de voluntad
+      para la suscripción de la respectiva orden de compra o contrato, conforme
+      al procedimiento establecido para procesos de contratación menores o
+      iguales a veinte (20) salarios mínimos mensuales legales vigentes (SMMLV).
+      Dicha aceptación generará los efectos legales y presupuestales
+      correspondientes, conforme a la Ley 80 de 1993, el Decreto 4791 de 2008
+      y el Decreto 1082 de 2015.
+    </li>
+  </ol>
+</div>
+
+<!-- Domicilio de notificaciones -->
+<div class="cp-section">
+  <p>
+    Igualmente señalo como lugar donde recibiré notificaciones, comunicaciones
+    y requerimientos relacionados con esta contratación, el siguiente:
+  </p>
+  <p><strong>Dirección:</strong> {{ direccion_contratista }}</p>
+  <p><strong>Municipio:</strong> {{ municipio_contratista }}</p>
+  <p><strong>Celular:</strong> {{ celular_contratista }}</p>
+  <p><strong>Email:</strong> {{ email_contratista }}</p>
+  <p style="margin-top:10px; text-align:justify;">
+    Este será el domicilio oficial para efectos del presente proceso contractual,
+    en cumplimiento de lo establecido en la normatividad vigente y para garantizar
+    una comunicación oportuna y efectiva con la entidad contratante.
+  </p>
+</div>
+
+<!-- Firma -->
+<div class="cp-firma-section">
+  <div class="cp-firma-block">
+    <div class="cp-firma-linea">
+      {% if tipo_id_contratista == 'NIT' and rep_legal_nombre %}
+        <p><strong>{{ rep_legal_nombre }}</strong></p>
+        <p>CC N.° {{ rep_legal_cc }}</p>
+        <p>Representante Legal</p>
+        <p>{{ nombre_contratista }}</p>
+      {% else %}
+        <p><strong>{{ nombre_contratista }}</strong></p>
+        <p>{{ tipo_id_contratista }} N.° {{ num_id_contratista }}</p>
+        <p>Proponente / Contratista</p>
+      {% endif %}
+      <p>Cel.: {{ celular_contratista }}</p>
+      <p>{{ email_contratista }}</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Solicitud CDP — {{ numero }}{% endblock %}
+{% block doc_titulo %}SOLICITUD DE CERTIFICADO DE DISPONIBILIDAD PRESUPUESTAL{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ══════════════════════════════════════════════
+     Solicitud CDP — estilos específicos de impresión
+     ══════════════════════════════════════════════ */
+
+  .sc-lugar-fecha {
+    text-align: right;
+    font-size: 10pt;
+    margin: 10px 0 16px;
+  }
+
+  .sc-destinatario {
+    font-size: 10pt;
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .sc-destinatario p { margin: 1px 0; }
+
+  .sc-asunto {
+    font-size: 10pt;
+    margin-bottom: 14px;
+    border-left: 4px solid #1a6b3c;
+    padding: 5px 8px;
+    background: #f5faf5;
+  }
+
+  .sc-cuerpo {
+    font-size: 10pt;
+    text-align: justify;
+    line-height: 1.55;
+  }
+  .sc-cuerpo p { margin: 8px 0; }
+
+  .sc-subtitulo {
+    font-size: 10.5pt;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 5px 8px;
+    border: 1px solid #1a6b3c;
+    margin: 14px 0 4px;
+    page-break-after: avoid;
+    letter-spacing: .5px;
+  }
+
+  .sc-bloque {
+    font-size: 10pt;
+    text-align: justify;
+    line-height: 1.55;
+    border: 1px solid #ccc;
+    border-top: none;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+  }
+
+  .sc-valor-linea {
+    font-size: 10pt;
+    margin: 6px 0 2px;
+    padding: 0 2px;
+  }
+
+  /* Tabla expediente */
+  table.sc-exp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 12px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.sc-exp-table td {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+    line-height: 1.35;
+  }
+  table.sc-exp-table td.sc-exp-label {
+    font-weight: bold;
+    background: #f0f7f0;
+    width: 18%;
+    white-space: nowrap;
+  }
+
+  /* Firma */
+  .sc-firma-section {
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+  .sc-firma-linea {
+    border-top: 1px solid #000;
+    margin-top: 65px;
+    padding-top: 5px;
+    width: 260px;
+  }
+  .sc-firma-section p {
+    font-size: 10pt;
+    margin: 2px 0;
+  }
+
+  @media print {
+    .sc-bloque        { page-break-inside: avoid; }
+    .sc-firma-section { page-break-inside: avoid; }
+  }
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- Lugar y fecha: fecha del CDP -->
+<div class="sc-lugar-fecha">
+  {{ inst_municipio }},
+  {% if fecha_cdp_larga is defined and fecha_cdp_larga %}
+    {{ fecha_cdp_larga }}
+  {% else %}
+    {{ hoy_largo }}
+  {% endif %}
+</div>
+
+<!-- Destinatario -->
+<div class="sc-destinatario">
+  <p><strong>Señor(a):</strong></p>
+  <p><strong>TESORERO(A) / ALMACENISTA</strong></p>
+  <p>{{ inst_nombre }}</p>
+  <p>{{ inst_municipio }}, {{ inst_departamento }}</p>
+</div>
+
+<!-- Asunto -->
+<div class="sc-asunto">
+  <strong>Asunto:</strong> Solicitud de Certificado de Disponibilidad Presupuestal
+  para el proceso contractual N.° {{ numero }}.
+</div>
+
+<!-- Cuerpo -->
+<div class="sc-cuerpo">
+
+  <p>
+    En atención al Plan Anual de Adquisiciones previsto para la vigencia
+    <strong>{{ anio }}</strong>, aprobado por el Consejo Directivo y de conformidad
+    con lo dispuesto para el manejo de los recursos del Fondo de Servicios
+    Educativos, me permito solicitar la expedición del Certificado de
+    Disponibilidad Presupuestal, previa verificación de la existencia de recursos
+    en tesorería, de acuerdo con la siguiente información:
+  </p>
+
+  <!-- OBJETO -->
+  <div class="sc-subtitulo">Objeto</div>
+  <div class="sc-bloque">
+    {{ objeto }}
+  </div>
+
+  <p class="sc-valor-linea">
+    <strong>Valor del contrato:</strong> {{ format_moneda(valor_total) }}
+    &nbsp;({{ valor_letras }})
+  </p>
+
+  <!-- RUBRO -->
+  <div class="sc-subtitulo">Rubro</div>
+  <div class="sc-bloque">
+    <strong>{{ rubro_codigo }}</strong> — {{ rubro_nombre }}<br>
+    <strong>Fuente de financiación:</strong> {{ fuente }}
+  </div>
+
+  <p>
+    En cumplimiento de la autonomía de gestión de los Fondos de Servicios Educativos
+    (FOSE), se emite la presente certificación de disponibilidad de recursos como paso
+    previo al proceso de selección, según lo estipulado en el Decreto 1075 de 2015
+    y el manual de contratación de la institución.
+  </p>
+
+  <p>Agradezco su pronta atención a la presente solicitud.</p>
+
+  <p>Cordialmente,</p>
+</div>
+
+<!-- Firma -->
+<div class="sc-firma-section">
+  <div class="sc-firma-linea">
+    <p><strong>{{ rector | upper }}</strong></p>
+    <p>C.C. {{ format_id(cc_rector) }}</p>
+    <p>Rector(a) — Ordenador del Gasto</p>
+    <p>{{ inst_nombre }}</p>
+  </div>
+</div>
+
+{% endblock %}

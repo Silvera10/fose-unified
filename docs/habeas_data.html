@@ -1,0 +1,367 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Autorización Tratamiento de Datos — {{ numero }}{% endblock %}
+{% block doc_titulo %}AUTORIZACIÓN PARA EL TRATAMIENTO DE DATOS PERSONALES{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   HABEAS DATA  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Subtítulo legal ──────────────────────────────── */
+.hd-subtitulo {
+  text-align: center;
+  font-size: 9pt;
+  color: #444;
+  margin: -6px 0 14px;
+  font-style: italic;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.hd-section {
+  margin: 12px 0 14px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.hd-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.hd-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.55;
+}
+.hd-section ul,
+.hd-section ol {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0 8px;
+  line-height: 1.55;
+}
+.hd-section ul li,
+.hd-section ol li {
+  margin-bottom: 4px;
+  text-align: justify;
+}
+
+/* ── Tablas de datos ──────────────────────────────── */
+table.hd-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0 10px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.hd-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  width: 22%;
+  white-space: nowrap;
+  vertical-align: top;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.hd-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+/* ── Caja de Autorización ─────────────────────────── */
+.hd-autorizacion {
+  border: 2px solid #1a6b3c;
+  border-radius: 3px;
+  padding: 12px 16px;
+  margin: 12px 0 6px;
+  background: #f0f7f0;
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.6;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.hd-autorizacion p { margin: 5px 0; }
+
+/* ── Firma ────────────────────────────────────────── */
+.hd-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.hd-firma-tabla {
+  width: 50%;
+  margin: 0;
+  border-collapse: collapse;
+  border: none;
+}
+table.hd-firma-tabla td {
+  text-align: center;
+  padding: 0;
+  border: none;
+  vertical-align: bottom;
+}
+.hd-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.hd-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.hd-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<p class="hd-subtitulo">(Habeas Data — Ley 1581 de 2012) &nbsp;·&nbsp; Contrato N.° {{ numero }}</p>
+
+<!-- ── 1. FUNDAMENTO LEGAL ───────────────────────────────────── -->
+<div class="hd-section">
+  <div class="hd-section-titulo">1. Fundamento Legal</div>
+  <p>
+    De conformidad con lo establecido en la <strong>Ley Estatutaria 1581 de 2012</strong>
+    (Ley de Protección de Datos Personales) y su decreto reglamentario
+    <strong>Decreto 1377 de 2013</strong>, la <strong>{{ inst_nombre }}</strong>,
+    NIT <strong>{{ format_id(inst_nit) }}</strong>, en calidad de responsable del tratamiento
+    de datos personales, informa y solicita al titular la siguiente autorización.
+  </p>
+</div>
+
+<!-- ── 2. DATOS DE LA INSTITUCIÓN ───────────────────────────── -->
+<div class="hd-section">
+  <div class="hd-section-titulo">2. Datos de la Institución Responsable del Tratamiento</div>
+  <table class="hd-tabla">
+    <tr>
+      <th>Institución</th>
+      <td colspan="3">{{ inst_nombre }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>NIT</td>
+      <th>Número</th>
+      <td>{{ format_id(inst_nit) }}</td>
+    </tr>
+    <tr>
+      <th>Municipio</th>
+      <td colspan="3">{{ inst_municipio }}, {{ inst_departamento }}</td>
+    </tr>
+    <tr>
+      <th>Dirección</th>
+      <td>{{ inst_dir }}</td>
+      <th>Correo electrónico</th>
+      <td>{{ inst_email }}</td>
+    </tr>
+    <tr>
+      <th>Representante Legal</th>
+      <td colspan="3">{{ rector }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>C.C.</td>
+      <th>Número</th>
+      <td>{{ format_id(cc_rector) }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 3. DATOS DEL TITULAR ─────────────────────────────────── -->
+<div class="hd-section">
+  <div class="hd-section-titulo">3. Datos del Titular</div>
+  <table class="hd-tabla">
+    <tr>
+      <th>Nombre completo</th>
+      <td colspan="3">{{ nombre_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>{{ tipo_id_contratista }}</td>
+      <th>Número</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    <tr>
+      <th>Representante Legal</th>
+      <td colspan="3">{{ rep_legal_nombre }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>C.C.</td>
+      <th>Número</th>
+      <td>{{ format_id(rep_legal_cc) }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+      <th>Dirección</th>
+      <td>{{ direccion_contratista }}</td>
+      <th>Municipio</th>
+      <td>{{ municipio_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Teléfono / Celular</th>
+      <td>{{ celular_contratista }}</td>
+      <th>Correo electrónico</th>
+      <td>{{ email_contratista }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 4. DATOS OBJETO DE TRATAMIENTO ───────────────────────── -->
+<div class="hd-section">
+  <div class="hd-section-titulo">4. Datos Personales Objeto de Tratamiento</div>
+  <p>Los datos personales que serán objeto de tratamiento incluyen:</p>
+  <ul>
+    <li>Datos de identificación: nombre, documento de identidad, RUT.</li>
+    <li>Datos de contacto: dirección, teléfono, correo electrónico.</li>
+    <li>Datos financieros: información bancaria, cuenta de pago.</li>
+    <li>Datos contractuales: contrato suscrito, objeto, valor, fechas de ejecución.</li>
+    <li>Datos de seguridad social: afiliación y pago de aportes (cuando aplique).</li>
+    <li>Datos de experiencia y capacidad: certificaciones, hoja de vida (cuando aplique).</li>
+  </ul>
+</div>
+
+<!-- ── 5. FINALIDADES DEL TRATAMIENTO ───────────────────────── -->
+<div class="hd-section">
+  <div class="hd-section-titulo">5. Finalidades del Tratamiento</div>
+  <p>
+    Los datos personales del titular serán utilizados exclusivamente para las
+    siguientes finalidades:
+  </p>
+  <ol>
+    <li>
+      Gestión, ejecución, seguimiento y liquidación del contrato N.°
+      <strong>{{ numero }}</strong>.
+    </li>
+    <li>
+      Cumplimiento de obligaciones legales, fiscales, contables y
+      administrativas derivadas de la relación contractual.
+    </li>
+    <li>
+      Reporte a organismos de control y vigilancia (Contraloría, Superintendencias,
+      SECOP, etc.) cuando sea requerido por la ley.
+    </li>
+    <li>
+      Trámite de pagos, retenciones y demás gestiones financieras relacionadas
+      con el contrato.
+    </li>
+    <li>
+      Archivo y conservación de la documentación contractual conforme a las
+      tablas de retención documental de la institución.
+    </li>
+    <li>
+      Verificación de inhabilidades, incompatibilidades y antecedentes del
+      contratista ante las bases de datos públicas habilitadas para tal fin.
+    </li>
+  </ol>
+</div>
+
+<!-- ── 6. DERECHOS DEL TITULAR ──────────────────────────────── -->
+<div class="hd-section">
+  <div class="hd-section-titulo">6. Derechos del Titular</div>
+  <p>
+    De conformidad con la Ley 1581 de 2012, el titular de los datos personales
+    tiene los siguientes derechos:
+  </p>
+  <ul>
+    <li><strong>Conocer</strong> los datos personales que la institución tiene sobre él.</li>
+    <li><strong>Actualizar</strong> sus datos cuando estos sean inexactos o incompletos.</li>
+    <li><strong>Rectificar</strong> la información que sea incorrecta.</li>
+    <li>
+      <strong>Solicitar prueba</strong> de la autorización otorgada para el
+      tratamiento de sus datos.
+    </li>
+    <li>
+      <strong>Revocar la autorización</strong> y/o solicitar la supresión de
+      sus datos, salvo cuando exista un deber legal de conservarlos.
+    </li>
+    <li>
+      <strong>Presentar quejas</strong> ante la Superintendencia de Industria
+      y Comercio por infracción a la Ley 1581 de 2012.
+    </li>
+  </ul>
+  <p>
+    Para ejercer sus derechos, el titular podrá dirigirse al correo electrónico
+    <strong>{{ inst_email }}</strong> o a la dirección
+    <strong>{{ inst_dir }}, {{ inst_municipio }}</strong>.
+  </p>
+</div>
+
+<!-- ── 7. TRANSFERENCIA Y TRANSMISIÓN ───────────────────────── -->
+<div class="hd-section">
+  <div class="hd-section-titulo">7. Transferencia y Transmisión de Datos</div>
+  <p>
+    Los datos personales del titular podrán ser compartidos con entidades
+    del Estado, organismos de control, entidades financieras y demás
+    destinatarios que la ley exija, únicamente en el marco de las obligaciones
+    legales de la institución y con las garantías de seguridad requeridas.
+    No se realizará transferencia internacional de datos.
+  </p>
+</div>
+
+<!-- ── 8. AUTORIZACIÓN ──────────────────────────────────────── -->
+<div class="hd-section">
+  <div class="hd-section-titulo">8. Autorización</div>
+  <div class="hd-autorizacion">
+    <p>
+      {{ habeas_autorizacion_html }}
+      mediante la suscripción del presente documento, de manera libre, previa,
+      expresa, informada e inequívoca, <strong>AUTORIZO</strong> a
+      {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+      <strong>{{ inst_nombre }}</strong>, NIT {{ format_id(inst_nit) }}, para recolectar,
+      almacenar, usar, circular y suprimir mis datos personales con las
+      finalidades descritas en el presente documento y de conformidad con la
+      Ley 1581 de 2012 y el Decreto 1377 de 2013.
+    </p>
+    <p>
+      Declaro que he sido informado(a) sobre mis derechos como titular de datos
+      personales y que la presente autorización es otorgada de manera voluntaria.
+    </p>
+  </div>
+</div>
+
+<!-- ── FIRMA ─────────────────────────────────────────────────── -->
+<div class="hd-firma-section">
+  <table class="hd-firma-tabla">
+    <tr>
+      <td>
+        <div class="hd-firma-linea">
+          {{ habeas_firma_html }}
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{{ habeas_constancia_html }}
+
+{% endblock %}

@@ -1,0 +1,387 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}CDP N.° {{ num_cdp }} — {{ numero }}{% endblock %}
+{% block doc_titulo %}CERTIFICADO DE DISPONIBILIDAD PRESUPUESTAL{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ══════════════════════════════════════════════
+     CDP — estilos específicos de impresión
+     ══════════════════════════════════════════════ */
+
+  .cdp-numero {
+    text-align: center;
+    font-size: 13pt;
+    font-weight: bold;
+    color: #1a6b3c;
+    letter-spacing: 1px;
+    margin: 8px 0 14px;
+  }
+
+  /* Tabla cabecera institucional */
+  table.cdp-info {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 14px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.cdp-info th {
+    background: #f0f7f0;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 20%;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.cdp-info td {
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+  }
+
+  /* Secciones */
+  .cdp-section {
+    margin: 12px 0;
+    page-break-inside: avoid;
+  }
+  .cdp-section-titulo {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-left: 4px solid #1a6b3c;
+    margin-bottom: 7px;
+  }
+  .cdp-section p {
+    font-size: 10pt;
+    text-align: justify;
+    margin: 6px 0;
+    line-height: 1.5;
+  }
+
+  /* Concepto de la Disponibilidad */
+  .cdp-concepto-bloque {
+    font-size: 10pt;
+    text-align: justify;
+    line-height: 1.55;
+    border: 1px solid #ccc;
+    border-top: none;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+  }
+
+  /* Tabla detalle presupuestal */
+  table.cdp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 10px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.cdp-table thead th {
+    background: #1a6b3c;
+    color: #fff;
+    padding: 5px 7px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #145530;
+  }
+  table.cdp-table thead th.left { text-align: left; }
+  table.cdp-table tbody td {
+    padding: 5px 7px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+  }
+  table.cdp-table tfoot td {
+    padding: 5px 7px;
+    border: 1px solid #aaa;
+    font-weight: bold;
+    background: #e8f5e9;
+  }
+  .cdp-table td.right  { text-align: right;  font-weight: bold; }
+  .cdp-table td.center { text-align: center; }
+
+  /* Tabla saldos control interno */
+  table.cdp-saldos {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 14px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.cdp-saldos .cdp-saldos-title {
+    background: #1a6b3c;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 8px;
+    font-size: 9.5pt;
+    border: 1px solid #145530;
+  }
+  table.cdp-saldos thead th {
+    background: #d4edda;
+    color: #000;
+    padding: 5px 7px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #aaa;
+    font-size: 9pt;
+  }
+  table.cdp-saldos tbody td {
+    padding: 4px 7px;
+    border: 1px solid #ccc;
+  }
+  /* Inputs dentro de la tabla de saldos */
+  .cdp-saldos input[type="number"] {
+    width: 100%;
+    border: none;
+    background: #fffde7;
+    text-align: right;
+    font-size: 9.5pt;
+    padding: 3px 4px;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+  }
+  .cdp-saldos input[type="number"]:focus {
+    outline: 2px solid #1a6b3c;
+    background: #fff;
+  }
+  .cdp-saldos .nuevo-saldo {
+    text-align: right;
+    font-weight: bold;
+    color: #1a6b3c;
+    padding: 3px 4px;
+    font-size: 9.5pt;
+  }
+  @media print {
+    .cdp-saldos input[type="number"] {
+      background: transparent;
+      border-bottom: 1px solid #999;
+    }
+  }
+
+  /* Valor certificado destacado */
+  .cdp-valor-box {
+    border: 2px solid #1a6b3c;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #1a6b3c;
+    page-break-inside: avoid;
+  }
+  .cdp-valor-box .letras {
+    font-size: 9.5pt;
+    font-weight: normal;
+    color: #333;
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* Firmas dos columnas */
+  .cdp-firma-section {
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+  .cdp-firma-grid {
+    display: flex;
+    gap: 40px;
+    margin-top: 10px;
+  }
+  .cdp-firma-block {
+    flex: 1;
+    text-align: center;
+  }
+  .cdp-firma-linea {
+    border-top: 1px solid #000;
+    margin-top: 65px;
+    padding-top: 5px;
+  }
+  .cdp-firma-block p {
+    font-size: 10pt;
+    margin: 2px 0;
+  }
+
+  @media print {
+    .cdp-section       { page-break-inside: avoid; }
+    table.cdp-table    { page-break-inside: avoid; }
+    table.cdp-saldos   { page-break-inside: avoid; }
+    table.cdp-info     { page-break-inside: avoid; }
+    .cdp-firma-section { page-break-inside: avoid; }
+    .cdp-valor-box     { page-break-inside: avoid; }
+    .cdp-concepto-bloque { page-break-inside: avoid; }
+  }
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- Número CDP destacado -->
+<div class="cdp-numero">CDP N.° {{ num_cdp }}</div>
+
+<!-- Tabla de datos institucionales -->
+<table class="cdp-info">
+  <tr>
+    <th>Institución</th>
+    <td colspan="3">{{ inst_nombre }}</td>
+  </tr>
+  <tr>
+    <th>NIT</th>
+    <td>{{ format_id(inst_nit) }}</td>
+    <th>Fecha de Expedición</th>
+    <td>{{ fecha_cdp_larga }}</td>
+  </tr>
+  <tr>
+    <th>Municipio</th>
+    <td>{{ inst_municipio }}, {{ inst_departamento }}</td>
+    <th>Vigencia</th>
+    <td>{{ anio }}</td>
+  </tr>
+</table>
+
+<!-- Párrafo de certificación — firmado por el Rector/a -->
+<div class="cdp-section">
+  <p>
+    El (la) suscrito(a) Rector(a), en uso de sus facultades legales y en especial
+    las conferidas por el Decreto Ley 111 de 1996, artículo 71, y de conformidad
+    con el Decreto 4791 de 2008 y el artículo 11 de la Ley 715 de 2001, certifica
+    que, una vez revisados los saldos presupuestales correspondientes a la vigencia
+    <strong>{{ anio }}</strong>, se expide el presente Certificado de Disponibilidad
+    Presupuestal (CDP) dejando afectado el presupuesto del Fondo de Servicios
+    Educativos – FOSE, así:
+  </p>
+</div>
+
+<!-- Concepto de la Disponibilidad -->
+<div class="cdp-section-titulo">Concepto de la Disponibilidad</div>
+<div class="cdp-concepto-bloque">{{ objeto }}</div>
+
+<!-- Valor certificado -->
+<div class="cdp-valor-box">
+  {{ format_moneda(valor_total) }}
+  <span class="letras">{{ valor_letras }}</span>
+</div>
+
+<!-- Detalle presupuestal -->
+<div class="cdp-section">
+  <div class="cdp-section-titulo">Detalle Presupuestal</div>
+  <table class="cdp-table">
+    <thead>
+      <tr>
+        <th class="left" style="width:38%">Rubro Presupuestal</th>
+        <th style="width:20%">Fuente de Financiación</th>
+        <th style="width:12%">CF</th>
+        <th style="width:30%; text-align:right">Valor Certificado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+        <td class="center">{{ fuente }}</td>
+        <td class="center">&nbsp;</td>
+        <td class="right">{{ format_moneda(valor_total) }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" style="text-align:right">TOTAL CERTIFICADO:</td>
+        <td class="right">{{ format_moneda(valor_total) }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- Saldos por rubro — control interno -->
+<table class="cdp-saldos">
+  <tr>
+    <td colspan="4" class="cdp-saldos-title">SALDOS POR RUBRO — CONTROL INTERNO</td>
+  </tr>
+  <thead>
+    <tr>
+      <th style="width:40%">RUBROS</th>
+      <th style="width:20%">Saldo Presupuestal</th>
+      <th style="width:20%">Compromiso</th>
+      <th style="width:20%">Nuevo Saldo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+      <td>
+        <input type="number" id="saldo_ppto" min="0" step="1"
+               value="{{ saldo_ppto | int if saldo_ppto else '' }}"
+               placeholder="Digite el saldo"
+               oninput="calcularNuevoSaldo()">
+      </td>
+      <td>
+        <input type="number" id="compromiso" min="0" step="1"
+               value="{{ saldo_compromiso | int if saldo_compromiso else valor_total | int }}"
+               oninput="calcularNuevoSaldo()">
+      </td>
+      <td>
+        <div class="nuevo-saldo" id="nuevo_saldo">—</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  // Formatea número como moneda colombiana sin símbolo $
+  function fmtCOP(n) {
+    if (isNaN(n)) return '—';
+    return '$ ' + Math.round(n).toLocaleString('es-CO');
+  }
+  function calcularNuevoSaldo() {
+    const saldo = parseFloat(document.getElementById('saldo_ppto').value) || 0;
+    const comp  = parseFloat(document.getElementById('compromiso').value)  || 0;
+    const nuevo = saldo - comp;
+    const el    = document.getElementById('nuevo_saldo');
+    el.textContent = fmtCOP(nuevo);
+    el.style.color = nuevo >= 0 ? '#1a6b3c' : '#c0392b';
+  }
+  // Inicializar con el valor del compromiso ya cargado
+  window.addEventListener('load', calcularNuevoSaldo);
+</script>
+
+<!-- Vigencia y condiciones -->
+<div class="cdp-section">
+  <div class="cdp-section-titulo">Vigencia y Condiciones</div>
+  <p>
+    El presente Certificado de Disponibilidad Presupuestal tiene una vigencia de
+    <strong>treinta (30) días calendario</strong> contados a partir de la fecha de
+    su expedición, y quedará sin efecto si dentro de dicho término no se expide el
+    correspondiente Registro Presupuestal.
+  </p>
+  <p>
+    La expedición de este certificado no implica compromiso presupuestal alguno.
+    El compromiso definitivo solo se perfeccionará con la expedición del Registro
+    Presupuestal respectivo, una vez suscrito el contrato.
+  </p>
+</div>
+
+<!-- Firmas -->
+<div class="cdp-firma-section">
+  <div class="cdp-firma-grid">
+    <div class="cdp-firma-block">
+      <div class="cdp-firma-linea">
+        <p><strong>TESORERO(A)</strong></p>
+        <p>{{ inst_nombre }}</p>
+      </div>
+    </div>
+    <div class="cdp-firma-block">
+      <div class="cdp-firma-linea">
+        <p><strong>{{ rector | upper }}</strong></p>
+        <p>C.C. {{ format_id(cc_rector) }}</p>
+        <p>Rector(a) — Ordenador del Gasto</p>
+        <p>{{ inst_nombre }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

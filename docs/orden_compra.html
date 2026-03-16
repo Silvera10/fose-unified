@@ -1,0 +1,300 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Orden de Compra/Servicio — {{ numero }}{% endblock %}
+{% block doc_titulo %}ORDEN DE COMPRA / SERVICIO{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   ORDEN DE COMPRA / SERVICIO  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.oc-numero {
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #1a6b3c;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.oc-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.oc-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.oc-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 4px 0;
+  line-height: 1.6;
+}
+
+/* ── Tabla de datos generales ─────────────────────── */
+table.oc-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 10px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.oc-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 20%;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.oc-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+/* ── Lugar y fecha ────────────────────────────────── */
+.oc-lugar {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 10px 0 6px;
+  line-height: 1.6;
+}
+
+/* ── Firmas ───────────────────────────────────────── */
+.oc-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.oc-firma-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+table.oc-firma-tabla td {
+  width: 50%;
+  text-align: center;
+  padding: 0 20px;
+  border: none;
+  vertical-align: bottom;
+}
+.oc-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.oc-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.oc-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<p class="oc-numero">Contrato N.° {{ numero }}</p>
+
+<!-- ── 1. DATOS GENERALES ─────────────────────────────────────── -->
+<div class="oc-section">
+  <div class="oc-section-titulo">1. Datos Generales</div>
+  <table class="oc-tabla">
+    <tr>
+      <th>Institución</th>
+      <td colspan="3">{{ inst_nombre }}</td>
+    </tr>
+    <tr>
+      <th>NIT Institución</th>
+      <td>{{ format_id(inst_nit) }}</td>
+      <th>Fecha</th>
+      <td>{{ fecha_inicio_larga }}</td>
+    </tr>
+    <tr>
+      <th>Contrato N.°</th>
+      <td>{{ numero }}</td>
+      <th>Tipo de contrato</th>
+      <td>{{ tipo_contrato }}</td>
+    </tr>
+    <tr>
+      <th>CDP N.°</th>
+      <td>{{ num_cdp }} &nbsp;·&nbsp; {{ fecha_cdp_larga }}</td>
+      <th>RP N.°</th>
+      <td>{{ num_rp }} &nbsp;·&nbsp; {{ fecha_rp_larga }}</td>
+    </tr>
+    <tr>
+      <th>Rubro presupuestal</th>
+      <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+      <th>Fuente</th>
+      <td>{{ fuente }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 2. DATOS DEL PROVEEDOR / CONTRATISTA ───────────────────── -->
+<div class="oc-section">
+  <div class="oc-section-titulo">2. Proveedor / Contratista</div>
+  <table class="oc-tabla">
+    <tr>
+      <th>Nombre / Razón social</th>
+      <td colspan="3">{{ nombre_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>{{ tipo_id_contratista }}</td>
+      <th>Número</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    <tr>
+      <th>Representante Legal</th>
+      <td colspan="3">{{ rep_legal_nombre }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>C.C.</td>
+      <th>Número</th>
+      <td>{{ format_id(rep_legal_cc) }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+      <th>Dirección</th>
+      <td>{{ direccion_contratista }}</td>
+      <th>Municipio</th>
+      <td>{{ municipio_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Teléfono / Celular</th>
+      <td>{{ celular_contratista }}</td>
+      <th>Correo electrónico</th>
+      <td>{{ email_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Banco</th>
+      <td>{{ banco_contratista }}</td>
+      <th>Tipo de cuenta</th>
+      <td>{{ tipo_cuenta }}</td>
+    </tr>
+    <tr>
+      <th>N.° de cuenta</th>
+      <td colspan="3">{{ cuenta_banco }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 3. OBJETO ──────────────────────────────────────────────── -->
+<div class="oc-section">
+  <div class="oc-section-titulo">3. Objeto</div>
+  <p>{{ objeto }}</p>
+</div>
+
+<!-- ── 4. CONDICIONES DE PAGO ─────────────────────────────────── -->
+<div class="oc-section">
+  <div class="oc-section-titulo">4. Condiciones de Pago</div>
+  {% set fp = forma_pago or 'Pago único' %}
+  <p>
+    {% if fp == 'Pagos mensuales' %}
+      El pago se realizará en <strong>pagos mensuales</strong>, dentro de los quince (15)
+      días hábiles siguientes al vencimiento de cada mes de ejecución,
+    {% elif fp == 'Pagos bimestrales' %}
+      El pago se realizará en <strong>pagos bimestrales</strong>, dentro de los veinte (20)
+      días hábiles siguientes al vencimiento de cada bimestre,
+    {% elif fp == 'Pagos trimestrales' %}
+      El pago se realizará en <strong>pagos trimestrales</strong>, dentro de los veinte (20)
+      días hábiles siguientes al vencimiento de cada trimestre,
+    {% elif fp == 'Pagos semestrales' %}
+      El pago se realizará en <strong>pagos semestrales</strong>, dentro de los treinta (30)
+      días hábiles siguientes al vencimiento de cada semestre,
+    {% elif fp == 'Anticipos y saldo' %}
+      El pago se realizará mediante <strong>anticipo y pago del saldo</strong>. El anticipo,
+      equivalente al cincuenta por ciento (50%) del valor total, se desembolsará dentro de
+      los quince (15) días hábiles siguientes a la suscripción del acta de inicio; el saldo
+      dentro de los treinta (30) días hábiles siguientes a la entrega total del objeto,
+    {% else %}
+      El pago se realizará en un <strong>único desembolso</strong>, dentro de los dos (2)
+      días hábiles siguientes a la presentación de la factura o cuenta de cobro,
+    {% endif %}
+    mediante transferencia bancaria a la cuenta <strong>{{ tipo_cuenta }}</strong>
+    N.° <strong>{{ cuenta_banco }}</strong> del banco <strong>{{ banco_contratista }}</strong>,
+    a nombre de <strong>{{ nombre_contratista }}</strong>, previa suscripción del acta de
+    recibido a satisfacción por parte del supervisor.
+  </p>
+  <p>
+    <strong>Plazo de ejecución:</strong> {{ dias_duracion }} días hábiles. &nbsp;
+    <strong>Inicio:</strong> {{ fecha_inicio_larga }}. &nbsp;
+    <strong>Terminación:</strong> {{ fecha_fin_larga }}.
+  </p>
+</div>
+
+<!-- ── Lugar y fecha ──────────────────────────────────────────── -->
+<p class="oc-lugar">
+  La presente orden es expedida en <strong>{{ inst_municipio }}</strong>,
+  el <strong>{{ fecha_inicio_larga }}</strong>.
+</p>
+
+<!-- ── FIRMAS ─────────────────────────────────────────────────── -->
+<div class="oc-firma-section">
+  <table class="oc-firma-tabla">
+    <tr>
+      <!-- Rector -->
+      <td>
+        <div class="oc-firma-linea">
+          <p class="oc-firma-nombre">{{ rector }}</p>
+          <p class="oc-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+          <p class="oc-firma-cargo">Rector(a) — Ordenador del Gasto</p>
+          <p class="oc-firma-cargo">{{ inst_nombre }}</p>
+          <p class="oc-firma-cargo"><strong>EXPIDIÓ</strong></p>
+        </div>
+      </td>
+      <!-- Contratista -->
+      <td>
+        <div class="oc-firma-linea">
+          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+            <p class="oc-firma-nombre">{{ rep_legal_nombre }}</p>
+            <p class="oc-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
+            <p class="oc-firma-cargo">Representante Legal</p>
+            <p class="oc-firma-cargo">{{ nombre_contratista }}</p>
+            <p class="oc-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% else %}
+            <p class="oc-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="oc-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+            <p class="oc-firma-cargo">Cel.: {{ celular_contratista }}</p>
+          {% endif %}
+          <p class="oc-firma-cargo"><strong>RECIBÍ CONFORME</strong></p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

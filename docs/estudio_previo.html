@@ -1,0 +1,405 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Estudio Previo — {{ numero }}{% endblock %}
+{% block doc_titulo %}ESTUDIO PREVIO{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ══════════════════════════════════════════════
+     Estudio Previo — estilos específicos de impresión
+     ══════════════════════════════════════════════ */
+
+  /* Subtítulo bajo el encabezado institucional */
+  .ep-subtitle {
+    text-align: center;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #1a6b3c;
+    margin: 8px 0 14px;
+    letter-spacing: .3px;
+  }
+
+  /* Tabla de datos de cabecera (institución / fecha) */
+  table.ep-info {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 14px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.ep-info th {
+    background: #f0f7f0;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 18%;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.ep-info td {
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 32%;
+  }
+
+  /* Sección genérica */
+  .ep-section {
+    margin: 10px 0;
+    page-break-inside: avoid;
+  }
+  .ep-section h3 {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-left: 4px solid #1a6b3c;
+    margin-bottom: 6px;
+  }
+  .ep-section p {
+    font-size: 10pt;
+    text-align: justify;
+    margin: 5px 0;
+    line-height: 1.45;
+  }
+  .ep-section ul,
+  .ep-section ol {
+    font-size: 10pt;
+    text-align: justify;
+    padding-left: 22px;
+    margin: 5px 0;
+    line-height: 1.45;
+  }
+  .ep-section li {
+    margin-bottom: 3px;
+  }
+
+  /* Tablas de datos dentro de secciones */
+  table.ep-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 10px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.ep-table thead th {
+    background: #1a6b3c;
+    color: #fff;
+    padding: 5px 7px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #145530;
+  }
+  table.ep-table tbody td {
+    padding: 4px 7px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+    line-height: 1.35;
+  }
+  table.ep-table tbody tr:nth-child(even) td {
+    background: #f8faf8;
+  }
+  table.ep-table tfoot td {
+    padding: 5px 7px;
+    border: 1px solid #aaa;
+    font-weight: bold;
+    background: #e8f5e9;
+  }
+
+  /* Bloque de firmas */
+  .ep-firma-section {
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+  .ep-firma-section h3 {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-left: 4px solid #1a6b3c;
+    margin-bottom: 8px;
+  }
+  .ep-firma-section > p {
+    font-size: 10pt;
+    text-align: justify;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .ep-firma-grid {
+    display: flex;
+    gap: 30px;
+    margin-top: 8px;
+  }
+  .ep-firma-block {
+    flex: 1;
+    text-align: center;
+  }
+  .ep-firma-linea {
+    border-top: 1px solid #000;
+    margin-top: 65px;
+    padding-top: 5px;
+  }
+  .ep-firma-block p {
+    font-size: 10pt;
+    margin: 2px 0;
+  }
+
+  /* Print: evitar cortes en tablas y firmas */
+  @media print {
+    .ep-section       { page-break-inside: avoid; }
+    table.ep-table    { page-break-inside: avoid; }
+    table.ep-info     { page-break-inside: avoid; }
+    .ep-firma-section { page-break-inside: avoid; }
+  }
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- Tabla de datos generales -->
+<table class="ep-info">
+  <tr>
+    <th>Institución</th>
+    <td colspan="3">{{ inst_nombre }}</td>
+  </tr>
+  <tr>
+    <th>NIT</th>
+    <td>{{ format_id(inst_nit) }}</td>
+    <th>Municipio</th>
+    <td>{{ inst_municipio }}, {{ inst_departamento }}</td>
+  </tr>
+  <tr>
+    <th>Fecha Elaboración</th>
+    <td colspan="3">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else hoy_largo }}</td>
+  </tr>
+</table>
+
+<!-- ─────────── SECCIÓN 1 ─────────── -->
+<div class="ep-section">
+  <h3>1. Modalidad de Selección y Tipo de Contrato</h3>
+  <p>
+    De conformidad con lo establecido en la Ley 80 de 1993, la Ley 1150 de 2007 y
+    el Decreto 1082 de 2015, la presente contratación se adelanta bajo la modalidad
+    de <strong>{{ modalidad_seleccion }}</strong>, siendo el tipo de contrato a
+    suscribir un <strong>{{ tipo_contrato }}</strong>.
+  </p>
+  <p>
+    La modalidad de selección se justifica en razón a que el valor del contrato no
+    supera el monto establecido para procesos de Mínima Cuantía, conforme al
+    presupuesto anual de la entidad y los límites fijados por la normativa vigente.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 2 ─────────── -->
+<div class="ep-section">
+  <h3>2. Descripción de la Necesidad</h3>
+  <p>
+    {{ 'El' if 'CENTRO' in inst_nombre|upper else 'La' }} {{ inst_nombre }}, con NIT {{ format_id(inst_nit) }}, ha identificado la necesidad de
+    contratar lo siguiente, con el fin de garantizar el adecuado funcionamiento
+    institucional y el cumplimiento de sus objetivos misionales:
+  </p>
+  <p><strong>Necesidad identificada:</strong> {{ objeto }}</p>
+  <p>
+    La satisfacción de esta necesidad resulta indispensable para el normal desarrollo
+    de las actividades académicas y administrativas de la institución, conforme a los
+    planes y programas institucionales vigentes para la vigencia fiscal correspondiente.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 3 ─────────── -->
+<div class="ep-section">
+  <h3>3. Objeto del Contrato y Clasificación UNSPSC</h3>
+  <p><strong>Objeto:</strong> {{ objeto }}</p>
+  <table class="ep-table">
+    <thead>
+      <tr>
+        <th style="width:30%">Clasificación UNSPSC</th>
+        <th>Descripción del Objeto</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set codigos_unspsc = items | selectattr('unsp') | map(attribute='unsp') | list %}
+      <tr>
+        <td style="text-align:center; font-weight:bold; letter-spacing:0.5px;">
+          {% if codigos_unspsc %}
+            {{ codigos_unspsc | join('; ') }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>{{ objeto }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    El rubro presupuestal afectado corresponde a
+    <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
+    con fuente de financiación <strong>{{ fuente }}</strong>.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 4 ─────────── -->
+<div class="ep-section">
+  <h3>4. Condiciones Técnicas y Especificaciones del Bien o Servicio</h3>
+  <p>El bien o servicio requerido deberá cumplir con las siguientes condiciones técnicas mínimas:</p>
+  <ul>
+    <li>Cumplir estrictamente con el objeto contractual descrito.</li>
+    <li>Ser entregado o prestado en el lugar y dentro del plazo acordado.</li>
+    <li>Reunir los requisitos de calidad exigidos para este tipo de bien o servicio.</li>
+    <li>El contratista deberá acreditar experiencia y capacidad técnica suficiente.</li>
+    <li>Atender las instrucciones impartidas por el supervisor del contrato.</li>
+  </ul>
+</div>
+
+<!-- ─────────── SECCIÓN 5 ─────────── -->
+<div class="ep-section">
+  <h3>5. Obligaciones del Contratista</h3>
+  {% if obligaciones and obligaciones.strip() %}
+    {% for linea in obligaciones.split('\n') %}
+      {% if linea.strip() %}<p>{{ linea.strip() }}</p>{% endif %}
+    {% endfor %}
+  {% else %}
+  <ul>
+    <li>Ejecutar el objeto del contrato en las condiciones de tiempo, modo y lugar pactadas.</li>
+    <li>Cumplir con las especificaciones técnicas requeridas.</li>
+    <li>Presentar los informes y soportes que requiera el supervisor.</li>
+    <li>Guardar confidencialidad sobre la información institucional.</li>
+    <li>No ceder el contrato sin previa autorización escrita de la entidad.</li>
+    <li>Afiliarse y mantener al día el pago de aportes al Sistema General de Seguridad Social.</li>
+  </ul>
+  {% endif %}
+</div>
+
+<!-- ─────────── SECCIÓN 6 ─────────── -->
+<div class="ep-section">
+  <h3>6. Análisis del Sector y Referenciación de Precios de Mercado</h3>
+  <p>
+    Con el fin de establecer el valor del contrato, se realizó una consulta de precios
+    en el mercado. El análisis arrojó como valor de referencia la
+    suma de <strong>{{ format_moneda(valor_total) }}</strong>
+    (<strong>{{ valor_letras }}</strong>), el cual corresponde al valor total del contrato,
+    amparado mediante Certificado de Disponibilidad Presupuestal (CDP)
+    N.° <strong>{{ num_cdp }}</strong> de fecha <strong>{{ fecha_cdp_larga }}</strong>.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 7 ─────────── -->
+<div class="ep-section">
+  <h3>7. Análisis de Riesgos</h3>
+  <p>
+    A continuación se identifican los principales riesgos asociados al proceso contractual
+    y las medidas de mitigación propuestas:
+  </p>
+  <table class="ep-table">
+    <thead>
+      <tr>
+        <th style="width:16%">Tipo de Riesgo</th>
+        <th style="width:42%">Descripción</th>
+        <th style="width:42%">Medidas de Mitigación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Operativo</strong></td>
+        <td>Incumplimiento en la entrega o prestación del servicio en los plazos pactados.</td>
+        <td>Supervisión continua, actas parciales de avance, aplicación de cláusula penal.</td>
+      </tr>
+      <tr>
+        <td><strong>Financiero</strong></td>
+        <td>Insuficiencia de recursos presupuestales para el pago.</td>
+        <td>Verificación previa de disponibilidad presupuestal mediante CDP y RP.</td>
+      </tr>
+      <tr>
+        <td><strong>Jurídico</strong></td>
+        <td>Inhabilidades o incompatibilidades del contratista.</td>
+        <td>Verificación en el SECOP, SIRI y boletines de responsables fiscales.</td>
+      </tr>
+      <tr>
+        <td><strong>Técnico</strong></td>
+        <td>Bien o servicio que no cumple con las especificaciones requeridas.</td>
+        <td>Supervisión técnica, rechazo y reposición del bien o servicio no conforme.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─────────── SECCIÓN 8 ─────────── -->
+<div class="ep-section">
+  <h3>8. Documentación Requerida para el Pago</h3>
+  <p>Para el trámite del pago, el contratista deberá presentar:</p>
+  <ol>
+    <li>Factura o cuenta de cobro a nombre de la institución.</li>
+    <li>Certificado de pago de aportes al Sistema General de Seguridad Social (cuando aplique).</li>
+    <li>Informe de actividades o acta de recibido a satisfacción suscrita por el supervisor.</li>
+    <li>Paz y salvo de obligaciones con la entidad (si aplica).</li>
+    <li>Copia del Registro Único Tributario (RUT) actualizado.</li>
+    <li>Certificación bancaria vigente.</li>
+  </ol>
+</div>
+
+<!-- ─────────── SECCIÓN 9 ─────────── -->
+<div class="ep-section">
+  <h3>9. Justificación de la Contratación</h3>
+  <p>
+    La presente contratación es conveniente y necesaria para la institución, toda vez
+    que permite dar cumplimiento a los objetivos misionales y al plan de mejoramiento
+    institucional. La adquisición se encuentra debidamente presupuestada en el rubro
+    <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>, con disponibilidad
+    certificada mediante CDP N.° <strong>{{ num_cdp }}</strong> del
+    <strong>{{ fecha_cdp_larga }}</strong>.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 10 ─────────── -->
+<div class="ep-section">
+  <h3>10. Cronograma del Proceso</h3>
+  <table class="ep-table">
+    <thead>
+      <tr>
+        <th style="width:60%">Actividad</th>
+        <th style="width:40%; text-align:center">Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Publicación del Estudio Previo e Invitación</td>
+        <td style="text-align:center">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Recepción de Ofertas</td>
+        <td style="text-align:center">{{ fecha_presentacion_oferta_larga if fecha_presentacion_oferta_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Evaluación y Selección de Ofertas</td>
+        <td style="text-align:center">{{ fecha_evaluacion_larga if fecha_evaluacion_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Suscripción del Contrato (Registro Presupuestal)</td>
+        <td style="text-align:center">{{ fecha_rp_larga if fecha_rp_larga is defined else '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─────────── FIRMAS ─────────── -->
+<div class="ep-firma-section">
+  <h3>Aprobación</h3>
+  <p>
+    El presente Estudio Previo ha sido elaborado y revisado por la
+    dependencia competente, y se somete a consideración y aprobación del(la) Rector(a)
+    de la institución.
+  </p>
+  <div class="ep-firma-grid">
+    <div class="ep-firma-block">
+      <div class="ep-firma-linea">
+        <p><strong>{{ rector | upper }}</strong></p>
+        <p>C.C. {{ format_id(cc_rector) }}</p>
+        <p>Rector(a) — Ordenador del Gasto</p>
+        <p>{{ inst_nombre }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

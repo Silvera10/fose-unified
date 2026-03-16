@@ -1,0 +1,446 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Invitación a Ofertar — {{ numero }}{% endblock %}
+{% block doc_titulo %}INVITACIÓN A OFERTAR{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ══════════════════════════════════════════════
+     INVITACIÓN A OFERTAR 3 — estilos de impresión
+     ══════════════════════════════════════════════ */
+
+  table.inv3-info {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 14px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.inv3-info th {
+    background: #f0f7f0;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 20%;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.inv3-info td {
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+  }
+
+  .inv3-destinatario {
+    margin: 10px 0 14px;
+    padding: 8px 12px;
+    border-left: 4px solid #1a6b3c;
+    background: #f9fdf9;
+    font-size: 10pt;
+    line-height: 1.7;
+    page-break-inside: avoid;
+  }
+  .inv3-destinatario p { margin: 0; }
+
+  .inv3-asunto {
+    margin: 10px 0 14px;
+    font-size: 10pt;
+    line-height: 1.6;
+    text-align: justify;
+  }
+
+  .inv3-section {
+    margin: 12px 0;
+    page-break-inside: avoid;
+  }
+  .inv3-section-titulo {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-left: 4px solid #1a6b3c;
+    margin-bottom: 7px;
+  }
+  .inv3-section p {
+    font-size: 10pt;
+    text-align: justify;
+    margin: 5px 0;
+    line-height: 1.6;
+  }
+  .inv3-section ul {
+    margin: 5px 0 5px 20px;
+    font-size: 10pt;
+    line-height: 1.7;
+  }
+  .inv3-section h4 {
+    font-size: 10pt;
+    margin: 8px 0 3px;
+    color: #1a6b3c;
+  }
+
+  table.inv3-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 10px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.inv3-table thead th {
+    background: #1a6b3c;
+    color: #fff;
+    padding: 5px 8px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #145530;
+  }
+  table.inv3-table thead th.left { text-align: left; }
+  table.inv3-table tbody td {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+  }
+  table.inv3-table tbody tr:nth-child(even) td { background: #f9fdf9; }
+
+  .inv3-firma-section {
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+  .inv3-firma-block {
+    display: inline-block;
+    text-align: center;
+    min-width: 220px;
+  }
+  .inv3-firma-linea {
+    border-top: 1px solid #000;
+    margin-top: 65px;
+    padding-top: 5px;
+  }
+  .inv3-firma-block p { font-size: 10pt; margin: 2px 0; }
+
+  @media print {
+    .inv3-section       { page-break-inside: avoid; }
+    table.inv3-table    { page-break-inside: avoid; }
+    table.inv3-info     { page-break-inside: avoid; }
+    .inv3-firma-section { page-break-inside: avoid; }
+    .inv3-destinatario  { page-break-inside: avoid; }
+  }
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- Tabla institucional -->
+<table class="inv3-info">
+  <tr>
+    <th>Institución</th>
+    <td colspan="3">{{ inst_nombre }}</td>
+  </tr>
+  <tr>
+    <th>NIT</th>
+    <td>{{ format_id(inst_nit) }}</td>
+    <th>Municipio</th>
+    <td>{{ inst_municipio }}, {{ inst_departamento }}</td>
+  </tr>
+  <tr>
+    <th>Fecha</th>
+    <td colspan="3">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else hoy_largo }}</td>
+  </tr>
+</table>
+
+<!-- Destinatario — datos Cotización 3 -->
+<div class="inv3-destinatario">
+  <p><strong>Señor(a):</strong></p>
+  <p><strong>{{ cot3_nombre }}</strong></p>
+  <p>CC/NIT N.° {{ cot3_cc }}</p>
+  <p>{{ cot3_municipio }}</p>
+</div>
+
+<!-- Asunto -->
+<div class="inv3-asunto">
+  <p>
+    <strong>Asunto:</strong> Invitación a presentar oferta para proceso de contratación
+    de Mínima Cuantía — artículo 2.2.1.2.1.5.2 del Decreto 1082 de 2015.
+  </p>
+</div>
+
+<!-- Saludo -->
+<div class="inv3-section">
+  <p>Apreciado(a) señor(a):</p>
+  <p>
+    {{ 'El' if 'CENTRO' in inst_nombre|upper else 'La' }} <strong>{{ inst_nombre }}</strong>, NIT <strong>{{ format_id(inst_nit) }}</strong>,
+    con domicilio en {{ inst_dir }}, {{ inst_municipio }}, {{ inst_departamento }},
+    le extiende cordial invitación a presentar su oferta para la siguiente contratación,
+    en el marco de las facultades que le confiere la normatividad vigente.
+  </p>
+</div>
+
+<!-- 1. OBJETO -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">1. Objeto del Contrato</div>
+  <p>{{ objeto }}</p>
+</div>
+
+<!-- 2. CLASIFICACIÓN UNSPSC -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">2. Clasificación UNSPSC</div>
+  <table class="inv3-table">
+    <thead>
+      <tr>
+        <th class="left" style="width:30%">Código UNSPSC</th>
+        <th class="left">Descripción del Bien / Servicio</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set codigos_unspsc = items | selectattr('unsp') | map(attribute='unsp') | list %}
+      <tr>
+        <td style="text-align:center; font-weight:bold; letter-spacing:0.5px;">
+          {% if codigos_unspsc %}
+            {{ codigos_unspsc | join('; ') }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>{{ objeto }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 3. PRESUPUESTO -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">3. Presupuesto Oficial</div>
+  <p>
+    El valor estimado de la contratación es de
+    <strong>{{ format_moneda(valor_total) }}</strong>
+    (<strong>{{ valor_letras }}</strong>), IVA incluido si aplica,
+    con cargo al rubro <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
+    amparado con CDP N.° <strong>{{ num_cdp }}</strong> del
+    <strong>{{ fecha_cdp_larga }}</strong>.
+  </p>
+</div>
+
+<!-- 4. PLAZO -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">4. Plazo de Ejecución</div>
+  <p>
+    <strong>{{ dias_duracion }} días hábiles</strong>, contados a partir del acta de inicio.
+  </p>
+  <p>
+    <strong>Inicio estimado:</strong> {{ fecha_inicio_larga }}&nbsp;&nbsp;&nbsp;
+    <strong>Terminación estimada:</strong> {{ fecha_fin_larga }}
+  </p>
+</div>
+
+<!-- 5. CRONOGRAMA -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">5. Cronograma del Proceso</div>
+  <table class="inv3-table">
+    <thead>
+      <tr>
+        <th class="left" style="width:60%">Actividad</th>
+        <th style="width:40%">Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Publicación del Estudio Previo e Invitación</td>
+        <td style="text-align:center">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Recepción de Ofertas</td>
+        <td style="text-align:center">{{ fecha_presentacion_oferta_larga if fecha_presentacion_oferta_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Evaluación y Selección</td>
+        <td style="text-align:center">{{ fecha_evaluacion_larga if fecha_evaluacion_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Suscripción del Contrato</td>
+        <td style="text-align:center">{{ fecha_rp_larga if fecha_rp_larga is defined else '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 6. CONDICIONES DE LA OFERTA -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">6. Condiciones de la Oferta</div>
+  <p>La oferta deberá presentarse de manera escrita o por correo electrónico a
+     <strong>{{ inst_email }}</strong>, antes de la fecha límite señalada en el cronograma,
+     y deberá contener como mínimo:</p>
+  <ul>
+    <li>Descripción detallada del bien o servicio ofrecido.</li>
+    <li>Valor total de la oferta (unitarios e IVA discriminado, si aplica).</li>
+    <li>Plazo de entrega o ejecución.</li>
+    <li>Datos de contacto del oferente.</li>
+  </ul>
+</div>
+
+<!-- 7. FORMA DE PAGO -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">7. Forma de Pago</div>
+  <p>
+    El pago se realizará en la modalidad de <strong>{{ forma_pago or 'pago único' }}</strong>,
+    previo cumplimiento del objeto, presentación de factura o cuenta de cobro,
+    acta de recibido a satisfacción y demás documentos requeridos. Se aplicarán retenciones
+    y descuentos de ley.
+  </p>
+</div>
+
+<!-- 8. REQUISITOS HABILITANTES -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">8. Requisitos Habilitantes</div>
+  <table class="inv3-table">
+    <thead>
+      <tr>
+        <th style="width:4%">#</th>
+        <th class="left" style="width:28%">Documento</th>
+        <th class="left" style="width:32%">Descripción</th>
+        <th class="left" style="width:18%">Vigencia</th>
+        <th class="left" style="width:18%">Aplicación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align:center">1</td>
+        <td>Existencia y representación legal</td>
+        <td>Expedido por cámara de comercio u organismo que otorga reconocimiento.</td>
+        <td>Expedición no superior a 30 días</td>
+        <td>Personas que ejerzan actividades mercantiles</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">2</td>
+        <td>Fotocopia documento de identidad</td>
+        <td>Documento de identidad del interesado, proveedor o contratista.</td>
+        <td>N/A</td>
+        <td>Persona natural y/o representante legal</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">3</td>
+        <td>RUT - Registro Único Tributario</td>
+        <td>Detalla actividades económicas y responsabilidades tributarias.</td>
+        <td>N/A</td>
+        <td>Personas naturales y jurídicas</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">4</td>
+        <td>Seguridad social</td>
+        <td>Constancia de afiliación o planilla de pago al SGSS.</td>
+        <td>Afiliación vigente al presentar propuesta</td>
+        <td>Persona natural y jurídica</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">5</td>
+        <td>Antecedentes disciplinarios - Procuraduría</td>
+        <td>Revela antecedentes disciplinarios de personas.</td>
+        <td>Expedición no superior a 30 días</td>
+        <td>Persona natural, jurídica y representante legal</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">6</td>
+        <td>Antecedentes medidas correctivas - RNMC</td>
+        <td>Registro Nacional de Medidas Correctivas - Código de Policía.</td>
+        <td>Vigente sin registro de inhabilidad</td>
+        <td>Representante legal y persona natural</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">7</td>
+        <td>Paz y salvo fiscal - Contraloría General</td>
+        <td>Revela obligaciones fiscales de personas naturales y jurídicas.</td>
+        <td>Expedición no superior a 30 días</td>
+        <td>Persona natural, jurídica y representante legal</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">8</td>
+        <td>Formato único hoja de vida</td>
+        <td>Instrumento técnico para contratos de prestación de servicios.</td>
+        <td>Actualizada al momento de presentación</td>
+        <td>Contratos de prestación de servicios</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">9</td>
+        <td>Certificado inhabilidades e incompatibilidades</td>
+        <td>Constancia de NO estar incurso en inhabilidad o incompatibilidad.</td>
+        <td>Vigente al momento de participación</td>
+        <td>Persona natural y representante legal</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">10</td>
+        <td>Registro inhabilidades por delitos sexuales</td>
+        <td>Acredita ausencia de delitos sexuales contra menores de edad.</td>
+        <td>Vigente al momento de presentación</td>
+        <td>Persona natural y representante legal / persona jurídica</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">11</td>
+        <td>Oferta o propuesta económica</td>
+        <td>Presentada en términos de la invitación para bienes o servicios.</td>
+        <td>Según cronograma del proceso</td>
+        <td>Según condiciones de la invitación</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">12</td>
+        <td>REDAM - Deudores alimentarios morosos</td>
+        <td>Constancia de NO tener anotación en el Registro de Deudores Alimentarios Morosos.</td>
+        <td>Expedición no superior a 90 días</td>
+        <td>Persona natural y representante legal / persona jurídica</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">13</td>
+        <td>Autorización tratamiento de datos</td>
+        <td>Autoriza el tratamiento y publicidad de datos de proponentes.</td>
+        <td>Al momento de presentar propuesta</td>
+        <td>Persona natural y jurídica</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">14</td>
+        <td>Carta de presentación de oferta</td>
+        <td>Escrito de aceptación de condiciones de la invitación.</td>
+        <td>Fecha máxima = fecha de presentación</td>
+        <td>Persona natural y jurídica interesada</td>
+      </tr>
+      <tr>
+        <td style="text-align:center">15</td>
+        <td>Antecedentes judiciales</td>
+        <td>Certificado de Antecedentes Judiciales.</td>
+        <td>Expedición no superior a 30 días</td>
+        <td>Personas naturales y representantes legales</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 9. CRITERIO DE SELECCIÓN -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">9. Criterio de Selección</div>
+  <p>
+    Se seleccionará la oferta de <strong>menor precio</strong> que cumpla
+    íntegramente con los requisitos habilitantes establecidos.
+  </p>
+</div>
+
+<!-- 10. FUNDAMENTO LEGAL -->
+<div class="inv3-section">
+  <div class="inv3-section-titulo">10. Fundamento Legal</div>
+  <ul>
+    <li>Ley 80 de 1993 — Estatuto General de Contratación Pública.</li>
+    <li>Ley 1150 de 2007 — Eficiencia y transparencia contractual.</li>
+    <li>Decreto 1082 de 2015 — Decreto Único Reglamentario.</li>
+    <li>Ley 1474 de 2011 — Estatuto Anticorrupción.</li>
+    <li>Demás normas concordantes y complementarias.</li>
+  </ul>
+</div>
+
+<!-- Firma -->
+<div class="inv3-firma-section">
+  <div class="inv3-firma-block">
+    <div class="inv3-firma-linea">
+      <p><strong>{{ rector | upper }}</strong></p>
+      <p>C.C. {{ format_id(cc_rector) }}</p>
+      <p>Rector(a) — Ordenador del Gasto</p>
+      <p>{{ inst_nombre }}</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

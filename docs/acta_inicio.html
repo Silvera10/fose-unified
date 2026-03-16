@@ -1,0 +1,371 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Acta de Inicio — {{ numero }}{% endblock %}
+{% block doc_titulo %}ACTA DE INICIO DE CONTRATO{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   ACTA DE INICIO  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.ai-numero {
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #1a6b3c;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Párrafo introductorio ────────────────────────── */
+.ai-intro {
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.65;
+  margin: 0 0 12px;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.ai-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.ai-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ai-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+
+/* ── Tablas de datos ──────────────────────────────── */
+table.ai-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 8px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ai-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.ai-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+/* Cabeceras de grupo (LA INSTITUCIÓN / EL CONTRATISTA / SUPERVISOR) */
+table.ai-tabla .ai-grupo {
+  background: #1a6b3c;
+  color: #fff;
+  font-weight: bold;
+  font-size: 9pt;
+  letter-spacing: 0.5px;
+  padding: 5px 10px;
+  border: 1.5px solid #1a6b3c;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Lugar y fecha ────────────────────────────────── */
+.ai-lugar {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+/* ── Firmas  (3 columnas) ─────────────────────────── */
+.ai-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.ai-firma-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+table.ai-firma-tabla td {
+  width: 33.33%;
+  text-align: center;
+  padding: 0 10px;
+  border: none;
+  vertical-align: bottom;
+}
+.ai-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.ai-firma-nombre {
+  font-size: 9pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.ai-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<p class="ai-numero">Contrato N.° {{ numero }}</p>
+
+<!-- ── ENCABEZADO ─────────────────────────────────────────────── -->
+<p class="ai-intro">
+  En el municipio de <strong>{{ inst_municipio }}</strong>,
+  {{ inst_departamento }}, siendo el día <strong>{{ fecha_inicio_larga }}</strong>,
+  en las instalaciones de
+  {{ 'el' if 'CENTRO' in inst_nombre|upper else 'la' }}
+  <strong>{{ inst_nombre }}</strong>, NIT <strong>{{ format_id(inst_nit) }}</strong>,
+  ubicada en {{ inst_dir }}, se reunieron las partes que suscriben el presente
+  contrato, con el fin de dar inicio formal a su ejecución.
+</p>
+
+<!-- ── 1. PARTES PRESENTES ────────────────────────────────────── -->
+<div class="ai-section">
+  <div class="ai-section-titulo">1. Partes Presentes</div>
+  <table class="ai-tabla">
+    <!-- LA INSTITUCIÓN -->
+    <tr><td colspan="4" class="ai-grupo">LA INSTITUCIÓN</td></tr>
+    <tr>
+      <th style="width:22%">Nombre</th>
+      <td colspan="3">{{ rector }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>C.C.</td>
+      <th style="width:16%">Número</th>
+      <td>{{ format_id(cc_rector) }}</td>
+    </tr>
+    <tr>
+      <th>Cargo</th>
+      <td>Rector(a) — Ordenador del Gasto</td>
+      <th>NIT Institución</th>
+      <td>{{ format_id(inst_nit) }}</td>
+    </tr>
+    <tr>
+      <th>Institución</th>
+      <td colspan="3">{{ inst_nombre }}</td>
+    </tr>
+
+    <!-- EL CONTRATISTA -->
+    <tr><td colspan="4" class="ai-grupo">EL CONTRATISTA</td></tr>
+    <tr>
+      <th>Nombre</th>
+      <td colspan="3">{{ nombre_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>{{ tipo_id_contratista }}</td>
+      <th>Número</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    {% if sexo_contratista == 'E' and rep_legal_nombre %}
+    <tr>
+      <th>Representante Legal</th>
+      <td colspan="3">{{ rep_legal_nombre }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>C.C.</td>
+      <th>Número</th>
+      <td>{{ format_id(rep_legal_cc) }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+      <th>Dirección</th>
+      <td>{{ direccion_contratista }}</td>
+      <th>Municipio</th>
+      <td>{{ municipio_contratista }}</td>
+    </tr>
+    <tr>
+      <th>Teléfono / Celular</th>
+      <td>{{ celular_contratista }}</td>
+      <th>Correo electrónico</th>
+      <td>{{ email_contratista }}</td>
+    </tr>
+
+    <!-- SUPERVISOR -->
+    <tr><td colspan="4" class="ai-grupo">SUPERVISOR DEL CONTRATO</td></tr>
+    <tr>
+      <th>Nombre</th>
+      <td colspan="3">{{ nombre_supervisor if nombre_supervisor else rector }}</td>
+    </tr>
+    <tr>
+      <th>Cargo</th>
+      <td colspan="3">{{ cargo_supervisor if cargo_supervisor else 'Rector(a)' }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 2. DATOS DEL CONTRATO ──────────────────────────────────── -->
+<div class="ai-section">
+  <div class="ai-section-titulo">2. Datos del Contrato</div>
+  <table class="ai-tabla">
+    <tr>
+      <th style="width:22%">Contrato N.°</th>
+      <td>{{ numero }}</td>
+      <th style="width:22%">Tipo de contrato</th>
+      <td>{{ tipo_contrato }}</td>
+    </tr>
+    <tr>
+      <th>Objeto</th>
+      <td colspan="3">{{ objeto }}</td>
+    </tr>
+    <tr>
+      <th>Valor total</th>
+      <td>{{ format_moneda(valor_total) }}</td>
+      <th>Valor en letras</th>
+      <td>{{ valor_letras }}</td>
+    </tr>
+    <tr>
+      <th>Forma de pago</th>
+      <td colspan="3">{{ forma_pago or 'Pago único' }}</td>
+    </tr>
+    <tr>
+      <th>CDP N.°</th>
+      <td>{{ num_cdp }} &nbsp;·&nbsp; {{ fecha_cdp_larga }}</td>
+      <th>RP N.°</th>
+      <td>{{ num_rp }} &nbsp;·&nbsp; {{ fecha_rp_larga }}</td>
+    </tr>
+    <tr>
+      <th>Rubro presupuestal</th>
+      <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+      <th>Fuente</th>
+      <td>{{ fuente }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 3. FECHAS DE EJECUCIÓN ─────────────────────────────────── -->
+<div class="ai-section">
+  <div class="ai-section-titulo">3. Fechas de Ejecución</div>
+  <table class="ai-tabla">
+    <tr>
+      <th style="width:30%">Fecha de inicio</th>
+      <td><strong>{{ fecha_inicio_larga }}</strong></td>
+    </tr>
+    <tr>
+      <th>Fecha de terminación</th>
+      <td><strong>{{ fecha_fin_larga }}</strong></td>
+    </tr>
+    <tr>
+      <th>Duración pactada</th>
+      <td><strong>{{ dias_duracion }} días hábiles</strong></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 4. DECLARACIÓN DE INICIO ───────────────────────────────── -->
+<div class="ai-section">
+  <div class="ai-section-titulo">4. Declaración de Inicio</div>
+  <p>
+    Las partes presentes declaran que a la fecha de suscripción de la presente
+    acta se encuentran cumplidos los requisitos de perfeccionamiento y ejecución
+    del contrato N.° <strong>{{ numero }}</strong>, razón por la cual
+    <strong>se da inicio formal a la ejecución del contrato</strong>.
+    {% if sexo_contratista == 'E' %}
+      La empresa contratista
+    {% elif sexo_contratista == 'F' %}
+      La contratista
+    {% else %}
+      El contratista
+    {% endif %}
+    se compromete a ejecutar el objeto contractual en el plazo pactado y en las
+    condiciones establecidas en el contrato.
+  </p>
+  <p>
+    El supervisor designado, <strong>{{ nombre_supervisor if nombre_supervisor else rector }}</strong>, se
+    compromete a realizar el seguimiento y control del contrato de conformidad
+    con sus obligaciones legales y las instrucciones de la Rectoría.
+  </p>
+</div>
+
+<!-- ── 5. OBSERVACIONES ───────────────────────────────────────── -->
+<div class="ai-section">
+  <div class="ai-section-titulo">5. Observaciones</div>
+  <p>
+    Las partes manifiestan no tener observaciones adicionales al momento de
+    suscribir la presente acta. Cualquier novedad o circunstancia que se
+    presente durante la ejecución del contrato deberá comunicarse
+    oportunamente al supervisor y a la Rectoría de la institución.
+  </p>
+</div>
+
+<!-- ── Lugar y fecha ──────────────────────────────────────────── -->
+<p class="ai-lugar">
+  En constancia de lo anterior, se firma la presente acta en
+  <strong>{{ inst_municipio }}</strong>, el <strong>{{ fecha_inicio_larga }}</strong>.
+</p>
+
+<!-- ── FIRMAS  (2 columnas) ───────────────────────────────────── -->
+<div class="ai-firma-section">
+  <table class="ai-firma-tabla">
+    <tr>
+      <!-- Rector -->
+      <td>
+        <div class="ai-firma-linea">
+          <p class="ai-firma-nombre">{{ rector }}</p>
+          <p class="ai-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+          <p class="ai-firma-cargo">Rector(a) — Ordenador del Gasto</p>
+          <p class="ai-firma-cargo">{{ inst_nombre }}</p>
+          <p class="ai-firma-cargo"><strong>LA INSTITUCIÓN</strong></p>
+        </div>
+      </td>
+      <!-- Contratista -->
+      <td>
+        <div class="ai-firma-linea">
+          {% if sexo_contratista == 'E' and rep_legal_nombre %}
+            <p class="ai-firma-nombre">{{ rep_legal_nombre }}</p>
+            <p class="ai-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
+            <p class="ai-firma-cargo">Representante Legal</p>
+            <p class="ai-firma-cargo">{{ nombre_contratista }}</p>
+            <p class="ai-firma-cargo">NIT {{ format_id(num_id_contratista) }}</p>
+          {% else %}
+            <p class="ai-firma-nombre">{{ nombre_contratista }}</p>
+            <p class="ai-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
+            <p class="ai-firma-cargo">Cel.: {{ celular_contratista }}</p>
+          {% endif %}
+          <p class="ai-firma-cargo"><strong>EL CONTRATISTA</strong></p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

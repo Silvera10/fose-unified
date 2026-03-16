@@ -1,0 +1,201 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Cert. Plan de Compras{% endblock %}
+{% block doc_titulo %}Certificación Plan Anual de Adquisiciones{% endblock %}
+
+{% block extra_css %}
+<style>
+  @page { size: Letter; margin: 2cm 2cm 2cm 2.5cm; }
+
+  /* ── Caja con borde y fondo gris claro ── */
+  .cpc-caja {
+    border: 1px solid #b0b0b0;
+    background: #f0f0f0;
+    padding: 11px 16px;
+    margin-bottom: 7px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ── Banda de título oscuro ── */
+  .cpc-titulo {
+    background: #4a4a4a;
+    color: #fff;
+    text-align: center;
+    font-size: 10.5pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    letter-spacing: 0.4px;
+    margin-bottom: 7px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Ordenador del gasto ── */
+  .cpc-ordenador {
+    text-align: center;
+    font-size: 10.5pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  /* ── CERTIFICA ── */
+  .cpc-certifica {
+    text-align: center;
+    font-size: 12pt;
+    font-weight: bold;
+    text-decoration: underline;
+    letter-spacing: 2px;
+    padding: 2px 0;
+  }
+
+  /* ── Textos ── */
+  .cpc-texto {
+    text-align: justify;
+    font-size: 10.5pt;
+    line-height: 1.65;
+  }
+  .cpc-texto-italic {
+    text-align: justify;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  /* ── Tabla UNSPSC ── */
+  .cpc-tabla-wrap {
+    margin-bottom: 7px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .cpc-tabla {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .cpc-tabla thead th {
+    background: #4a4a4a;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px 7px;
+    font-size: 10pt;
+    border: 1.5px solid #4a4a4a;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .cpc-tabla tbody td {
+    border: 1px solid #999;
+    padding: 10px 10px;
+    vertical-align: middle;
+    font-size: 10pt;
+    line-height: 1.55;
+  }
+  .cpc-tabla tbody td.tc { text-align: center; }
+  .cpc-tabla tbody td.tj { text-align: justify; }
+
+  /* ── Firma ── */
+  .cpc-firma-wrap {
+    margin-top: 34px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .cpc-firma-etiq {
+    font-size: 10pt;
+    color: #555;
+    margin-bottom: 48px;
+  }
+  .cpc-firma-bloque {
+    border-top: 1.5px solid #000;
+    width: 60%;
+    padding-top: 5px;
+  }
+  .cpc-firma-bloque p { font-size: 10.5pt; line-height: 1.7; }
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+  <!-- 1. Banda de título del certificado -->
+  <div class="cpc-titulo">
+    Certificación de Inclusión de Bien o Servicio en el Plan Anual de Adquisiciones
+  </div>
+
+  <!-- 2. Ordenador del gasto -->
+  <div class="cpc-caja">
+    <p class="cpc-ordenador">
+      El suscrito Ordenador del Gasto del {{ inst_nombre }}
+    </p>
+  </div>
+
+  <!-- 3. CERTIFICA -->
+  <div class="cpc-caja">
+    <p class="cpc-certifica">CERTIFICA</p>
+  </div>
+
+  <!-- 4. Párrafo introductorio -->
+  <div class="cpc-caja">
+    <p class="cpc-texto">
+      Que el bien o servicio que se describe a continuación se encuentra incluido en el
+      Plan General de Compras, aprobado por el Consejo Directivo para la vigencia fiscal
+      <strong>{{ anio }}</strong>
+    </p>
+  </div>
+
+  <!-- 5. Tabla de ítems UNSPSC -->
+  <div class="cpc-tabla-wrap">
+    <table class="cpc-tabla">
+      <thead>
+        <tr>
+          <th style="width:18%">Códigos UNSPSC</th>
+          <th style="width:15%">Rubro</th>
+          <th style="width:67%">Descripción del Bien o Servicio</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set codigos = items | selectattr('unsp') | map(attribute='unsp') | list %}
+        <tr>
+          <td class="tc" style="line-height:1.7">
+            {% if codigos %}
+              {{ codigos | join('; ') }}
+            {% else %}—{% endif %}
+          </td>
+          <td class="tc">{{ rubro_codigo or '—' }}</td>
+          <td class="tj">{{ objeto or '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6. Párrafo: acuerdo Consejo Directivo -->
+  <div class="cpc-caja">
+    <p class="cpc-texto">
+      Lo anterior, conforme al Acuerdo aprobado por el Consejo Directivo, de fecha
+      <strong>{{ fecha_aprobacion_plan_compras_larga or '___________________' }}</strong>{% if fecha_modificacion_plan_compras_larga %},
+      y plan de compras modificado <strong>{{ fecha_modificacion_plan_compras_larga }}</strong>{% endif %}.
+    </p>
+  </div>
+
+  <!-- 7. Párrafo: expedición del certificado -->
+  <div class="cpc-caja">
+    <p class="cpc-texto-italic">
+      La presente certificación se expide para el inicio del proceso de contratación del
+      bien o servicio <strong>{{ fecha_cdp_larga or hoy_largo }}</strong>
+    </p>
+  </div>
+
+  <!-- 8. Firma -->
+  <div class="cpc-firma-wrap">
+    <p class="cpc-firma-etiq">Firma</p>
+    <div class="cpc-firma-bloque">
+      <p><strong>{{ (rector or '________________________________') | upper }}</strong></p>
+      {% if cc_rector %}<p>C.C. {{ format_id(cc_rector) }}</p>{% endif %}
+      <p>Rector(a) — Ordenador del Gasto</p>
+      <p>{{ inst_nombre }}</p>
+    </div>
+  </div>
+
+{% endblock %}

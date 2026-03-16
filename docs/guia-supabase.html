@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia - Configurar Supabase para FOSE Unified</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body{font-family:system-ui;background:#f8f9fa;padding:20px}
+.step{background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.08);border-left:5px solid #1a237e}
+.step-num{display:inline-flex;width:36px;height:36px;border-radius:50%;background:#1a237e;color:#fff;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-right:12px}
+.step h3{display:inline;font-size:18px;color:#1a237e}
+.step img{max-width:100%;border:2px solid #dee2e6;border-radius:8px;margin:12px 0}
+.tip{background:#e8f5e9;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:14px}
+.warning{background:#fff3e0;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:14px}
+.sql-box{background:#263238;color:#aed581;padding:16px;border-radius:8px;font-family:monospace;font-size:13px;overflow-x:auto;white-space:pre;max-height:400px;overflow-y:auto}
+code{background:#e3f2fd;padding:2px 6px;border-radius:4px;font-size:13px;color:#1565c0}
+h1{color:#1a237e;text-align:center;margin-bottom:30px}
+.header-bar{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:30px;border-radius:16px;margin-bottom:30px;text-align:center}
+</style>
+</head>
+<body>
+<div class="container" style="max-width:800px">
+
+<div class="header-bar">
+  <h1 style="color:#fff;margin:0">Configurar Supabase para FOSE Unified</h1>
+  <p class="mb-0" style="opacity:.8">Guia paso a paso para activar el backend en la nube</p>
+</div>
+
+<!-- PASO 1 -->
+<div class="step">
+  <span class="step-num">1</span>
+  <h3>Crear cuenta en Supabase</h3>
+  <ol style="margin-top:12px">
+    <li>Abra su navegador y vaya a <a href="https://supabase.com" target="_blank"><strong>https://supabase.com</strong></a></li>
+    <li>Haga clic en el boton verde <strong>"Start your project"</strong></li>
+    <li>Registrese con su <strong>cuenta de GitHub</strong> o con <strong>correo electronico y contrasena</strong></li>
+  </ol>
+  <div class="tip">
+    <strong>Recomendacion:</strong> Si tiene cuenta de GitHub, use esa opcion. Es mas rapido y no necesita verificar correo.
+  </div>
+</div>
+
+<!-- PASO 2 -->
+<div class="step">
+  <span class="step-num">2</span>
+  <h3>Crear un nuevo proyecto</h3>
+  <ol style="margin-top:12px">
+    <li>Una vez dentro, haga clic en <strong>"New Project"</strong></li>
+    <li>Llene los campos:
+      <ul>
+        <li><strong>Organization:</strong> Seleccione la que aparece (o cree una nueva)</li>
+        <li><strong>Name:</strong> Escriba <code>fose-presupuesto</code></li>
+        <li><strong>Database Password:</strong> Escriba una contrasena segura y <strong>guardela en un lugar seguro</strong></li>
+        <li><strong>Region:</strong> Seleccione <code>South America (Sao Paulo)</code></li>
+        <li><strong>Plan:</strong> Deje en <strong>Free</strong> (gratis)</li>
+      </ul>
+    </li>
+    <li>Haga clic en <strong>"Create new project"</strong></li>
+    <li>Espere aproximadamente <strong>2 minutos</strong> mientras se crea el proyecto</li>
+  </ol>
+  <div class="warning">
+    <strong>Importante:</strong> Guarde la contrasena de la base de datos. La necesitara si quiere conectarse directamente a PostgreSQL.
+  </div>
+</div>
+
+<!-- PASO 3 -->
+<div class="step">
+  <span class="step-num">3</span>
+  <h3>Copiar las credenciales de la API</h3>
+  <ol style="margin-top:12px">
+    <li>En el menu lateral izquierdo, haga clic en el icono de <strong>engranaje</strong> (Project Settings)</li>
+    <li>Luego haga clic en <strong>"API"</strong> (bajo Configuration)</li>
+    <li>Copie estos dos valores y guardelos:
+      <ul>
+        <li><strong>Project URL:</strong> Algo como <code>https://abcdefg.supabase.co</code></li>
+        <li><strong>anon public key:</strong> Una cadena larga que empieza con <code>eyJ...</code></li>
+      </ul>
+    </li>
+  </ol>
+  <div class="tip">
+    <strong>Consejo:</strong> Copie cada valor y peguelo en un bloc de notas temporal. Los necesitara en el Paso 6.
+  </div>
+</div>
+
+<!-- PASO 4 -->
+<div class="step">
+  <span class="step-num">4</span>
+  <h3>Crear las tablas de la base de datos</h3>
+  <ol style="margin-top:12px">
+    <li>En el menu lateral, haga clic en <strong>"SQL Editor"</strong> (icono de codigo)</li>
+    <li>Se abre un editor. <strong>Borre todo</strong> lo que haya ahi</li>
+    <li>Copie <strong>TODO</strong> el siguiente codigo SQL y peguelo en el editor:</li>
+  </ol>
+
+  <div class="sql-box" id="sql-schema">-- =====================================================
+-- FOSE Unified - Esquema de Base de Datos para Supabase
+-- =====================================================
+
+-- 1. Tabla de perfiles (extiende auth.users)
+CREATE TABLE public.profiles (
+  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  email TEXT,
+  nombre TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 2. Tabla de instituciones (datos como JSONB)
+CREATE TABLE public.instituciones (
+  id TEXT PRIMARY KEY,
+  nombre TEXT NOT NULL,
+  data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  owner_id UUID REFERENCES public.profiles(id),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 3. Acceso multi-usuario a instituciones
+CREATE TABLE public.user_instituciones (
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  inst_id TEXT REFERENCES public.instituciones(id) ON DELETE CASCADE,
+  role TEXT DEFAULT 'editor' CHECK (role IN ('owner','editor','viewer')),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (user_id, inst_id)
+);
+
+-- 4. Directorio de personas (por usuario)
+CREATE TABLE public.personas (
+  id TEXT PRIMARY KEY,
+  owner_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 5. Metadatos de la app por usuario
+CREATE TABLE public.app_meta (
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE PRIMARY KEY,
+  active_inst_id TEXT,
+  cambios INTEGER DEFAULT 0,
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- =====================================================
+-- SEGURIDAD: Row Level Security (RLS)
+-- =====================================================
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.instituciones ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_instituciones ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.personas ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.app_meta ENABLE ROW LEVEL SECURITY;
+
+-- Politicas para profiles
+CREATE POLICY "Users read own profile"
+  ON public.profiles FOR SELECT
+  USING (auth.uid() = id);
+
+CREATE POLICY "Users update own profile"
+  ON public.profiles FOR UPDATE
+  USING (auth.uid() = id);
+
+CREATE POLICY "Users insert own profile"
+  ON public.profiles FOR INSERT
+  WITH CHECK (auth.uid() = id);
+
+-- Politicas para instituciones
+CREATE POLICY "Users read their institutions"
+  ON public.instituciones FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.user_instituciones
+      WHERE user_id = auth.uid() AND inst_id = instituciones.id
+    )
+  );
+
+CREATE POLICY "Users update their institutions"
+  ON public.instituciones FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.user_instituciones
+      WHERE user_id = auth.uid() AND inst_id = instituciones.id
+      AND role IN ('owner','editor')
+    )
+  );
+
+CREATE POLICY "Authenticated users create institutions"
+  ON public.instituciones FOR INSERT
+  WITH CHECK (auth.uid() = owner_id);
+
+CREATE POLICY "Owners delete institutions"
+  ON public.instituciones FOR DELETE
+  USING (owner_id = auth.uid());
+
+-- Politicas para user_instituciones
+CREATE POLICY "Users see own access"
+  ON public.user_instituciones FOR SELECT
+  USING (user_id = auth.uid());
+
+CREATE POLICY "Owners manage access"
+  ON public.user_instituciones FOR INSERT
+  WITH CHECK (
+    auth.uid() = user_id
+    OR EXISTS (
+      SELECT 1 FROM public.user_instituciones ui
+      WHERE ui.user_id = auth.uid() AND ui.inst_id = user_instituciones.inst_id AND ui.role = 'owner'
+    )
+  );
+
+CREATE POLICY "Owners remove access"
+  ON public.user_instituciones FOR DELETE
+  USING (
+    user_id = auth.uid()
+    OR EXISTS (
+      SELECT 1 FROM public.user_instituciones ui
+      WHERE ui.user_id = auth.uid() AND ui.inst_id = user_instituciones.inst_id AND ui.role = 'owner'
+    )
+  );
+
+-- Politicas para personas
+CREATE POLICY "Users read own personas"
+  ON public.personas FOR SELECT
+  USING (owner_id = auth.uid());
+
+CREATE POLICY "Users insert own personas"
+  ON public.personas FOR INSERT
+  WITH CHECK (owner_id = auth.uid());
+
+CREATE POLICY "Users update own personas"
+  ON public.personas FOR UPDATE
+  USING (owner_id = auth.uid());
+
+CREATE POLICY "Users delete own personas"
+  ON public.personas FOR DELETE
+  USING (owner_id = auth.uid());
+
+-- Politicas para app_meta
+CREATE POLICY "Users read own meta"
+  ON public.app_meta FOR SELECT
+  USING (user_id = auth.uid());
+
+CREATE POLICY "Users insert own meta"
+  ON public.app_meta FOR INSERT
+  WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "Users update own meta"
+  ON public.app_meta FOR UPDATE
+  USING (user_id = auth.uid());
+
+-- =====================================================
+-- TRIGGERS AUTOMATICOS
+-- =====================================================
+
+-- Trigger: Crear perfil y app_meta al registrarse
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, nombre)
+  VALUES (NEW.id, NEW.email, COALESCE(NEW.raw_user_meta_data->>'nombre', ''));
+  INSERT INTO public.app_meta (user_id)
+  VALUES (NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Trigger: Actualizar updated_at automaticamente
+CREATE OR REPLACE FUNCTION public.update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_instituciones_updated
+  BEFORE UPDATE ON public.instituciones
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+CREATE TRIGGER tr_personas_updated
+  BEFORE UPDATE ON public.personas
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+CREATE TRIGGER tr_app_meta_updated
+  BEFORE UPDATE ON public.app_meta
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();</div>
+
+  <div style="margin-top:12px">
+    <button class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('sql-schema').textContent);this.textContent='Copiado!';setTimeout(()=>this.textContent='Copiar SQL',2000)">
+      Copiar SQL
+    </button>
+  </div>
+
+  <ol start="4" style="margin-top:12px">
+    <li>Haga clic en el boton <strong>"Run"</strong> (o presione Ctrl+Enter)</li>
+    <li>Debe aparecer un mensaje verde: <strong>"Success. No rows returned"</strong></li>
+  </ol>
+  <div class="warning">
+    <strong>Si da error:</strong> Verifique que copio TODO el codigo SQL completo, desde la primera linea hasta la ultima.
+  </div>
+</div>
+
+<!-- PASO 5 -->
+<div class="step">
+  <span class="step-num">5</span>
+  <h3>Desactivar confirmacion de correo</h3>
+  <ol style="margin-top:12px">
+    <li>En el menu lateral, vaya a <strong>Authentication</strong> (icono de persona)</li>
+    <li>Haga clic en la pestana <strong>"Providers"</strong></li>
+    <li>Haga clic en <strong>"Email"</strong> para expandirlo</li>
+    <li><strong>Desactive</strong> la opcion <strong>"Confirm email"</strong></li>
+    <li>Haga clic en <strong>"Save"</strong></li>
+  </ol>
+  <div class="tip">
+    <strong>Por que:</strong> Si deja activa la confirmacion, los usuarios tendran que verificar su correo antes de poder usar la app. Desactivandola es mas practico.
+  </div>
+</div>
+
+<!-- PASO 6 -->
+<div class="step">
+  <span class="step-num">6</span>
+  <h3>Configurar la app FOSE con sus credenciales</h3>
+  <ol style="margin-top:12px">
+    <li>Abra el archivo <code>js/supabase.js</code> de su app FOSE con un editor de texto</li>
+    <li>En las primeras lineas, encontrara:
+      <div class="sql-box" style="background:#37474f;margin:8px 0">const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+const SUPABASE_ANON_KEY = 'TU-ANON-KEY-AQUI';</div>
+    </li>
+    <li>Reemplace <code>https://TU-PROYECTO.supabase.co</code> con su <strong>Project URL</strong> (del Paso 3)</li>
+    <li>Reemplace <code>TU-ANON-KEY-AQUI</code> con su <strong>anon public key</strong> (del Paso 3)</li>
+    <li><strong>Guarde</strong> el archivo</li>
+  </ol>
+  <div class="warning">
+    <strong>Cuidado:</strong> No borre las comillas simples. El resultado debe verse asi:<br>
+    <code>const SUPABASE_URL = 'https://abcdefg.supabase.co';</code>
+  </div>
+</div>
+
+<!-- PASO 7 -->
+<div class="step">
+  <span class="step-num">7</span>
+  <h3>Abrir la app y registrarse</h3>
+  <ol style="margin-top:12px">
+    <li>Abra <code>index.html</code> en su navegador (Edge recomendado)</li>
+    <li>Aparecera la pantalla de <strong>inicio de sesion</strong></li>
+    <li>Haga clic en la pestana <strong>"Registrarse"</strong></li>
+    <li>Ingrese:
+      <ul>
+        <li><strong>Nombre:</strong> Su nombre completo</li>
+        <li><strong>Correo:</strong> Su correo electronico</li>
+        <li><strong>Contrasena:</strong> Minimo 6 caracteres</li>
+      </ul>
+    </li>
+    <li>Haga clic en <strong>"Crear cuenta"</strong></li>
+    <li>La app cargara y estara lista para usar</li>
+  </ol>
+  <div class="tip">
+    <strong>Listo!</strong> A partir de ahora, sus datos se guardan automaticamente en la nube. Puede abrir la app en cualquier navegador, iniciar sesion con el mismo correo y ver todos sus datos.
+  </div>
+</div>
+
+<!-- PASO 8 -->
+<div class="step">
+  <span class="step-num">8</span>
+  <h3>Migrar datos existentes (opcional)</h3>
+  <p style="margin-top:12px">Si ya tenia datos en la app (antes de Supabase), la app detectara automaticamente sus datos locales y le preguntara si desea subirlos al servidor.</p>
+  <ol>
+    <li>Al iniciar sesion por primera vez, vera el mensaje: <strong>"Se encontraron datos locales"</strong></li>
+    <li>Haga clic en <strong>"Subir al servidor"</strong></li>
+    <li>Espere a que se complete la migracion</li>
+    <li>Sus datos quedaran en la nube</li>
+  </ol>
+</div>
+
+<!-- RESUMEN -->
+<div class="step" style="border-left-color:#2e7d32;background:#f1f8e9">
+  <h3 style="color:#2e7d32">Resumen - Plan Gratuito de Supabase</h3>
+  <table class="table table-sm mt-3" style="font-size:14px">
+    <tr><td><strong>Base de datos</strong></td><td>500 MB (suficiente para muchas instituciones)</td></tr>
+    <tr><td><strong>Almacenamiento</strong></td><td>1 GB</td></tr>
+    <tr><td><strong>Usuarios activos</strong></td><td>Hasta 50,000 por mes</td></tr>
+    <tr><td><strong>Costo</strong></td><td>Gratis (plan Free)</td></tr>
+    <tr><td><strong>Region</strong></td><td>Sao Paulo, Brasil (mas cerca a Colombia)</td></tr>
+  </table>
+</div>
+
+</div>
+</body>
+</html>

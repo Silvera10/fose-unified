@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FOSE Unified — Sistema de Control Presupuestal</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="css/fose.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ══ Auth Overlay (Login/Registro) ══ -->
+<div class="loading-overlay" id="auth-overlay" style="display:none;background:linear-gradient(135deg,#1a237e 0%,#283593 50%,#1565c0 100%)">
+  <div class="card shadow" style="max-width:400px;width:90%;border:none;border-radius:16px">
+    <div class="card-header text-center py-3" style="background:var(--azul);border-radius:16px 16px 0 0">
+      <i class="bi bi-bank2 me-2" style="font-size:1.5rem;color:var(--dorado)"></i>
+      <span class="text-white fw-bold" style="font-size:18px">FOSE Unified</span>
+      <p class="text-white-50 small mb-0">Sistema de Control Presupuestal</p>
+    </div>
+    <div class="card-body p-4">
+      <ul class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-login">Ingresar</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-register">Registrarse</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab-login">
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Correo electrónico</label>
+            <input class="form-control form-control-sm" id="auth-email" type="email" placeholder="usuario@correo.com">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Contraseña</label>
+            <input class="form-control form-control-sm" id="auth-pass" type="password" placeholder="Su contraseña"
+              onkeydown="if(event.key==='Enter')doLogin()">
+          </div>
+          <button class="btn btn-primary btn-sm w-100" id="btn-login" onclick="doLogin()">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Ingresar
+          </button>
+        </div>
+        <div class="tab-pane" id="tab-register">
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Nombre completo</label>
+            <input class="form-control form-control-sm" id="reg-nombre" placeholder="Ej: Juan Pérez">
+          </div>
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Correo electrónico</label>
+            <input class="form-control form-control-sm" id="reg-email" type="email" placeholder="usuario@correo.com">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Contraseña</label>
+            <input class="form-control form-control-sm" id="reg-pass" type="password" placeholder="Mínimo 6 caracteres"
+              onkeydown="if(event.key==='Enter')doRegister()">
+          </div>
+          <button class="btn btn-success btn-sm w-100" id="btn-register" onclick="doRegister()">
+            <i class="bi bi-person-plus me-1"></i>Crear cuenta
+          </button>
+        </div>
+      </div>
+      <div id="auth-error" class="alert alert-danger small mt-2 mb-0 py-1 px-2" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Loading Overlay ══ -->
+<div class="loading-overlay" id="loading-overlay">
+  <i class="bi bi-bank2 text-primary" style="font-size:3rem"></i>
+  <h5 class="mt-3 text-primary">FOSE Unified</h5>
+  <p class="text-muted small" id="loading-text">Cargando...</p>
+  <div class="loading-bar"><div class="loading-bar-fill" id="loading-bar-fill" style="width:0%"></div></div>
+</div>
+
+<!-- ══ Navbar Superior ══ -->
+<nav class="navbar navbar-dark fixed-top px-3 py-1" style="background:var(--azul);height:52px;z-index:200;">
+  <div class="d-flex align-items-center gap-2">
+    <i class="bi bi-bank2" style="font-size:1.3rem;color:var(--dorado)"></i>
+    <div>
+      <span class="fw-bold text-white" style="font-size:13px" id="nav-inst-nombre"></span>
+      <span class="badge bg-warning text-dark ms-2" style="font-size:10px" id="nav-vig"></span>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span id="sync-status" class="badge bg-secondary" style="font-size:10px;cursor:pointer" title="Estado de sincronización">
+      <i class="bi bi-cloud-slash"></i>
+    </span>
+    <button class="btn btn-outline-light btn-sm" onclick="_refrescarApp()" title="Refrescar datos">
+      <i class="bi bi-arrow-clockwise"></i>
+    </button>
+    <button class="btn btn-success btn-sm position-relative" id="btn-exportar" onclick="exportarTodas()" title="Guardar backup">
+      <i class="bi bi-download me-1"></i>Backup
+      <span class="badge bg-danger position-absolute top-0 start-100 translate-middle d-none" id="badge-chg">0</span>
+    </button>
+    <div class="dropdown">
+      <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" style="font-size:11px">
+        <i class="bi bi-building me-1"></i>Institución
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" id="dd-instituciones" style="font-size:11px"></ul>
+    </div>
+    <button class="btn btn-outline-light btn-sm" id="btn-logout" onclick="doLogout()" title="Cerrar sesión" style="display:none">
+      <i class="bi bi-box-arrow-right"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ Sidebar ══ -->
+<div class="sidebar" id="sidebar">
+  <div class="scat mt-2">PRINCIPAL</div>
+  <a class="nav-link active" data-page="dash" href="#" onclick="navTo('dash',this);return false">
+    <i class="bi bi-speedometer2"></i>Dashboard</a>
+
+  <div class="scat">PRESUPUESTO</div>
+  <a class="nav-link" data-page="general" href="#" onclick="navTo('general',this);return false">
+    <i class="bi bi-journal-text"></i>Hoja de Gastos</a>
+  <a class="nav-link" data-page="ingresos" href="#" onclick="navTo('ingresos',this);return false">
+    <i class="bi bi-cash-coin"></i>Hoja de Ingresos</a>
+  <a class="nav-link" data-page="acuerdos" href="#" onclick="navTo('acuerdos',this);return false">
+    <i class="bi bi-clipboard-check"></i>Acuerdos Presupuestales</a>
+
+  <div class="scat">EJECUCIÓN POR TRIMESTRE</div>
+  <a class="nav-link" data-page="trim1" href="#" onclick="navTo('trim1',this);return false">
+    <i class="bi bi-1-circle"></i>Trimestre 1 <span class="trim-pill tp1 ms-1">Ene-Mar</span></a>
+  <a class="nav-link" data-page="trim2" href="#" onclick="navTo('trim2',this);return false">
+    <i class="bi bi-2-circle"></i>Trimestre 2 <span class="trim-pill tp2 ms-1">Abr-Jun</span></a>
+  <a class="nav-link" data-page="trim3" href="#" onclick="navTo('trim3',this);return false">
+    <i class="bi bi-3-circle"></i>Trimestre 3 <span class="trim-pill tp3 ms-1">Jul-Sep</span></a>
+  <a class="nav-link" data-page="trim4" href="#" onclick="navTo('trim4',this);return false">
+    <i class="bi bi-4-circle"></i>Trimestre 4 <span class="trim-pill tp4 ms-1">Oct-Dic</span></a>
+
+  <div class="scat">CONTRATACIÓN</div>
+  <a class="nav-link" data-page="contratos" href="#" onclick="navTo('contratos',this);return false">
+    <i class="bi bi-file-earmark-text"></i>Contratos</a>
+  <a class="nav-link" data-page="personas" href="#" onclick="navTo('personas',this);return false">
+    <i class="bi bi-people"></i>Directorio Personas</a>
+
+  <div class="scat">PAGOS</div>
+  <a class="nav-link" data-page="pagos-dian" href="#" onclick="navTo('pagos-dian',this);return false">
+    <i class="bi bi-cash-coin"></i>Pagos DIAN / Impuestos</a>
+
+  <div class="scat">REPORTES</div>
+  <a class="nav-link" data-page="informes" href="#" onclick="navTo('informes',this);return false">
+    <i class="bi bi-printer"></i>Informes Oficiales</a>
+  <a class="nav-link" data-page="sifse" href="#" onclick="navTo('sifse',this);return false">
+    <i class="bi bi-file-earmark-spreadsheet"></i>Reporte SIFSE</a>
+
+  <div class="scat">SISTEMA</div>
+  <a class="nav-link" data-page="conciliacion" href="#" onclick="navTo('conciliacion',this);return false">
+    <i class="bi bi-bank2"></i>Conciliación Bancaria</a>
+  <a class="nav-link" data-page="auditoria" href="#" onclick="navTo('auditoria',this);return false">
+    <i class="bi bi-clock-history"></i>Historial de Cambios</a>
+  <a class="nav-link" data-page="config" href="#" onclick="navTo('config',this);return false">
+    <i class="bi bi-gear"></i>Configuración</a>
+</div>
+
+<!-- ══ Contenido Principal ══ -->
+<div class="main" style="margin-top:52px">
+
+  <!-- Dashboard -->
+  <div class="page active" id="page-dash"></div>
+
+  <!-- Hoja de Gastos -->
+  <div class="page" id="page-general"></div>
+
+  <!-- Hoja de Ingresos -->
+  <div class="page" id="page-ingresos"></div>
+
+  <!-- Trimestres -->
+  <div class="page" id="page-trim1"></div>
+  <div class="page" id="page-trim2"></div>
+  <div class="page" id="page-trim3"></div>
+  <div class="page" id="page-trim4"></div>
+
+  <!-- Contratos -->
+  <div class="page" id="page-contratos"></div>
+
+  <!-- Directorio de Personas -->
+  <div class="page" id="page-personas"></div>
+
+  <!-- Acuerdos Presupuestales -->
+  <div class="page" id="page-acuerdos"></div>
+
+  <!-- Pagos DIAN / Impuestos -->
+  <div class="page" id="page-pagos-dian"></div>
+
+  <!-- Informes -->
+  <div class="page" id="page-informes"></div>
+
+  <!-- SIFSE -->
+  <div class="page" id="page-sifse"></div>
+
+  <!-- Conciliación Bancaria -->
+  <div class="page" id="page-conciliacion"></div>
+
+  <!-- Historial de Cambios / Auditoría -->
+  <div class="page" id="page-auditoria"></div>
+
+  <!-- Configuración -->
+  <div class="page" id="page-config"></div>
+
+</div><!-- .main -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MODALES
+═══════════════════════════════════════════════════════ -->
+
+<!-- ══ Modal Rubro Egreso ══ -->
+<div class="modal fade" id="mRubro" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header ch-azul py-2"><h6 class="modal-title" id="tit-mr"><i class="bi bi-journal-plus me-1"></i>Rubro</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="mr-idx">
+        <div class="mb-2"><label class="form-label small fw-bold">Código *</label>
+          <input class="form-control form-control-sm" id="mr-cod" oninput="actualizarNivelBadge()"></div>
+        <div class="mb-2"><label class="form-label small fw-bold">Guía PMR</label>
+          <input class="form-control form-control-sm" id="mr-guia"></div>
+        <div class="mb-2"><label class="form-label small fw-bold">Tipo</label>
+          <select class="form-select form-select-sm" id="mr-tipo">
+            <option value="fun">Funcionamiento</option><option value="inv">Inversión</option>
+          </select></div>
+        <div class="mb-2"><label class="form-label small fw-bold">Concepto *</label>
+          <input class="form-control form-control-sm" id="mr-con"></div>
+        <div class="form-check mb-2">
+          <input type="checkbox" class="form-check-input" id="mr-esGrupo" onchange="toggleIniModal()">
+          <label class="form-check-label small" for="mr-esGrupo">Es grupo (no recibe apropiación directa)</label>
+        </div>
+        <div id="mr-ini-wrap" class="mb-2"><label class="form-label small fw-bold">Apropiación Inicial $</label>
+          <input type="number" class="form-control form-control-sm" id="mr-ini" min="0"></div>
+        <div id="mr-cta-wrap" class="mb-2"><label class="form-label small">Cuenta Contable</label>
+          <div class="row g-1">
+            <div class="col-5">
+              <input class="form-control form-control-sm" id="mr-cuenta" placeholder="Código PUC">
+            </div>
+            <div class="col-7">
+              <input class="form-control form-control-sm" id="mr-nombre-cuenta" placeholder="Nombre de la cuenta">
+            </div>
+          </div>
+          <small class="text-muted" style="font-size:9px">Código PUC y nombre para asiento contable en contratos</small></div>
+        <div class="text-muted small" id="mr-nivel-badge"></div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarRubro()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Rubro Ingreso ══ -->
+<div class="modal fade" id="mRubroIng" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header ch-verde py-2"><h6 class="modal-title" id="tit-mri"><i class="bi bi-cash-coin me-1"></i>Rubro Ingreso</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="mri-idx">
+        <div class="mb-2"><label class="form-label small fw-bold">Código *</label>
+          <input class="form-control form-control-sm" id="mri-cod" oninput="actualizarNivelBadgeIng()"></div>
+        <div class="mb-2"><label class="form-label small fw-bold">Guía PMR</label>
+          <input class="form-control form-control-sm" id="mri-guia"></div>
+        <div class="mb-2"><label class="form-label small fw-bold">Concepto *</label>
+          <input class="form-control form-control-sm" id="mri-con"></div>
+        <div class="form-check mb-2">
+          <input type="checkbox" class="form-check-input" id="mri-esGrupo" onchange="toggleIniModalIng()">
+          <label class="form-check-label small" for="mri-esGrupo">Es grupo</label>
+        </div>
+        <div id="mri-ini-wrap" class="mb-2"><label class="form-label small fw-bold">Apropiación Inicial $</label>
+          <input type="number" class="form-control form-control-sm" id="mri-ini" min="0"></div>
+        <div class="form-check mb-2">
+          <input type="checkbox" class="form-check-input" id="mri-enBanco">
+          <label class="form-check-label small" for="mri-enBanco">Se recauda en banco</label>
+        </div>
+        <div class="text-muted small" id="mri-nivel-badge"></div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success btn-sm" onclick="guardarRubroIng()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Gasto ══ -->
+<div class="modal fade" id="mGasto" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header py-2" id="mGasto-header" style="background:var(--azul);color:#fff">
+        <h6 class="modal-title" id="tit-mg"><i class="bi bi-receipt me-1"></i>Gasto</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" style="font-size:12px">
+        <input type="hidden" id="mg-id"><input type="hidden" id="mg-trim">
+        <div class="row g-2 mb-2">
+          <div class="col-md-3"><label class="form-label small fw-bold">Fecha *</label>
+            <input type="date" class="form-control form-control-sm" id="mg-fecha" onchange="validarFechaHabil(this);autoMes()"></div>
+          <div class="col-md-5"><label class="form-label small fw-bold">Rubro *</label>
+            <select class="form-select form-select-sm" id="mg-rubro" onchange="mostrarSaldo()"></select></div>
+          <div class="col-md-2"><label class="form-label small fw-bold">Valor *</label>
+            <input type="number" class="form-control form-control-sm" id="mg-valor" min="0" oninput="mostrarSaldo()"></div>
+          <div class="col-md-2 d-flex align-items-end">
+            <div class="form-check"><input type="checkbox" class="form-check-input" id="mg-cont">
+              <label class="form-check-label small" for="mg-cont">Contabilizado</label></div>
+          </div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-12"><label class="form-label small fw-bold">Concepto *</label>
+            <input class="form-control form-control-sm" id="mg-concepto"></div>
+        </div>
+        <!-- Campos ocultos — se conservan para compatibilidad con exportaciones y reportes -->
+        <div style="display:none">
+          <select id="mg-mes">
+            <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+            <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+            <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+            <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+          </select>
+          <input id="mg-comp"><input id="mg-prov">
+          <select id="mg-tipodoc"><option>CC</option><option>NIT</option><option>CE</option><option>TI</option><option>PP</option></select>
+          <input id="mg-numdoc">
+          <input type="date" id="mg-fecha-cdp"><input id="mg-cdp">
+          <input type="date" id="mg-fecha-rp"><input id="mg-rp">
+          <input type="date" id="mg-fecha-contrato"><input id="mg-ncon">
+          <input type="checkbox" id="mg-pub">
+        </div>
+        <div id="mg-aviso"></div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarGasto()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Ingreso ══ -->
+<div class="modal fade" id="mIngreso" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header ch-verde py-2"><h6 class="modal-title" id="tit-mi"><i class="bi bi-cash-coin me-1"></i>Ingreso</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" style="font-size:12px">
+        <input type="hidden" id="mi-id"><input type="hidden" id="mi-trim">
+        <input type="hidden" id="mi-trim-lbl">
+        <div class="row g-2 mb-2">
+          <div class="col-md-4"><label class="form-label small fw-bold">Fecha *</label>
+            <input type="date" class="form-control form-control-sm" id="mi-fecha" onchange="validarFechaHabil(this);autoMesIng()"></div>
+          <div class="col-md-3"><label class="form-label small fw-bold">Mes</label>
+            <select class="form-select form-select-sm" id="mi-mes">
+              <option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option>
+              <option value="4">Abr</option><option value="5">May</option><option value="6">Jun</option>
+              <option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option>
+              <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option>
+            </select></div>
+          <div class="col-md-5"><label class="form-label small fw-bold">Fuente *</label>
+            <select class="form-select form-select-sm" id="mi-fuente"></select></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-8"><label class="form-label small fw-bold">Concepto *</label>
+            <input class="form-control form-control-sm" id="mi-concepto"></div>
+          <div class="col-md-4"><label class="form-label small fw-bold">Naturaleza</label>
+            <select class="form-select form-select-sm" id="mi-naturaleza">
+              <option value="adicion">Adición</option><option value="reduccion">Reducción</option>
+            </select></div>
+        </div>
+        <div class="mb-2"><label class="form-label small fw-bold">Valor *</label>
+          <input type="number" class="form-control form-control-sm" id="mi-valor" min="0"></div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success btn-sm" onclick="guardarIngreso()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Modificación Presupuestal ══ -->
+<div class="modal fade" id="mModEg" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header py-2" id="mModEg-header" style="background:linear-gradient(135deg,#2980b9,#3498db);color:#fff">
+        <h6 class="modal-title" id="tit-mm"><i class="bi bi-bank me-1"></i>Movimiento Bancario — <span id="mm-trim-nombre"></span></h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" style="font-size:12px">
+        <input type="hidden" id="mm-id"><input type="hidden" id="mm-trim"><input type="hidden" id="mm-trim-lbl">
+        <input type="hidden" id="mm-ppto" value="eg">
+        <input type="hidden" id="mm-acuerdo">
+        <input type="hidden" id="mm-tipo" value="adicion">
+        <div class="row g-2 mb-2">
+          <div class="col-md-4"><label class="form-label small fw-bold">Fecha *</label>
+            <input type="date" class="form-control form-control-sm" id="mm-fecha" onchange="validarFechaHabil(this);autoTrimMod()"></div>
+          <div class="col-md-4"><label class="form-label small fw-bold">Rubro Ingreso *</label>
+            <select class="form-select form-select-sm" id="mm-rubro-ing"></select></div>
+          <div class="col-md-4"><label class="form-label small fw-bold">Rubro Egreso *</label>
+            <select class="form-select form-select-sm" id="mm-rubro" onchange="actualizarSaldoMod()"></select></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-8"><label class="form-label small fw-bold">Concepto *</label>
+            <input class="form-control form-control-sm" id="mm-concepto"></div>
+          <div class="col-md-4"><label class="form-label small fw-bold">Valor *</label>
+            <input type="number" class="form-control form-control-sm" id="mm-valor" min="0" oninput="actualizarSaldoMod()"></div>
+        </div>
+        <div id="mm-saldo-info"></div>
+        <div id="mm-aviso"></div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarAdicionBancaria()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Acuerdo Multi-Rubro ══ -->
+<div class="modal fade" id="mAcuerdo" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header py-2" id="mAcuerdo-hdr" style="background:var(--dorado);color:#fff">
+        <h6 class="modal-title"><i class="bi bi-bank me-1"></i>Movimiento Bancario — <span id="mac-trim-nom"></span></h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" style="font-size:12px">
+        <input type="hidden" id="mac-trim">
+        <div class="row g-2 mb-3">
+          <div class="col-md-3"><label class="form-label small fw-bold">Fecha *</label>
+            <input type="date" class="form-control form-control-sm" id="mac-fecha" onchange="validarFechaHabil(this)"></div>
+          <input type="hidden" id="mac-acuerdo">
+          <div class="col-md-6"><label class="form-label small fw-bold">Concepto *</label>
+            <input class="form-control form-control-sm" id="mac-concepto"></div>
+          <div class="col-md-3"><label class="form-label small fw-bold">Tipo *</label>
+            <select class="form-select form-select-sm" id="mac-tipo" onchange="cambiarTipoAcuerdo()">
+              <option value="adicion">Adición</option><option value="reduccion">Reducción</option>
+              <option value="traslado">Traslado (Créd/Contracréd)</option>
+            </select></div>
+        </div>
+        <!-- Sección Adición/Reducción -->
+        <div id="mac-sec-ing" class="mb-3">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <strong class="text-success small"><i class="bi bi-arrow-up-circle me-1"></i>INGRESOS</strong>
+            <button class="btn btn-sm btn-outline-success py-0" onclick="agregarFilaAcuerdo('ing')" style="font-size:10px">+ Fila</button>
+          </div>
+          <table class="table table-sm table-bordered mb-0" style="font-size:11px">
+            <thead><tr class="table-success"><th>Rubro Ingreso</th><th style="width:150px">Valor</th><th style="width:40px"></th></tr></thead>
+            <tbody id="mac-tabla-ing"></tbody>
+            <tfoot><tr class="fw-bold"><td class="text-end">Total Ingresos:</td><td class="text-end" id="mac-total-ing">$0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+        <div id="mac-sec-eg-simple" class="mb-3">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <strong class="text-primary small"><i class="bi bi-arrow-down-circle me-1"></i>EGRESOS</strong>
+            <button class="btn btn-sm btn-outline-primary py-0" onclick="agregarFilaAcuerdo('eg')" style="font-size:10px">+ Fila</button>
+          </div>
+          <table class="table table-sm table-bordered mb-0" style="font-size:11px">
+            <thead><tr class="table-primary"><th>Rubro Egreso</th><th style="width:150px">Valor</th><th style="width:40px"></th></tr></thead>
+            <tbody id="mac-tabla-eg"></tbody>
+            <tfoot><tr class="fw-bold"><td class="text-end">Total Egresos:</td><td class="text-end" id="mac-total-eg">$0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+        <!-- Sección Traslado -->
+        <div id="mac-sec-cre" class="mb-3 d-none">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <strong class="text-success small"><i class="bi bi-plus-circle me-1"></i>CRÉDITOS (reciben)</strong>
+            <button class="btn btn-sm btn-outline-success py-0" onclick="agregarFilaAcuerdo('cre')" style="font-size:10px">+ Fila</button>
+          </div>
+          <table class="table table-sm table-bordered mb-0" style="font-size:11px">
+            <thead><tr class="table-success"><th>Rubro</th><th style="width:150px">Valor</th><th style="width:40px"></th></tr></thead>
+            <tbody id="mac-tabla-cre"></tbody>
+            <tfoot><tr class="fw-bold"><td class="text-end">Total Créditos:</td><td class="text-end" id="mac-total-cre">$0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+        <div id="mac-sec-cco" class="mb-3 d-none">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <strong class="text-danger small"><i class="bi bi-dash-circle me-1"></i>CONTRACRÉDITOS (ceden)</strong>
+            <button class="btn btn-sm btn-outline-danger py-0" onclick="agregarFilaAcuerdo('cco')" style="font-size:10px">+ Fila</button>
+          </div>
+          <table class="table table-sm table-bordered mb-0" style="font-size:11px">
+            <thead><tr class="table-danger"><th>Rubro</th><th style="width:150px">Valor</th><th style="width:40px"></th></tr></thead>
+            <tbody id="mac-tabla-cco"></tbody>
+            <tfoot><tr class="fw-bold"><td class="text-end">Total Contracréd.:</td><td class="text-end" id="mac-total-cco">$0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+        <div id="mac-balance" class="text-center fw-bold small" style="display:none"></div>
+        <div id="mac-aviso"></div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-warning btn-sm" onclick="guardarAcuerdo()"><i class="bi bi-check-lg me-1"></i>Guardar Acuerdo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Compromiso Egreso ══ -->
+<div class="modal fade" id="mCompEg" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header ch-azul py-2"><h6 class="modal-title" id="tit-mce">Compromiso</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input type="hidden" id="mce-id"><input type="hidden" id="mce-trim">
+        <div class="mb-2"><label class="form-label small fw-bold">Rubro *</label>
+          <select class="form-select form-select-sm" id="mce-rubro"></select></div>
+        <div class="mb-2"><label class="form-label small fw-bold">Valor Comprometido *</label>
+          <input type="number" class="form-control form-control-sm" id="mce-valor" min="0"></div>
+        <div id="mce-aviso"></div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarCompEg()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Cierre Presupuestal ══ -->
+<div class="modal fade" id="mCierre" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header ch-gris py-2"><h6 class="modal-title"><i class="bi bi-file-earmark-lock me-1"></i>Resolución de Cierre Presupuestal</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" style="font-size:12px">
+        <div class="row g-2 mb-2">
+          <div class="col-md-4"><label class="form-label small fw-bold">N° Resolución *</label>
+            <input class="form-control form-control-sm" id="ci-numero"></div>
+          <div class="col-md-4"><label class="form-label small fw-bold">Fecha *</label>
+            <input type="date" class="form-control form-control-sm" id="ci-fecha" onchange="validarFechaHabil(this)"></div>
+          <div class="col-md-4"><label class="form-label small fw-bold">Ciudad</label>
+            <input class="form-control form-control-sm" id="ci-ciudad"></div>
+        </div>
+        <div class="mb-2"><label class="form-label small fw-bold">Fundamento Legal</label>
+          <textarea class="form-control form-control-sm" id="ci-fundamento" rows="2"></textarea></div>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <strong class="small">Cuentas Bancarias</strong>
+          <button class="btn btn-sm btn-outline-primary py-0" onclick="addCuentaRow()" style="font-size:10px">+ Cuenta</button>
+        </div>
+        <div id="ci-cuentas-rows"></div>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <strong class="small">Cuentas por Pagar</strong>
+          <button class="btn btn-sm btn-outline-primary py-0" onclick="addPagarRow()" style="font-size:10px">+ Cuenta</button>
+        </div>
+        <div id="ci-pagar-rows"></div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarCierre()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Institución ══ -->
+<div class="modal fade" id="mInst" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header ch-azul py-2"><h6 class="modal-title" id="tit-minst"><i class="bi bi-building me-1"></i>Institución</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" style="font-size:12px">
+        <input type="hidden" id="inp-inst-id">
+        <div class="row g-2 mb-2">
+          <div class="col-md-4"><label class="form-label small fw-bold">Secretaría</label>
+            <input class="form-control form-control-sm" id="inp-inst-sec"></div>
+          <div class="col-md-5"><label class="form-label small fw-bold">Institución Educativa *</label>
+            <input class="form-control form-control-sm" id="inp-inst-nueva"></div>
+          <div class="col-md-2"><label class="form-label small fw-bold">NIT</label>
+            <input class="form-control form-control-sm" id="inp-inst-nit"></div>
+          <div class="col-md-1"><label class="form-label small fw-bold">DV</label>
+            <input class="form-control form-control-sm" id="inp-inst-dv" maxlength="1"></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-3"><label class="form-label small">Departamento</label>
+            <input class="form-control form-control-sm" id="inp-inst-depto"></div>
+          <div class="col-md-3"><label class="form-label small">Municipio</label>
+            <input class="form-control form-control-sm" id="inp-inst-mpio"></div>
+          <div class="col-md-3"><label class="form-label small">DANE</label>
+            <input class="form-control form-control-sm" id="inp-inst-ciu" placeholder="Código DANE"></div>
+          <div class="col-md-3"><label class="form-label small">Dirección</label>
+            <input class="form-control form-control-sm" id="inp-inst-dir"></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-3"><label class="form-label small">Email</label>
+            <input type="email" class="form-control form-control-sm" id="inp-inst-email"></div>
+          <div class="col-md-3"><label class="form-label small fw-bold">Rector(a)</label>
+            <input class="form-control form-control-sm" id="inp-inst-rector"></div>
+          <div class="col-md-2"><label class="form-label small">CC Rector</label>
+            <input class="form-control form-control-sm" id="inp-inst-idrector"></div>
+          <div class="col-md-2"><label class="form-label small fw-bold">Vigencia</label>
+            <input class="form-control form-control-sm" id="inp-inst-vigencia"></div>
+          <div class="col-md-2"><label class="form-label small">SMLV</label>
+            <input type="number" class="form-control form-control-sm" id="inp-inst-smlv"></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-3">
+            <label class="form-label small"><i class="bi bi-pen me-1"></i>Firma del Rector (imagen)</label>
+            <input type="file" class="form-control form-control-sm" id="inp-inst-firma" accept="image/*" onchange="_cargarFirmaRector(this)">
+            <div id="prev-firma-rector" class="mt-1" style="min-height:30px"></div>
+          </div>
+          <div class="col-md-3"><label class="form-label small">N° Acuerdo Aprobación</label>
+            <input class="form-control form-control-sm" id="inp-inst-acuerdo"></div>
+          <div class="col-md-4"><label class="form-label small">Fecha Aprob. Plan Compras</label>
+            <input type="date" class="form-control form-control-sm" id="inp-inst-fecha-paa" min="2020-01-01" max="2030-12-31" onchange="validarFechaHabil(this)"></div>
+          <div class="col-md-4"><label class="form-label small">Fecha Modif. Plan Compras</label>
+            <input type="date" class="form-control form-control-sm" id="inp-inst-fecha-mod-paa" min="2020-01-01" max="2030-12-31" onchange="validarFechaHabil(this)"></div>
+        </div>
+        <!-- ── Cuentas Bancarias de la Institución ── -->
+        <div class="small fw-bold mb-2 mt-2" style="color:#fff;background:linear-gradient(135deg,#2980b9,#3498db);padding:5px 10px;border-radius:5px">
+          <i class="bi bi-bank me-1"></i>Cuentas Bancarias de la Institución</div>
+        <div class="row g-2 mb-1">
+          <div class="col-md-5"><label class="form-label small fw-bold mb-0">Banco 1</label>
+            <input class="form-control form-control-sm" id="inp-inst-banco1" placeholder="Ej: Banco Agrario de Colombia"></div>
+          <div class="col-md-4"><label class="form-label small mb-0">N° Cuenta 1</label>
+            <input class="form-control form-control-sm" id="inp-inst-cta1" placeholder="Ej: 0120-0012-3456"></div>
+          <div class="col-md-3"><label class="form-label small mb-0">Tipo</label>
+            <select class="form-select form-select-sm" id="inp-inst-tipocta1">
+              <option value="Ahorros">Ahorros</option><option value="Corriente">Corriente</option></select></div>
+        </div>
+        <div class="row g-2 mb-1">
+          <div class="col-md-5"><label class="form-label small mb-0">Banco 2</label>
+            <input class="form-control form-control-sm" id="inp-inst-banco2"></div>
+          <div class="col-md-4"><label class="form-label small mb-0">N° Cuenta 2</label>
+            <input class="form-control form-control-sm" id="inp-inst-cta2"></div>
+          <div class="col-md-3"><label class="form-label small mb-0">Tipo</label>
+            <select class="form-select form-select-sm" id="inp-inst-tipocta2">
+              <option value="Ahorros">Ahorros</option><option value="Corriente">Corriente</option></select></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-5"><label class="form-label small mb-0">Banco 3</label>
+            <input class="form-control form-control-sm" id="inp-inst-banco3"></div>
+          <div class="col-md-4"><label class="form-label small mb-0">N° Cuenta 3</label>
+            <input class="form-control form-control-sm" id="inp-inst-cta3"></div>
+          <div class="col-md-3"><label class="form-label small mb-0">Tipo</label>
+            <select class="form-select form-select-sm" id="inp-inst-tipocta3">
+              <option value="Ahorros">Ahorros</option><option value="Corriente">Corriente</option></select></div>
+        </div>
+        <div id="div-copiar-rubros-bloque" class="mt-2">
+          <div class="form-check"><input type="checkbox" class="form-check-input" id="chk-copiar-rubros" onchange="toggleCopiarRubros()">
+            <label class="form-check-label small" for="chk-copiar-rubros">Copiar rubros de otra institución</label></div>
+          <div id="div-inst-origen" class="d-none mt-1">
+            <select class="form-select form-select-sm" id="sel-inst-origen"></select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarInstitucion()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Contrato Detallado ══ -->
+<div class="modal fade" id="mContrato" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header py-2" style="background:var(--azul2);color:#fff">
+        <h6 class="modal-title" id="tit-mcon"><i class="bi bi-file-earmark-text me-1"></i>Contrato</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body p-0" style="font-size:12px">
+        <input type="hidden" id="mc-id">
+        <!-- Tabs del contrato -->
+        <ul class="nav nav-tabs px-3 pt-2" id="mc-tabs" role="tablist" style="font-size:11px;border-bottom:2px solid #dee2e6">
+          <li class="nav-item"><a class="nav-link active fw-bold" data-bs-toggle="tab" href="#mc-tab-presup" style="border-radius:8px 8px 0 0"><i class="bi bi-piggy-bank me-1 text-success"></i>Presupuesto</a></li>
+          <li class="nav-item"><a class="nav-link fw-bold" data-bs-toggle="tab" href="#mc-tab-basico" style="border-radius:8px 8px 0 0"><i class="bi bi-clipboard-data me-1 text-primary"></i>Datos Básicos</a></li>
+          <li class="nav-item"><a class="nav-link fw-bold" data-bs-toggle="tab" href="#mc-tab-cotiz" style="border-radius:8px 8px 0 0"><i class="bi bi-people me-1 text-warning"></i>Cotizaciones</a></li>
+          <li class="nav-item"><a class="nav-link fw-bold" data-bs-toggle="tab" href="#mc-tab-supervision" style="border-radius:8px 8px 0 0"><i class="bi bi-person-check me-1 text-info"></i>Supervisión</a></li>
+          <li class="nav-item"><a class="nav-link fw-bold" data-bs-toggle="tab" href="#mc-tab-pagos" style="border-radius:8px 8px 0 0"><i class="bi bi-cash-coin me-1 text-danger"></i>Pagos</a></li>
+          <li class="nav-item"><a class="nav-link fw-bold" data-bs-toggle="tab" href="#mc-tab-docs" style="border-radius:8px 8px 0 0"><i class="bi bi-printer me-1 text-secondary"></i>Documentos</a></li>
+        </ul>
+        <div class="tab-content p-3">
+          <!-- Tab Datos Básicos -->
+          <div class="tab-pane fade" id="mc-tab-basico">
+            <!-- ETAPA 1: Identificación del Contrato -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#2980b9,#3498db);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-file-earmark-text me-1"></i>Etapa 1: Identificación del Contrato</div>
+            <div id="alerta-datos-basicos" class="alert py-1 px-3 mb-2 small fw-semibold" style="display:none;font-size:10px"></div>
+            <div class="row g-2 mb-1">
+              <div class="col-md-3"><label class="form-label small fw-bold mb-0">N° Contrato *</label>
+                <input class="form-control form-control-sm" id="mc-numero" oninput="_auditarCampo('mc-numero','hint-numero','numero');_autoRP()" onblur="_validarDatosBasicos()">
+                <small id="hint-numero" style="font-size:9px"></small></div>
+              <div class="col-md-3"><label class="form-label small fw-bold mb-0">Tipo *</label>
+                <select class="form-select form-select-sm" id="mc-tipo">
+                  <option value="">-- Seleccione --</option>
+                  <option value="Contrato de Prestación de Servicios Profesionales y/o de Apoyo a la Gestión">Prestación de Servicios Profesionales y/o de Apoyo a la Gestión</option>
+                  <option value="Contrato de Prestación de Servicios Técnicos y Profesionales">Prestación de Servicios Técnicos y Profesionales</option>
+                  <option value="Contrato de Compraventa y/o Suministro de Bienes">Compraventa y/o Suministro de Bienes</option>
+                  <option value="Contrato de Prestación de Servicios de Mantenimiento y Reparación">Servicios de Mantenimiento y Reparación</option>
+                  <option value="Contrato de Dotación de Medios Pedagógicos">Dotación de Medios Pedagógicos</option>
+                  <option value="Contrato de Suministro de Equipos de Cómputo, Tecnología o Mobiliario Escolar">Equipos de Cómputo, Tecnología o Mobiliario Escolar</option>
+                  <option value="Contrato de Prestación de Servicios Culturales, Deportivos y Pedagógicos">Servicios Culturales, Deportivos y Pedagógicos</option>
+                  <option value="Contrato de Prestación de Servicios de Transporte y Alimentación">Servicios de Transporte y Alimentación</option>
+                  <option value="Contrato de Mantenimiento y Adecuación Menor de Infraestructura Escolar">Mantenimiento y Adecuación Menor de Infraestructura</option>
+                  <option value="Contrato de Prestación de Servicios de Capacitación o Formación Docente">Servicios de Capacitación o Formación Docente</option>
+                  <option value="Contrato de Adquisición de Póliza Global de Manejo">Adquisición de Póliza Global de Manejo</option>
+                </select></div>
+              <div class="col-md-3"><label class="form-label small fw-bold mb-0">Modalidad</label>
+                <select class="form-select form-select-sm" id="mc-modalidad">
+                  <option value="Contratación Directa">Contratación Directa</option>
+                  <option value="Mínima Cuantía">Mínima Cuantía</option>
+                  <option value="Licitación Pública">Licitación Pública</option>
+                  <option value="Selección Abreviada">Selección Abreviada</option>
+                  <option value="Concurso de Méritos">Concurso de Méritos</option>
+                  <option value="CONTRATACIÓN ESPECIAL HASTA 20 SMLMV (Ley 715 de 2001 – Decreto 4791 de 2008)">Contratación Especial hasta 20 SMLMV</option>
+                </select></div>
+              <div class="col-md-3"><label class="form-label small fw-bold mb-0">Estado</label>
+                <select class="form-select form-select-sm" id="mc-estado">
+                  <option value="En ejecucion">En ejecución</option>
+                  <option value="Liquidado">Liquidado</option>
+                </select></div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-md-2"><label class="form-label small mb-0">Valor Total *</label>
+                <input type="number" class="form-control form-control-sm" id="mc-valor" min="0" oninput="calcRetencionContrato();calcSaldosContrato()" onblur="_validarDatosBasicos()"></div>
+              <div class="col-md-2"><label class="form-label small mb-0">Forma de Pago</label>
+                <select class="form-select form-select-sm" id="mc-forma-pago" onchange="_autoGenerarPagos()">
+                  <option value="Pago único">Pago único</option>
+                  <option value="Pagos mensuales">Pagos mensuales</option>
+                  <option value="Pagos bimestrales">Pagos bimestrales</option>
+                  <option value="Pagos trimestrales">Pagos trimestrales</option>
+                  <option value="Pagos semestrales">Pagos semestrales</option>
+                  <option value="Anticipos y saldo">Anticipos y saldo</option>
+                  <option value="Otra forma de pago">Otra forma de pago</option>
+                </select></div>
+              <div class="col-md-2"><label class="form-label small mb-0">Fecha Inicio</label>
+                <input type="date" class="form-control form-control-sm" id="mc-fecha-inicio" onchange="validarFechaHabil(this);_validarDatosBasicos()"></div>
+              <div class="col-md-2"><label class="form-label small mb-0">Fecha Fin</label>
+                <input type="date" class="form-control form-control-sm" id="mc-fecha-fin" onchange="validarFechaHabil(this)"></div>
+              <div class="col-md-1"><label class="form-label small mb-0">Plazo</label>
+                <input type="number" class="form-control form-control-sm" id="mc-plazo" min="0" oninput="_autoFechasContrato();_validarDatosBasicos()" onblur="_validarDatosBasicos()"></div>
+              <div class="col-md-1"><label class="form-label small mb-0">Unidad</label>
+                <select class="form-select form-select-sm" id="mc-plazo-unidad" onchange="_autoFechasContrato();_validarDatosBasicos()">
+                  <option value="dias">Días</option>
+                  <option value="meses">Meses</option>
+                </select></div>
+            </div>
+
+            <input type="hidden" id="mc-obligaciones">
+
+            <!-- ETAPA 3: Registro Presupuestal -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#e74c3c,#ec7063);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-cash-stack me-1"></i>Etapa 3: Registro Presupuestal</div>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4"><label class="form-label small fw-bold mb-0">N° RP <i class="bi bi-lock-fill text-muted" style="font-size:9px" title="Automático"></i></label>
+                <input type="text" class="form-control form-control-sm text-uppercase" id="mc-pp-rp" readonly style="background:#f0f7f0">
+                <small id="hint-rp" style="font-size:9px"></small></div>
+              <div class="col-md-4"><label class="form-label small mb-0">Fecha RP</label>
+                <input type="date" class="form-control form-control-sm" id="mc-pp-fecha-rp"></div>
+            </div>
+
+            <!-- ETAPA 4: Actas de Ejecución -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#8e44ad,#a569bd);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-clock-history me-1"></i>Etapa 4: Actas de Ejecución</div>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4"><label class="form-label small mb-0">Fecha Acta Inicio</label>
+                <input type="date" class="form-control form-control-sm" id="mc-sv-fecha-inicio" onchange="validarFechaHabil(this);_recalcFechaFinDesdeActa()"></div>
+              <div class="col-md-4"><label class="form-label small mb-0">Fecha Acta Final</label>
+                <input type="date" class="form-control form-control-sm" id="mc-sv-fecha-final" onchange="validarFechaHabil(this)"></div>
+            </div>
+
+            <!-- ETAPA 5: Liquidación -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#566573,#808b96);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-check-circle me-1"></i>Etapa 5: Liquidación</div>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4"><label class="form-label small mb-0">Fecha Liquidación</label>
+                <input type="date" class="form-control form-control-sm" id="mc-sv-fecha-liquidacion" onchange="validarFechaHabil(this)"></div>
+            </div>
+
+            <!-- Campos ocultos para plan compras (se toman de config institución) -->
+            <input type="hidden" id="mc-fecha-plan-compras">
+            <input type="hidden" id="mc-fecha-mod-plan">
+            <input type="hidden" id="mc-fecha-creacion">
+          </div>
+          <!-- Campos ocultos del contratista (usados por documentos y guardado) -->
+          <input type="hidden" id="mc-ct-nombre">
+          <input type="hidden" id="mc-ct-tipodoc" value="CC">
+          <input type="hidden" id="mc-ct-numdoc">
+          <input type="hidden" id="mc-ct-municipio">
+          <input type="hidden" id="mc-ct-direccion">
+          <input type="hidden" id="mc-ct-telefono">
+          <input type="hidden" id="mc-ct-email">
+          <input type="hidden" id="mc-ct-banco">
+          <input type="hidden" id="mc-ct-tipocuenta" value="Ahorros">
+          <input type="hidden" id="mc-ct-numcuenta">
+          <input type="hidden" id="mc-ct-replegal">
+          <input type="hidden" id="mc-ct-replegal-cc">
+          <div id="mc-rep-legal-section" class="d-none"></div>
+          <!-- Tab Presupuesto -->
+          <div class="tab-pane fade show active" id="mc-tab-presup">
+            <!-- Rubro Presupuestal -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#27ae60,#2ecc71);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-piggy-bank me-1"></i>Rubro Presupuestal</div>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4"><label class="form-label small fw-bold mb-0">Rubro</label>
+                <select class="form-select form-select-sm" id="mc-pp-rubro"></select></div>
+              <div class="col-md-4"><label class="form-label small mb-0">Fuente</label>
+                <select class="form-select form-select-sm" id="mc-pp-fuente"></select></div>
+              <div class="col-md-4"><label class="form-label small mb-0">Vigencia Fiscal</label>
+                <input class="form-control form-control-sm" id="mc-pp-vigencia"></div>
+            </div>
+            <!-- CDP -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#2980b9,#3498db);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-file-earmark-text me-1"></i>Certificado de Disponibilidad Presupuestal (CDP)</div>
+            <div class="row g-2 mb-2">
+              <div class="col-md-3"><label class="form-label small fw-bold mb-0">N° CDP <i class="bi bi-lock-fill text-muted" style="font-size:9px" title="Automático"></i></label>
+                <input class="form-control form-control-sm" id="mc-pp-cdp" readonly style="background:#f0f7f0">
+                <small id="hint-cdp" style="font-size:9px"></small></div>
+              <div class="col-md-3"><label class="form-label small mb-0">Fecha CDP</label>
+                <input type="date" class="form-control form-control-sm" id="mc-pp-fecha-cdp" onchange="validarFechaHabil(this);_autoFechasContrato()"></div>
+              <div class="col-md-3"><label class="form-label small fw-bold mb-0">Valor CDP</label>
+                <input type="number" class="form-control form-control-sm" id="mc-pp-valor-cdp" min="0" oninput="calcSaldosContrato();$('mc-pp-valor-rp').value=this.value"></div>
+              <div class="col-md-3"><label class="form-label small mb-0">Valor RP</label>
+                <input type="number" class="form-control form-control-sm" id="mc-pp-valor-rp" min="0"></div>
+            </div>
+            <!-- Planeación y Selección -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#f39c12,#f1c40f);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-calendar-check me-1"></i>Planeación y Selección</div>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4"><label class="form-label small mb-0">Fecha Estudio Previo</label>
+                <input type="date" class="form-control form-control-sm" id="mc-fecha-estudio" onchange="validarFechaHabil(this)"></div>
+              <div class="col-md-4"><label class="form-label small mb-0">Fecha Pres. Ofertas</label>
+                <input type="date" class="form-control form-control-sm" id="mc-fecha-ofertas" onchange="validarFechaHabil(this)"></div>
+              <div class="col-md-4"><label class="form-label small mb-0">Fecha Evaluación</label>
+                <input type="date" class="form-control form-control-sm" id="mc-fecha-evaluacion" onchange="validarFechaHabil(this)"></div>
+            </div>
+            <!-- Objeto del Contrato -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#27ae60,#2ecc71);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-card-text me-1"></i>Objeto del Contrato</div>
+            <div class="mb-2"><label class="form-label small fw-bold mb-0">Objeto del Contrato *</label>
+              <textarea class="form-control form-control-sm" id="mc-objeto" rows="2"></textarea></div>
+            <!-- Items UNSPSC -->
+            <div class="small fw-bold mb-1" style="color:#fff;background:linear-gradient(135deg,#7f8c8d,#95a5a6);padding:4px 10px;border-radius:4px;font-size:11px">
+              <i class="bi bi-box-seam me-1"></i>Items UNSPSC</div>
+            <div class="input-group mb-1">
+              <span class="input-group-text" style="font-size:11px"><i class="bi bi-search"></i></span>
+              <input class="form-control form-control-sm" id="mc-unspsc-search" placeholder="Buscar UNSPSC (código o nombre)..." oninput="buscarUNSPSC(this.value)">
+            </div>
+            <div class="unspsc-results d-none" id="mc-unspsc-results"></div>
+            <div class="input-group mb-1">
+              <input class="form-control form-control-sm" id="mc-unspsc-manual" placeholder="Digitar código UNSPSC..." style="font-size:11px">
+              <button class="btn btn-sm btn-outline-success" type="button" onclick="anexarUNSPSCManual()" style="font-size:11px"><i class="bi bi-plus-lg me-1"></i>Anexar</button>
+            </div>
+            <table class="table table-sm table-bordered mb-2" style="font-size:11px">
+              <thead><tr class="table-light"><th>Código</th><th style="width:30px"></th></tr></thead>
+              <tbody id="mc-items-tabla"></tbody>
+            </table>
+            <!-- Saldos -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#566573,#808b96);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-graph-up me-1"></i>Información Presupuestal</div>
+            <!-- Campos ocultos (usados internamente por cálculos) -->
+            <input type="hidden" id="mc-fecha-carta-propuesta">
+            <input type="hidden" id="mc-fecha-aceptacion">
+            <input type="hidden" id="mc-fecha-acta-recibido">
+            <input type="hidden" id="mc-pp-saldo-cdp">
+            <input type="hidden" id="mc-pp-saldo-rp">
+            <input type="hidden" id="mc-pp-saldo-contrato">
+            <input type="hidden" id="mc-pp-cuenta-contable">
+            <input type="hidden" id="mc-pp-nombre-cuenta">
+            <div class="row g-2 mb-2">
+              <div class="col-md-6"><label class="form-label small fw-bold mb-0">Saldo Presupuestal</label>
+                <input type="number" class="form-control form-control-sm" id="mc-pp-saldo-ppto" readonly
+                  style="background:#e8f5e9;font-weight:600;color:#1b5e20;border:1px solid #a5d6a7"></div>
+              <input type="hidden" id="mc-pp-rubro-nombre">
+              <div class="col-md-6">
+                <table class="table table-sm table-bordered mb-0" style="font-size:10px;background:#f8f9fa;border-radius:5px;overflow:hidden">
+                  <tr><td class="ps-2"><i class="bi bi-arrow-down-circle text-primary me-1"></i>Compromiso</td><td class="text-end fw-bold pe-2" id="mc-pp-comp-disp">–</td></tr>
+                  <tr style="background:#e8f5e9"><td class="ps-2"><i class="bi bi-check-circle text-success me-1"></i>Nuevo Saldo</td><td class="text-end fw-bold pe-2" id="mc-pp-nuevo-saldo" style="color:#198754">–</td></tr>
+                </table>
+                <input type="hidden" id="mc-pp-saldo-compromiso">
+              </div>
+            </div>
+            <div id="mc-pp-info-saldo"></div>
+            <div id="mc-alerta-saldo" style="display:none"></div>
+          </div>
+          <!-- Tab Cotizaciones -->
+          <div class="tab-pane fade" id="mc-tab-cotiz">
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#e67e22,#f39c12);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-people me-1"></i>Cotizaciones de Proveedores</div>
+            <div id="alerta-cot" class="alert py-2 px-3 mb-2 small fw-semibold" style="display:none"></div>
+            <div id="aviso-cotizacion" class="text-success small mb-2" style="display:none;font-size:10px"></div>
+            <div id="mc-cotizaciones">
+              <div class="card mb-2 shadow-sm" data-cot="0" style="border-left:4px solid #3498db;border-radius:8px">
+                <div class="card-header py-1 d-flex justify-content-between align-items-center" style="background:linear-gradient(135deg,#ebf5fb,#d6eaf8);border-radius:8px 8px 0 0">
+                  <span class="small fw-bold text-primary"><i class="bi bi-1-circle me-1"></i>Cotización 1</span>
+                  <button class="btn btn-outline-danger btn-sm py-0 px-1" style="font-size:9px" type="button" onclick="limpiarCot(0)"><i class="bi bi-x-lg me-1"></i>Limpiar</button>
+                </div>
+                <div class="card-body p-2">
+                  <div class="row g-1 mb-1">
+                    <div class="col-md-4"><input class="form-control form-control-sm" id="mc-cot0-nombre" placeholder="Proveedor" list="dl-personas" oninput="buscarPersonaCot(0,this)" onblur="_validarCotizaciones()"></div>
+                    <div class="col-md-2"><input class="form-control form-control-sm" id="mc-cot0-nit" placeholder="NIT/CC" oninput="buscarPersonaCotPorDoc(0,this)"></div>
+                    <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="mc-cot0-valor" placeholder="$ Valor" min="0" onblur="_validarCotizaciones()"></div>
+                    <input type="hidden" id="mc-cot0-sel">
+                    <div class="col-md-4"><select class="form-select form-select-sm" id="mc-cot0-doc" onchange="cotDocChange(0)">
+                      <option value="">Documentación...</option><option value="CUMPLE">CUMPLE</option><option value="NO CUMPLE">NO CUMPLE</option>
+                    </select></div>
+                  </div>
+                  <div class="row g-1">
+                    <div class="col-md-2"><input type="date" class="form-control form-control-sm" id="mc-cot0-fecha" title="Fecha" onchange="validarFechaHabil(this)"></div>
+                    <div class="col-md-2"><select class="form-select form-select-sm" id="mc-cot0-hora" style="font-size:10px" onchange="_validarCotizaciones()"
+                      <option value="">Hora</option><option value="1:00 AM">1:00 AM</option><option>2:00 AM</option><option>3:00 AM</option><option>4:00 AM</option><option>5:00 AM</option><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 M</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option><option>10:00 PM</option><option>11:00 PM</option><option>12:00 AM</option>
+                    </select></div>
+                    <div class="col-md-3"><input class="form-control form-control-sm" id="mc-cot0-municipio" placeholder="Municipio"></div>
+                    <div class="col-md-2"><input class="form-control form-control-sm" id="mc-cot0-replegal" placeholder="Rep. Legal"></div>
+                    <div class="col-md-3"><input type="email" class="form-control form-control-sm" id="mc-cot0-email" placeholder="Email"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card mb-2 shadow-sm" data-cot="1" style="border-left:4px solid #e67e22;border-radius:8px">
+                <div class="card-header py-1 d-flex justify-content-between align-items-center" style="background:linear-gradient(135deg,#fef9e7,#fdebd0);border-radius:8px 8px 0 0">
+                  <span class="small fw-bold" style="color:#e67e22"><i class="bi bi-2-circle me-1"></i>Cotización 2</span>
+                  <button class="btn btn-outline-danger btn-sm py-0 px-1" style="font-size:9px" type="button" onclick="limpiarCot(1)"><i class="bi bi-x-lg me-1"></i>Limpiar</button>
+                </div>
+                <div class="card-body p-2">
+                  <div class="row g-1 mb-1">
+                    <div class="col-md-4"><input class="form-control form-control-sm" id="mc-cot1-nombre" placeholder="Proveedor" list="dl-personas" oninput="buscarPersonaCot(1,this)" onblur="_validarCotizaciones()"></div>
+                    <div class="col-md-2"><input class="form-control form-control-sm" id="mc-cot1-nit" placeholder="NIT/CC" oninput="buscarPersonaCotPorDoc(1,this)"></div>
+                    <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="mc-cot1-valor" placeholder="$ Valor" min="0" onblur="_validarCotizaciones()"></div>
+                    <input type="hidden" id="mc-cot1-sel">
+                    <div class="col-md-4"><select class="form-select form-select-sm" id="mc-cot1-doc" onchange="cotDocChange(1)">
+                      <option value="">Documentación...</option><option value="CUMPLE">CUMPLE</option><option value="NO CUMPLE">NO CUMPLE</option>
+                    </select></div>
+                  </div>
+                  <div class="row g-1">
+                    <div class="col-md-2"><input type="date" class="form-control form-control-sm" id="mc-cot1-fecha" title="Fecha" onchange="validarFechaHabil(this)"></div>
+                    <div class="col-md-2"><select class="form-select form-select-sm" id="mc-cot1-hora" style="font-size:10px" onchange="_validarCotizaciones()"
+                      <option value="">Hora</option><option value="1:00 AM">1:00 AM</option><option>2:00 AM</option><option>3:00 AM</option><option>4:00 AM</option><option>5:00 AM</option><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 M</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option><option>10:00 PM</option><option>11:00 PM</option><option>12:00 AM</option>
+                    </select></div>
+                    <div class="col-md-3"><input class="form-control form-control-sm" id="mc-cot1-municipio" placeholder="Municipio"></div>
+                    <div class="col-md-2"><input class="form-control form-control-sm" id="mc-cot1-replegal" placeholder="Rep. Legal"></div>
+                    <div class="col-md-3"><input type="email" class="form-control form-control-sm" id="mc-cot1-email" placeholder="Email"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card mb-2 shadow-sm" data-cot="2" style="border-left:4px solid #27ae60;border-radius:8px">
+                <div class="card-header py-1 d-flex justify-content-between align-items-center" style="background:linear-gradient(135deg,#eafaf1,#d5f5e3);border-radius:8px 8px 0 0">
+                  <span class="small fw-bold text-success"><i class="bi bi-3-circle me-1"></i>Cotización 3</span>
+                  <button class="btn btn-outline-danger btn-sm py-0 px-1" style="font-size:9px" type="button" onclick="limpiarCot(2)"><i class="bi bi-x-lg me-1"></i>Limpiar</button>
+                </div>
+                <div class="card-body p-2">
+                  <div class="row g-1 mb-1">
+                    <div class="col-md-4"><input class="form-control form-control-sm" id="mc-cot2-nombre" placeholder="Proveedor" list="dl-personas" oninput="buscarPersonaCot(2,this)" onblur="_validarCotizaciones()"></div>
+                    <div class="col-md-2"><input class="form-control form-control-sm" id="mc-cot2-nit" placeholder="NIT/CC" oninput="buscarPersonaCotPorDoc(2,this)"></div>
+                    <div class="col-md-2"><input type="number" class="form-control form-control-sm" id="mc-cot2-valor" placeholder="$ Valor" min="0" onblur="_validarCotizaciones()"></div>
+                    <input type="hidden" id="mc-cot2-sel">
+                    <div class="col-md-4"><select class="form-select form-select-sm" id="mc-cot2-doc" onchange="cotDocChange(2)">
+                      <option value="">Documentación...</option><option value="CUMPLE">CUMPLE</option><option value="NO CUMPLE">NO CUMPLE</option>
+                    </select></div>
+                  </div>
+                  <div class="row g-1">
+                    <div class="col-md-2"><input type="date" class="form-control form-control-sm" id="mc-cot2-fecha" title="Fecha" onchange="validarFechaHabil(this)"></div>
+                    <div class="col-md-2"><select class="form-select form-select-sm" id="mc-cot2-hora" style="font-size:10px" onchange="_validarCotizaciones()"
+                      <option value="">Hora</option><option value="1:00 AM">1:00 AM</option><option>2:00 AM</option><option>3:00 AM</option><option>4:00 AM</option><option>5:00 AM</option><option>6:00 AM</option><option>7:00 AM</option><option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 M</option><option>1:00 PM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option><option>6:00 PM</option><option>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option><option>10:00 PM</option><option>11:00 PM</option><option>12:00 AM</option>
+                    </select></div>
+                    <div class="col-md-3"><input class="form-control form-control-sm" id="mc-cot2-municipio" placeholder="Municipio"></div>
+                    <div class="col-md-2"><input class="form-control form-control-sm" id="mc-cot2-replegal" placeholder="Rep. Legal"></div>
+                    <div class="col-md-3"><input type="email" class="form-control form-control-sm" id="mc-cot2-email" placeholder="Email"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Panel resumen del contratista -->
+            <div id="mc-panel-contratista" style="display:none"></div>
+          </div>
+          <!-- Tab Pagos / Información Contable -->
+          <div class="tab-pane fade" id="mc-tab-pagos">
+            <!-- Discriminación del Valor -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#e74c3c,#ec7063);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-calculator me-1"></i>Discriminación del Valor</div>
+            <div class="row g-2 mb-2">
+              <div class="col-md-3"><label class="form-label small mb-0">Base antes de IVA</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text" style="background:#e8f5e9"><i class="bi bi-currency-dollar"></i></span>
+                  <input type="text" class="form-control form-control-sm" id="mc-pg-base" readonly style="background:#f0f7f0">
+                </div></div>
+              <div class="col-md-3"><label class="form-label small mb-0">IVA ($)</label>
+                <input type="number" class="form-control form-control-sm" id="mc-pg-iva" min="0" value="0" oninput="calcRetencionContrato()"></div>
+              <div class="col-md-4"><label class="form-label small fw-bold mb-0">Tipo de Retención</label>
+                <select class="form-select form-select-sm" id="mc-pg-tipo-ret" onchange="calcRetencionContrato()">
+                  <option value="">-- Sin retención --</option>
+                  <option value="1" data-pct="2.5"  data-cuenta="243608">Ret. Compras ND — 2.5%</option>
+                  <option value="2" data-pct="3.5"  data-cuenta="243609">Ret. DC — 3.5%</option>
+                  <option value="3" data-pct="6"    data-cuenta="24360502">Ret. Servicios ND — 6%</option>
+                  <option value="4" data-pct="4"    data-cuenta="24360501">Ret. 4%</option>
+                  <option value="5" data-pct="10"   data-cuenta="2436030">Ret. Honorarios — 10%</option>
+                  <option value="6" data-pct="0"    data-cuenta="">Ret. 0%</option>
+                  <option value="7" data-pct="15"   data-cuenta="243625">Ret. IVA Régimen Simple — 15%</option>
+                </select>
+                <small class="text-muted" style="font-size:9px">Tipos 1–6 sobre base · Tipo 7 sobre IVA</small></div>
+              <div class="col-md-2"><label class="form-label small mb-0">% Retención</label>
+                <input type="text" class="form-control form-control-sm" id="mc-pg-pct-ret" readonly style="background:#f0f7f0"></div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-md-3"><label class="form-label small mb-0">Valor Retención</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text" style="background:#fff3cd"><i class="bi bi-dash-circle text-warning"></i></span>
+                  <input type="text" class="form-control form-control-sm" id="mc-pg-retencion" readonly style="background:#fff3cd">
+                </div></div>
+              <div class="col-md-3"><label class="form-label small fw-bold mb-0" style="color:#198754">Neto a Pagar</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text" style="background:#d1e7dd"><i class="bi bi-check-circle text-success"></i></span>
+                  <input type="text" class="form-control form-control-sm fw-bold" id="mc-pg-neto" readonly style="background:#d1e7dd;color:#198754;font-size:13px">
+                </div></div>
+            </div>
+            <!-- Asiento Contable -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#1a6b3c,#27ae60);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-journal-text me-1"></i>Asiento Contable (Compromiso)</div>
+            <table class="table table-sm table-bordered mb-3" style="font-size:11px;border-radius:5px;overflow:hidden">
+              <thead><tr style="background:linear-gradient(135deg,#1a6b3c,#27ae60);color:#fff"><th style="width:80px">Código</th><th>Cuentas</th><th style="width:110px">Débito</th><th style="width:110px">Crédito</th></tr></thead>
+              <tbody>
+                <tr><td id="ac-cod1"></td><td id="ac-nom1"></td><td id="ac-deb1" class="text-end"></td><td class="text-muted text-end">–</td></tr>
+                <tr style="background:#f8f9fa"><td id="ac-cod2"></td><td id="ac-nom2"></td><td class="text-muted text-end">–</td><td id="ac-cred2" class="text-end"></td></tr>
+                <tr><td>2401</td><td>Bienes y Servicios (Cuentas por Pagar)</td><td class="text-muted text-end">–</td><td id="ac-cred3" class="text-end"></td></tr>
+              </tbody>
+            </table>
+            <!-- Cuentas Bancarias -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#2980b9,#3498db);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-bank me-1"></i>Cuentas Bancarias de la Institución</div>
+            <div class="d-flex justify-content-end align-items-center mb-2">
+              <span class="small text-muted me-2">Cuenta para pago:</span>
+              <select class="form-select form-select-sm" id="mc-pp-banco-sel" style="width:auto;border-color:#2980b9" onchange="_resaltarBancoSel()">
+                <option value="1">Banco 1</option><option value="2">Banco 2</option><option value="3">Banco 3</option>
+              </select>
+            </div>
+            <table class="table table-sm table-bordered mb-0" style="font-size:11px;border-radius:5px;overflow:hidden">
+              <thead><tr style="background:linear-gradient(135deg,#2980b9,#3498db);color:#fff"><th style="width:30px" class="text-center">#</th><th>Nombre del Banco</th><th>N° de Cuenta</th></tr></thead>
+              <tbody>
+                <tr id="mc-banco-row1"><td class="text-center fw-bold">1</td>
+                  <td><input class="form-control form-control-sm border-0 bg-transparent" id="mc-pp-banco1" placeholder="Ej: Banco Agrario de Colombia"></td>
+                  <td><input class="form-control form-control-sm border-0 bg-transparent" id="mc-pp-cta1" placeholder="N° cuenta"></td></tr>
+                <tr id="mc-banco-row2" style="background:#f8f9fa"><td class="text-center fw-bold">2</td>
+                  <td><input class="form-control form-control-sm border-0 bg-transparent" id="mc-pp-banco2"></td>
+                  <td><input class="form-control form-control-sm border-0 bg-transparent" id="mc-pp-cta2"></td></tr>
+                <tr id="mc-banco-row3"><td class="text-center fw-bold">3</td>
+                  <td><input class="form-control form-control-sm border-0 bg-transparent" id="mc-pp-banco3"></td>
+                  <td><input class="form-control form-control-sm border-0 bg-transparent" id="mc-pp-cta3"></td></tr>
+              </tbody>
+            </table>
+            <div class="mt-1 small text-muted mb-3" id="mc-banco-sel-info"><i class="bi bi-check-circle text-success me-1"></i>Banco seleccionado para pago: <strong id="mc-banco-sel-nombre">—</strong></div>
+            <!-- Pagos Parciales -->
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#8e44ad,#a569bd);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-receipt me-1"></i>Pagos Registrados
+              <span class="badge bg-light text-dark ms-2" id="mc-pagos-count">0</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2 px-1" style="font-size:11px">
+              <span>Total pagado: <strong id="mc-pagos-total" class="text-success">$0</strong></span>
+              <span>Saldo pendiente: <strong id="mc-pagos-pendiente" class="text-danger">$0</strong></span>
+              <button type="button" class="btn btn-sm btn-outline-primary py-0" onclick="_agregarPago()">
+                <i class="bi bi-plus-circle me-1"></i>Agregar Pago</button>
+            </div>
+            <div class="table-responsive mb-2" style="max-height:200px;overflow-y:auto">
+              <table class="table table-sm table-bordered table-hover mb-0" style="font-size:10px" id="mc-pagos-tabla">
+                <thead style="position:sticky;top:0;background:#f8f9fa;z-index:1">
+                  <tr><th style="width:25px">#</th><th>Fecha</th><th>N° Egreso</th><th>Factura</th>
+                    <th class="text-end">Valor</th><th class="text-end">Ret.</th><th class="text-end">Neto</th>
+                    <th>Trim</th><th style="width:55px"></th></tr>
+                </thead>
+                <tbody id="mc-pagos-tbody">
+                  <tr><td colspan="9" class="text-center text-muted py-2">Sin pagos registrados</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Panel inline de edición de pago -->
+            <div id="mc-pago-edit-panel" style="display:none;background:#fff8e1;border:1px solid #ffc107;border-radius:6px;padding:8px 12px" class="mb-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small fw-bold"><i class="bi bi-pencil-square me-1"></i>Editando Pago #<span id="mc-pe-idx">1</span></span>
+                <div>
+                  <button type="button" class="btn btn-sm btn-warning py-0 px-2 me-1" onclick="_limpiarPago()" title="Quitar fecha y egreso (volver a pendiente)"><i class="bi bi-arrow-counterclockwise me-1"></i>Limpiar</button>
+                  <button type="button" class="btn btn-sm btn-success py-0 px-2 me-1" onclick="_guardarPagoEditado()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="_cancelarPagoEdit()">Cancelar</button>
+                </div>
+              </div>
+              <div class="row g-2">
+                <div class="col-md-2"><label class="form-label small mb-0">Valor Bruto</label>
+                  <input type="number" class="form-control form-control-sm" id="mc-pe-valor" oninput="_recalcNetoPago()"></div>
+                <div class="col-md-2"><label class="form-label small mb-0">Fecha Pago</label>
+                  <input type="date" class="form-control form-control-sm" id="mc-pe-fecha"></div>
+                <div class="col-md-2"><label class="form-label small mb-0">N° Egreso</label>
+                  <input class="form-control form-control-sm" id="mc-pe-egreso" readonly style="background:#f0f7f0"></div>
+                <div class="col-md-2"><label class="form-label small mb-0">N° Factura</label>
+                  <input class="form-control form-control-sm" id="mc-pe-factura"></div>
+                <div class="col-md-2"><label class="form-label small mb-0">Retención</label>
+                  <input type="number" class="form-control form-control-sm" id="mc-pe-retencion" oninput="_recalcNetoPago()"></div>
+                <div class="col-md-2"><label class="form-label small mb-0">Neto a Pagar</label>
+                  <input type="number" class="form-control form-control-sm bg-light" id="mc-pe-neto" readonly></div>
+              </div>
+            </div>
+            <!-- Campos legacy ocultos para compatibilidad -->
+            <input type="hidden" id="mc-pg-egreso">
+            <small id="hint-egreso" style="display:none"></small>
+            <input type="hidden" id="mc-pg-factura">
+            <input type="hidden" id="mc-pg-fecha">
+            <input type="hidden" id="mc-pg-egreso-modo" value="auto">
+            <input type="hidden" id="mc-pg-fecha-egreso">
+          </div>
+          <!-- Tab Supervisión -->
+          <div class="tab-pane fade" id="mc-tab-supervision">
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#17a2b8,#20c997);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-person-check me-1"></i>Datos del Supervisor</div>
+            <div class="row g-2 mb-2 align-items-end">
+              <div class="col-md-3"><label class="form-label small fw-bold mb-0">Supervisor</label>
+                <input class="form-control form-control-sm" id="mc-sv-nombre" list="dl-personas"></div>
+              <div class="col-md-2"><label class="form-label small mb-0">Tipo Doc.</label>
+                <select class="form-select form-select-sm" id="mc-sv-tipodoc">
+                  <option>CC</option><option>NIT</option><option>CE</option>
+                </select></div>
+              <div class="col-md-2"><label class="form-label small mb-0">N° Documento</label>
+                <input class="form-control form-control-sm" id="mc-sv-numdoc"></div>
+              <div class="col-md-2"><label class="form-label small mb-0">Cargo</label>
+                <input class="form-control form-control-sm" id="mc-sv-cargo" placeholder="Ej: Rector"></div>
+              <div class="col-md-3"><button type="button" class="btn btn-sm w-100 fw-bold" style="background:linear-gradient(135deg,#2980b9,#3498db);color:#fff;border:none;border-radius:6px" onclick="_cargarRectorSupervisor()"><i class="bi bi-person-fill me-1"></i>Cargar Rector</button></div>
+            </div>
+            <div class="small fw-bold mb-2 mt-3" style="color:#fff;background:linear-gradient(135deg,#566573,#808b96);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-chat-left-text me-1"></i>Observaciones</div>
+            <div class="mb-2">
+              <textarea class="form-control form-control-sm" id="mc-sv-observaciones" rows="3" placeholder="Escriba aquí las observaciones del contrato..."></textarea></div>
+          </div>
+          <!-- Tab Documentos (Planillas) -->
+          <div class="tab-pane fade" id="mc-tab-docs">
+            <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#566573,#808b96);padding:6px 12px;border-radius:5px">
+              <i class="bi bi-printer me-1"></i>Documentos del Expediente Contractual</div>
+            <div id="mc-docs-panel">
+              <div class="text-center py-4" style="background:#f8f9fa;border-radius:8px;border:2px dashed #dee2e6">
+                <i class="bi bi-file-earmark-text" style="font-size:2rem;color:#adb5bd"></i>
+                <p class="text-muted small mt-2 mb-0">Guarde el contrato primero para poder generar los documentos del expediente.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarContrato()"><i class="bi bi-check-lg me-1"></i>Guardar Contrato</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal Persona ══ -->
+<div class="modal fade" id="mPersona" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header ch-azul py-2"><h6 class="modal-title" id="tit-mper"><i class="bi bi-person me-1"></i>Persona</h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body" style="font-size:12px">
+        <input type="hidden" id="mp-id">
+        <div class="row g-2 mb-2">
+          <div class="col-md-8"><label class="form-label small fw-bold">Nombre Completo *</label>
+            <input class="form-control form-control-sm" id="mp-nombre"></div>
+          <div class="col-md-4"><label class="form-label small">Cargo</label>
+            <input class="form-control form-control-sm" id="mp-cargo"></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-3"><label class="form-label small">Tipo Doc.</label>
+            <select class="form-select form-select-sm" id="mp-tipodoc">
+              <option>CC</option><option>NIT</option><option>CE</option><option>TI</option>
+            </select></div>
+          <div class="col-md-5"><label class="form-label small fw-bold">N° Documento *</label>
+            <input class="form-control form-control-sm" id="mp-numdoc"></div>
+          <div class="col-md-4"><label class="form-label small">Teléfono</label>
+            <input class="form-control form-control-sm" id="mp-telefono"></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-6"><label class="form-label small">Email</label>
+            <input type="email" class="form-control form-control-sm" id="mp-email"></div>
+          <div class="col-md-6"><label class="form-label small">Dirección</label>
+            <input class="form-control form-control-sm" id="mp-direccion"></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-4"><label class="form-label small">Municipio</label>
+            <input class="form-control form-control-sm" id="mp-municipio"></div>
+          <div class="col-md-4"><label class="form-label small">Banco</label>
+            <input class="form-control form-control-sm" id="mp-banco"></div>
+          <div class="col-md-4"><label class="form-label small">Tipo Cuenta</label>
+            <select class="form-select form-select-sm" id="mp-tipocuenta">
+              <option>Ahorros</option><option>Corriente</option>
+            </select></div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-md-4"><label class="form-label small">N° Cuenta</label>
+            <input class="form-control form-control-sm" id="mp-numcuenta"></div>
+          <div class="col-md-4"><label class="form-label small">Rep. Legal</label>
+            <input class="form-control form-control-sm" id="mp-replegal"></div>
+          <div class="col-md-4"><label class="form-label small">CC Rep. Legal</label>
+            <input class="form-control form-control-sm" id="mp-replegal-cc"></div>
+        </div>
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarPersona()"><i class="bi bi-check-lg me-1"></i>Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Datalist para autocompletado de personas -->
+<datalist id="dl-personas"></datalist>
+
+<!-- ══ Modal Pago DIAN ══ -->
+<!-- ══ Modal: Acuerdo Presupuestal ══ -->
+<div class="modal fade" id="mAcuerdoPres" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header py-2" id="mAcuerdoPres-header" style="background:linear-gradient(135deg,#1a7a3a,#27ae60);color:#fff">
+        <h6 class="modal-title" id="tit-macpres"><i class="bi bi-clipboard-check me-1"></i>Nuevo Acuerdo Presupuestal</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="font-size:12px;max-height:75vh;overflow-y:auto">
+
+        <!-- Datos del Acuerdo -->
+        <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#2c3e50,#34495e);padding:6px 12px;border-radius:5px">
+          <i class="bi bi-info-circle me-1"></i>Datos del Acuerdo</div>
+        <div class="row g-2 mb-3">
+          <input type="hidden" id="acp-id">
+          <div class="col-md-3">
+            <label class="form-label small fw-bold mb-0">Tipo de Acuerdo *</label>
+            <select class="form-select form-select-sm" id="acp-tipo" onchange="_acpCambiarTipo()">
+              <option value="adicion">Adición</option>
+              <option value="reduccion">Reducción</option>
+              <option value="traslado">Traslado (Crédito/Contracrédito)</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small fw-bold mb-0">N° Acuerdo *</label>
+            <input type="text" class="form-control form-control-sm" id="acp-numero" placeholder="AD-001">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small fw-bold mb-0">Fecha *</label>
+            <input type="date" class="form-control form-control-sm" id="acp-fecha" onchange="_acpAutoTrim()">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small fw-bold mb-0">Trimestre</label>
+            <select class="form-select form-select-sm" id="acp-trim">
+              <option value="1">T1 (Ene-Mar)</option>
+              <option value="2">T2 (Abr-Jun)</option>
+              <option value="3">T3 (Jul-Sep)</option>
+              <option value="4">T4 (Oct-Dic)</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold mb-0">Concepto *</label>
+            <input type="text" class="form-control form-control-sm" id="acp-concepto" placeholder="Describa el motivo del acuerdo">
+          </div>
+        </div>
+
+        <!-- Considerandos -->
+        <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#7f8c8d,#95a5a6);padding:6px 12px;border-radius:5px">
+          <i class="bi bi-card-text me-1"></i>Considerandos <small class="fw-normal">(editable — se incluyen en el documento)</small></div>
+        <textarea class="form-control form-control-sm mb-3" id="acp-considerandos" rows="4" style="font-size:11px" placeholder="Que el Consejo Directivo está facultado para..."></textarea>
+
+        <!-- SECCIÓN INGRESOS (adición/reducción) -->
+        <div id="acp-sec-ing">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="small fw-bold" style="color:#fff;background:linear-gradient(135deg,#27ae60,#2ecc71);padding:5px 12px;border-radius:5px;flex:1">
+              <i class="bi bi-arrow-down-circle me-1"></i>Rubros de INGRESOS</div>
+            <button type="button" class="btn btn-sm btn-outline-success ms-2 py-0" onclick="_acpAgregarFila('ing')" style="font-size:11px"><i class="bi bi-plus-lg me-1"></i>Agregar</button>
+          </div>
+          <table class="table table-sm table-bordered mb-1" style="font-size:11px">
+            <thead><tr style="background:#d5f5e3"><th>Rubro de Ingreso</th><th style="width:160px" class="text-end">Valor</th><th style="width:40px"></th></tr></thead>
+            <tbody id="acp-tabla-ing"></tbody>
+            <tfoot><tr style="background:#e8f5e9;font-weight:bold"><td class="text-end">TOTAL INGRESOS:</td><td class="text-end" id="acp-total-ing">$ 0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+
+        <!-- SECCIÓN EGRESOS (adición/reducción) -->
+        <div id="acp-sec-eg">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="small fw-bold" style="color:#fff;background:linear-gradient(135deg,#e67e22,#f39c12);padding:5px 12px;border-radius:5px;flex:1">
+              <i class="bi bi-arrow-up-circle me-1"></i>Rubros de EGRESOS</div>
+            <button type="button" class="btn btn-sm btn-outline-warning ms-2 py-0" onclick="_acpAgregarFila('eg')" style="font-size:11px"><i class="bi bi-plus-lg me-1"></i>Agregar</button>
+          </div>
+          <table class="table table-sm table-bordered mb-1" style="font-size:11px">
+            <thead><tr style="background:#fdebd0"><th>Rubro de Egreso</th><th style="width:160px" class="text-end">Valor</th><th style="width:40px"></th></tr></thead>
+            <tbody id="acp-tabla-eg"></tbody>
+            <tfoot><tr style="background:#fef9e7;font-weight:bold"><td class="text-end">TOTAL EGRESOS:</td><td class="text-end" id="acp-total-eg">$ 0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+
+        <!-- SECCIÓN CRÉDITO (traslado) -->
+        <div id="acp-sec-cre" class="d-none">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="small fw-bold" style="color:#fff;background:linear-gradient(135deg,#2980b9,#3498db);padding:5px 12px;border-radius:5px;flex:1">
+              <i class="bi bi-plus-circle me-1"></i>CRÉDITO <small class="fw-normal">(a dónde se mueve el dinero)</small></div>
+            <button type="button" class="btn btn-sm btn-outline-primary ms-2 py-0" onclick="_acpAgregarFila('cre')" style="font-size:11px"><i class="bi bi-plus-lg me-1"></i>Agregar</button>
+          </div>
+          <table class="table table-sm table-bordered mb-1" style="font-size:11px">
+            <thead><tr style="background:#d6eaf8"><th>Rubro (recibe)</th><th style="width:160px" class="text-end">Valor</th><th style="width:40px"></th></tr></thead>
+            <tbody id="acp-tabla-cre"></tbody>
+            <tfoot><tr style="background:#ebf5fb;font-weight:bold"><td class="text-end">TOTAL CRÉDITO:</td><td class="text-end" id="acp-total-cre">$ 0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+
+        <!-- SECCIÓN CONTRACRÉDITO (traslado) -->
+        <div id="acp-sec-cco" class="d-none">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="small fw-bold" style="color:#fff;background:linear-gradient(135deg,#c0392b,#e74c3c);padding:5px 12px;border-radius:5px;flex:1">
+              <i class="bi bi-dash-circle me-1"></i>CONTRACRÉDITO <small class="fw-normal">(de dónde se quita el dinero)</small></div>
+            <button type="button" class="btn btn-sm btn-outline-danger ms-2 py-0" onclick="_acpAgregarFila('cco')" style="font-size:11px"><i class="bi bi-plus-lg me-1"></i>Agregar</button>
+          </div>
+          <table class="table table-sm table-bordered mb-1" style="font-size:11px">
+            <thead><tr style="background:#f5b7b1"><th>Rubro (se reduce)</th><th style="width:160px" class="text-end">Valor</th><th style="width:40px"></th></tr></thead>
+            <tbody id="acp-tabla-cco"></tbody>
+            <tfoot><tr style="background:#fadbd8;font-weight:bold"><td class="text-end">TOTAL CONTRACRÉDITO:</td><td class="text-end" id="acp-total-cco">$ 0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+
+        <!-- Balance -->
+        <div id="acp-balance" class="mb-2" style="display:none"></div>
+        <div id="acp-aviso"></div>
+      </div>
+      <div class="modal-footer py-2">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success btn-sm" onclick="guardarAcuerdoPres()"><i class="bi bi-check-lg me-1"></i>Guardar y Aplicar al Presupuesto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="mPagoDian" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header ch-azul py-2">
+        <h6 class="modal-title" id="tit-mpd">
+          <i class="bi bi-cash-coin me-1"></i>Nuevo Pago DIAN
+        </h6>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="font-size:12px">
+        <input type="hidden" id="pd-id">
+
+        <!-- ── Datos del Pago ── -->
+        <p class="fw-bold small text-primary mb-1"><i class="bi bi-receipt me-1"></i>DATOS DEL PAGO</p>
+        <div class="row g-2 mb-2">
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">N° Egreso *</label>
+            <input class="form-control form-control-sm" id="pd-num-egreso" oninput="_auditarCampo('pd-num-egreso','hint-pd-egreso','egreso')">
+            <small id="hint-pd-egreso" style="font-size:9px"></small>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Fecha *</label>
+            <input type="date" class="form-control form-control-sm" id="pd-fecha">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Concepto *</label>
+            <select class="form-select form-select-sm" id="pd-concepto">
+              <option value="">— Seleccionar —</option>
+              <option>Retención en la Fuente</option>
+              <option>IVA</option>
+              <option>Retención de ICA</option>
+              <option>Estampilla Pro-Desarrollo</option>
+              <option>Estampilla Pro-Cultura</option>
+              <option>Estampilla Pro-Anciano</option>
+              <option>Aportes Parafiscales</option>
+              <option>Seguridad Social</option>
+              <option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-md-6">
+            <label class="form-label small">Período</label>
+            <input class="form-control form-control-sm" id="pd-periodo" placeholder="Ej: Febrero 2026">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small">N° Formulario DIAN</label>
+            <input class="form-control form-control-sm" id="pd-formulario">
+          </div>
+        </div>
+
+        <!-- ── Valor ── -->
+        <p class="fw-bold small text-primary mb-1"><i class="bi bi-currency-dollar me-1"></i>VALOR</p>
+        <div class="row g-2 mb-3">
+          <div class="col-md-5">
+            <label class="form-label small fw-bold">Valor del pago *</label>
+            <input type="number" class="form-control form-control-sm" id="pd-valor" min="0" oninput="_pdActualizarLetras()">
+          </div>
+          <div class="col-md-7">
+            <label class="form-label small">Valor en letras</label>
+            <div class="form-control form-control-sm bg-light" id="pd-valor-letras" style="min-height:31px;font-size:11px;color:#555">—</div>
+          </div>
+        </div>
+
+        <!-- ── Beneficiario y Pago ── -->
+        <p class="fw-bold small text-primary mb-1"><i class="bi bi-building me-1"></i>BENEFICIARIO Y PAGO</p>
+        <div class="row g-2 mb-2">
+          <div class="col-md-8">
+            <label class="form-label small">Beneficiario</label>
+            <input class="form-control form-control-sm" id="pd-beneficiario" value="DIAN - Dirección de Impuestos y Aduanas Nacionales">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small">NIT</label>
+            <input class="form-control form-control-sm" id="pd-nit" value="800197268">
+          </div>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-md-4">
+            <label class="form-label small">Medio de pago</label>
+            <select class="form-select form-select-sm" id="pd-medio">
+              <option>Transferencia electrónica</option>
+              <option>Consignación bancaria</option>
+              <option>Cheque</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small">Banco origen</label>
+            <select class="form-select form-select-sm" id="pd-banco">
+              <option value="">— Seleccionar —</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small">N° Comprobante bancario</label>
+            <input class="form-control form-control-sm" id="pd-comprobante-banco">
+          </div>
+        </div>
+
+        <!-- ── Contabilidad ── -->
+        <p class="fw-bold small text-primary mb-1"><i class="bi bi-calculator me-1"></i>CONTABILIDAD</p>
+        <div class="row g-2 mb-3">
+          <div class="col-md-4">
+            <label class="form-label small">Cuenta contable</label>
+            <input class="form-control form-control-sm" id="pd-cuenta">
+          </div>
+          <div class="col-md-8">
+            <label class="form-label small">Nombre de la cuenta</label>
+            <input class="form-control form-control-sm" id="pd-nombre-cuenta">
+          </div>
+        </div>
+
+        <!-- ── Observaciones ── -->
+        <div class="row g-2 mb-1">
+          <div class="col-12">
+            <label class="form-label small">Observaciones</label>
+            <textarea class="form-control form-control-sm" id="pd-observaciones" rows="2"></textarea>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer py-1">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarPagoDian()">
+          <i class="bi bi-check-lg me-1"></i>Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Scripts (CDN) ═══ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+
+<!-- ═══ Scripts App ═══ -->
+<script src="js/guard.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/db.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/calc-eg.js"></script>
+<script src="js/calc-ing.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/render-dash.js"></script>
+<script src="js/render-general.js"></script>
+<script src="js/render-ingresos.js"></script>
+<script src="js/render-trimestre.js"></script>
+<script src="js/render-contratos.js"></script>
+<script src="js/doc-templates.js"></script>
+<script src="js/doc-engine.js"></script>
+<script src="js/render-personas.js"></script>
+<script src="js/render-pagos-dian.js"></script>
+<script src="js/render-informes.js"></script>
+<script src="js/render-config.js"></script>
+<script src="js/actions-eg.js"></script>
+<script src="js/actions-ing.js"></script>
+<script src="js/actions-contratos.js"></script>
+<script src="js/actions-personas.js"></script>
+<script src="js/render-acuerdos.js"></script>
+<script src="js/actions-acuerdos.js"></script>
+<script src="js/actions-pagos-dian.js"></script>
+<script src="js/export-excel.js"></script>
+<script src="js/render-sifse.js"></script>
+<script src="js/export-sifse.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/import.js"></script>
+<script src="js/features-extras.js"></script>
+<script src="js/init.js"></script>
+<script>
+// Limitar TODOS los campos de fecha a rango válido (2020-2030)
+document.querySelectorAll('input[type="date"]').forEach(inp => {
+  if(!inp.min) inp.min = '2020-01-01';
+  if(!inp.max) inp.max = '2030-12-31';
+});
+
+// Forzar MAYÚSCULAS en todos los campos de texto y textarea
+document.addEventListener('input', function(e){
+  const t = e.target;
+  if((t.tagName === 'INPUT' && (t.type === 'text' || t.type === 'email' || t.type === 'search' || !t.type)) || t.tagName === 'TEXTAREA'){
+    const start = t.selectionStart;
+    const end = t.selectionEnd;
+    t.value = t.value.toUpperCase();
+    t.setSelectionRange(start, end);
+  }
+});
+</script>
+
+</body>
+</html>

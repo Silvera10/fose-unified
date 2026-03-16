@@ -1,0 +1,487 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Estudio Previo — Ley Garantías — {{ numero }}{% endblock %}
+{% block doc_titulo %}ESTUDIO PREVIO — LEY GARANTÍAS ELECTORALES{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ══════════════════════════════════════════════
+     Estudio Previo Ley Garantías — estilos de impresión
+     ══════════════════════════════════════════════ */
+
+  table.ep-info {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 14px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.ep-info th {
+    background: #f0f7f0;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 18%;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.ep-info td {
+    padding: 4px 8px;
+    border: 1px solid #bbb;
+    width: 32%;
+  }
+
+  .ep-section {
+    margin: 10px 0;
+    page-break-inside: avoid;
+  }
+  .ep-section h3 {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-left: 4px solid #1a6b3c;
+    margin-bottom: 6px;
+  }
+  .ep-section p {
+    font-size: 10pt;
+    text-align: justify;
+    margin: 5px 0;
+    line-height: 1.45;
+  }
+  .ep-section ul,
+  .ep-section ol {
+    font-size: 10pt;
+    text-align: justify;
+    padding-left: 22px;
+    margin: 5px 0;
+    line-height: 1.45;
+  }
+  .ep-section li { margin-bottom: 3px; }
+
+  table.ep-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 10px;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  table.ep-table thead th {
+    background: #1a6b3c;
+    color: #fff;
+    padding: 5px 7px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #145530;
+  }
+  table.ep-table thead th.center { text-align: center; }
+  table.ep-table tbody td {
+    padding: 4px 7px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+    line-height: 1.35;
+  }
+  table.ep-table tbody tr:nth-child(even) td { background: #f8faf8; }
+  table.ep-table tfoot td {
+    padding: 5px 7px;
+    border: 1px solid #aaa;
+    font-weight: bold;
+    background: #e8f5e9;
+  }
+
+  /* Bloque de firmas */
+  .ep-firma-section {
+    margin-top: 50px;
+    page-break-inside: avoid;
+  }
+  .ep-firma-section h3 {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-left: 4px solid #1a6b3c;
+    margin-bottom: 8px;
+  }
+  .ep-firma-section > p {
+    font-size: 10pt;
+    text-align: justify;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .ep-firma-grid { display: flex; gap: 30px; margin-top: 8px; }
+  .ep-firma-block { flex: 1; text-align: center; }
+  .ep-firma-linea {
+    border-top: 1px solid #000;
+    margin-top: 65px;
+    padding-top: 5px;
+  }
+  .ep-firma-block p { font-size: 10pt; margin: 2px 0; }
+
+  @media print {
+    .ep-section       { page-break-inside: avoid; }
+    table.ep-table    { page-break-inside: avoid; }
+    table.ep-info     { page-break-inside: avoid; }
+    .ep-firma-section { page-break-inside: avoid; }
+  }
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+<!-- Tabla de datos generales -->
+<table class="ep-info">
+  <tr>
+    <th>Institución</th>
+    <td colspan="3">{{ inst_nombre }}</td>
+  </tr>
+  <tr>
+    <th>NIT</th>
+    <td>{{ format_id(inst_nit) }}</td>
+    <th>Municipio</th>
+    <td>{{ inst_municipio }}, {{ inst_departamento }}</td>
+  </tr>
+  <tr>
+    <th>Fecha Elaboración</th>
+    <td colspan="3">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else hoy_largo }}</td>
+  </tr>
+  <tr>
+    <th>CDP de Respaldo</th>
+    <td>{{ num_cdp }}</td>
+    <th>Fecha CDP</th>
+    <td>{{ fecha_cdp_larga }}</td>
+  </tr>
+</table>
+
+<!-- NECESIDAD PAA -->
+<div class="ep-section">
+  <h3>Necesidad (Según Línea PAA)</h3>
+  <p>
+    La presente necesidad se encuentra incluida en el Plan Anual de Adquisiciones (PAA)
+    de la vigencia fiscal correspondiente, conforme a la línea de inversión aprobada por
+    el Consejo Directivo del Fondo de Servicios Educativos. La adquisición del bien o
+    servicio es indispensable para garantizar la continuidad de las actividades misionales
+    de la Institución Educativa y responde a los objetivos del Proyecto Educativo
+    Institucional (PEI).
+  </p>
+</div>
+
+<!-- FUNDAMENTOS JURÍDICOS -->
+<div class="ep-section">
+  <h3>Fundamentos Jurídicos que Sustentan la Convocatoria bajo esta Modalidad</h3>
+  <p>
+    Son normas aplicables para la modalidad de régimen especial (reglamento de 20 SMLMV,
+    dispuesto en artículo 13 de la ley 715 de 2001), las siguientes: 1- Criterios
+    específicos del artículo 2.3.1.6.3.17 del decreto 1075 de 2015 que corresponden al
+    artículo 17 del decreto 4791 de 2008 y 2- Principios contractuales de la ley 80 de 1993.
+  </p>
+  <p>
+    El monto requerido para atender la necesidad objeto de esta convocatoria no supera 20
+    SMLMV, por lo que es aplicable la modalidad de régimen especial para establecimientos
+    educativos oficiales, según la cual, las adquisiciones de bienes y servicios que se
+    encuentren en el rango indicado se adelantan con observancia de lo dispuesto en el
+    Reglamento aprobado por el consejo directivo.
+  </p>
+  <p>
+    En consecuencia, el proceso derivado de este análisis se rige por lo determinado en el
+    manual de contratación institucional, subtítulo respectivo a lineamientos del reglamento
+    interno.
+  </p>
+  <p>
+    La presente convocatoria reúne los requisitos para un régimen especial con respecto a
+    un pliego de condiciones, según lo dispuesto en el numeral 5 del artículo 24 de la
+    ley 80 de 1993.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 1 ─────────── -->
+<div class="ep-section">
+  <h3>1. Modalidad de Selección y Tipo de Contrato</h3>
+  <p>
+    De conformidad con el artículo 13 de la Ley 715 de 2001, el Decreto 4791 de 2008 y
+    el artículo 2.3.1.6.3.17 del Decreto 1075 de 2015, la presente contratación se adelanta
+    bajo la modalidad de <strong>{{ modalidad_seleccion }}</strong> — régimen especial FSE
+    (≤ 20 SMLMV), siendo el tipo de contrato a suscribir un <strong>{{ tipo_contrato }}</strong>.
+  </p>
+  <p>
+    La modalidad se justifica porque el valor del contrato no supera el límite de veinte (20)
+    Salarios Mínimos Legales Mensuales Vigentes (SMLMV), conforme al presupuesto anual de la
+    entidad. El proceso se adelanta durante el período de Ley de Garantías Electorales
+    (Ley 996 de 2005), por lo que se aplica la circular vigente de Colombia Compra Eficiente y se garantiza la
+    participación de una pluralidad de oferentes con criterios objetivos de evaluación.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 2 ─────────── -->
+<div class="ep-section">
+  <h3>2. Descripción de la Necesidad</h3>
+  <p>
+    {{ 'El' if 'CENTRO' in inst_nombre|upper else 'La' }} <strong>{{ inst_nombre }}</strong>, con NIT <strong>{{ format_id(inst_nit) }}</strong>, ha
+    identificado la necesidad de contratar lo siguiente, con el fin de garantizar el
+    adecuado funcionamiento institucional y el cumplimiento de sus objetivos misionales:
+  </p>
+  <p><strong>Necesidad identificada:</strong> {{ objeto }}</p>
+  <p>
+    La satisfacción de esta necesidad resulta indispensable para el normal desarrollo de
+    las actividades académicas y administrativas de la institución, conforme a los planes
+    y programas institucionales vigentes para la vigencia fiscal correspondiente.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 3 ─────────── -->
+<div class="ep-section">
+  <h3>3. Objeto del Contrato y Clasificación UNSPSC</h3>
+  <p><strong>Objeto:</strong> {{ objeto }}</p>
+  <table class="ep-table">
+    <thead>
+      <tr>
+        <th style="width:30%">Clasificación UNSPSC</th>
+        <th>Descripción del Objeto</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set codigos_unspsc = items | selectattr('unsp') | map(attribute='unsp') | list %}
+      <tr>
+        <td style="text-align:center; font-weight:bold; letter-spacing:0.5px;">
+          {% if codigos_unspsc %}
+            {{ codigos_unspsc | join('; ') }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>{{ objeto }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    El rubro presupuestal afectado corresponde a
+    <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
+    con fuente de financiación <strong>{{ fuente }}</strong>.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 4 ─────────── -->
+<div class="ep-section">
+  <h3>4. Condiciones Técnicas y Especificaciones del Bien o Servicio</h3>
+  <p>El bien o servicio requerido deberá cumplir con las siguientes condiciones técnicas mínimas:</p>
+  <ul>
+    <li>Cumplir estrictamente con el objeto contractual descrito.</li>
+    <li>Ser entregado o prestado en el lugar y dentro del plazo acordado.</li>
+    <li>Reunir los requisitos de calidad exigidos para este tipo de bien o servicio.</li>
+    <li>El contratista deberá acreditar experiencia y capacidad técnica suficiente.</li>
+    <li>Atender las instrucciones impartidas por el supervisor del contrato.</li>
+  </ul>
+</div>
+
+<!-- ─────────── SECCIÓN 5 ─────────── -->
+<div class="ep-section">
+  <h3>5. Obligaciones del Contratista</h3>
+  {% if obligaciones and obligaciones.strip() %}
+    {% for linea in obligaciones.split('\n') %}
+      {% if linea.strip() %}<p>{{ linea.strip() }}</p>{% endif %}
+    {% endfor %}
+  {% else %}
+  <ul>
+    <li>Ejecutar el objeto del contrato en las condiciones de tiempo, modo y lugar pactadas.</li>
+    <li>Cumplir con las especificaciones técnicas requeridas.</li>
+    <li>Presentar los informes y soportes que requiera el supervisor.</li>
+    <li>Guardar confidencialidad sobre la información institucional.</li>
+    <li>No ceder el contrato sin previa autorización escrita de la entidad.</li>
+    <li>Afiliarse y mantener al día el pago de aportes al Sistema General de Seguridad Social.</li>
+  </ul>
+  {% endif %}
+</div>
+
+<!-- ─────────── SECCIÓN 6 ─────────── -->
+<div class="ep-section">
+  <h3>6. Análisis del Sector y Referenciación de Precios de Mercado</h3>
+  <p>
+    Con el fin de establecer el valor del contrato, se realizó una consulta de precios en
+    el mercado. El análisis arrojó como valor de referencia la suma de
+    <strong>{{ format_moneda(valor_total) }}</strong>
+    (<strong>{{ valor_letras }}</strong>), el cual corresponde al valor total del contrato,
+    amparado mediante Certificado de Disponibilidad Presupuestal (CDP)
+    N.° <strong>{{ num_cdp }}</strong> de fecha <strong>{{ fecha_cdp_larga }}</strong>.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 7 ─────────── -->
+<div class="ep-section">
+  <h3>7. Análisis de Riesgos</h3>
+  <p>
+    A continuación se identifican los principales riesgos asociados al proceso contractual
+    y las medidas de mitigación propuestas:
+  </p>
+  <table class="ep-table">
+    <thead>
+      <tr>
+        <th style="width:16%">Tipo de Riesgo</th>
+        <th style="width:42%">Descripción</th>
+        <th style="width:42%">Medidas de Mitigación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Operativo</strong></td>
+        <td>Incumplimiento en la entrega o prestación del servicio en los plazos pactados.</td>
+        <td>Supervisión continua, actas parciales de avance, aplicación de cláusula penal.</td>
+      </tr>
+      <tr>
+        <td><strong>Financiero</strong></td>
+        <td>Insuficiencia de recursos presupuestales para el pago.</td>
+        <td>Verificación previa de disponibilidad presupuestal mediante CDP y RP.</td>
+      </tr>
+      <tr>
+        <td><strong>Jurídico</strong></td>
+        <td>Inhabilidades o incompatibilidades del contratista.</td>
+        <td>Verificación en el SECOP, SIRI y boletines de responsables fiscales.</td>
+      </tr>
+      <tr>
+        <td><strong>Técnico</strong></td>
+        <td>Bien o servicio que no cumple con las especificaciones requeridas.</td>
+        <td>Supervisión técnica, rechazo y reposición del bien o servicio no conforme.</td>
+      </tr>
+      <tr>
+        <td><strong>Electoral</strong></td>
+        <td>Cuestionamiento del proceso por adelantarse en período de Ley de Garantías.</td>
+        <td>Invitación general, pluralidad de oferentes, publicación en SECOP y aplicación
+            del Concepto del Consejo de Estado Exp. 2.382/2018 y la circular vigente de Colombia Compra Eficiente.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─────────── SECCIÓN 8 ─────────── -->
+<div class="ep-section">
+  <h3>8. Documentación Requerida para el Pago</h3>
+  <p>Para el trámite del pago, el contratista deberá presentar:</p>
+  <ol>
+    <li>Factura o cuenta de cobro a nombre de la institución.</li>
+    <li>Certificado de pago de aportes al Sistema General de Seguridad Social (cuando aplique).</li>
+    <li>Informe de actividades o acta de recibido a satisfacción suscrita por el supervisor.</li>
+    <li>Paz y salvo de obligaciones con la entidad (si aplica).</li>
+    <li>Copia del Registro Único Tributario (RUT) actualizado.</li>
+    <li>Certificación bancaria vigente.</li>
+  </ol>
+</div>
+
+<!-- ─────────── SECCIÓN 9 ─────────── -->
+<div class="ep-section">
+  <h3>9. Justificación de la Contratación</h3>
+  <p>
+    La presente contratación es conveniente y necesaria para la institución, toda vez que
+    permite dar cumplimiento a los objetivos misionales y al plan de mejoramiento
+    institucional. La adquisición se encuentra debidamente presupuestada en el rubro
+    <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>, con disponibilidad
+    certificada mediante CDP N.° <strong>{{ num_cdp }}</strong> del
+    <strong>{{ fecha_cdp_larga }}</strong>.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 10 ─────────── -->
+<div class="ep-section">
+  <h3>10. Cronograma del Proceso</h3>
+  <table class="ep-table">
+    <thead>
+      <tr>
+        <th style="width:60%">Actividad</th>
+        <th class="center" style="width:40%">Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Publicación del Estudio Previo e Invitación</td>
+        <td style="text-align:center">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Recepción de Ofertas</td>
+        <td style="text-align:center">{{ fecha_presentacion_oferta_larga if fecha_presentacion_oferta_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Evaluación y Selección de Ofertas</td>
+        <td style="text-align:center">{{ fecha_evaluacion_larga if fecha_evaluacion_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Suscripción del Contrato (Registro Presupuestal)</td>
+        <td style="text-align:center">{{ fecha_rp_larga if fecha_rp_larga is defined else '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─────────── SECCIÓN 11 ─────────── -->
+<div class="ep-section">
+  <h3>11. Observaciones Legales — Ley de Garantías Electorales</h3>
+  <p>
+    El presente procedimiento se rige por las normas propias del Fondo de Servicios
+    Educativos, conforme al Decreto 4791 de 2008 y al Manual Interno de Contratación
+    de la Institución Educativa.
+  </p>
+  <p>
+    <strong>CUMPLIMIENTO DE LA LEY DE GARANTÍAS ELECTORALES:</strong> El presente proceso
+    se adelanta dentro del período de restricción electoral previsto en la Ley 996 de 2005
+    (período electoral vigencia {{ anio }}). La presente convocatoria es de
+    carácter <strong>GENERAL</strong>, no dirigida a proveedor específico, y permite la
+    participación de una <strong>PLURALIDAD DE OFERENTES</strong> con criterios objetivos
+    de evaluación. En consecuencia, conforme al Concepto del
+    Consejo de Estado, Sala de Consulta y Servicio Civil, Exp. 2.382/2018, y la circular
+    vigente que Colombia Compra Eficiente expida para cada período electoral, este proceso
+    <strong>NO</strong> constituye 'contratación directa' en los términos del artículo 33
+    de la Ley de Garantías, y puede adelantarse válidamente durante el período electoral.
+  </p>
+  <p>
+    La información contractual será publicada en el SECOP con fines de transparencia y
+    trazabilidad del proceso.
+  </p>
+</div>
+
+<!-- ─────────── SECCIÓN 12 ─────────── -->
+<div class="ep-section">
+  <h3>12. Fundamento Legal</h3>
+  <ul>
+    <li>Ley 80 de 1993 — Estatuto General de Contratación Pública.</li>
+    <li>Ley 715 de 2001 — Art. 13: Régimen especial establecimientos educativos.</li>
+    <li>Ley 996 de 2005 — Ley de Garantías Electorales.</li>
+    <li>Decreto 4791 de 2008 — Manual de Contratación del Fondo de Servicios Educativos.</li>
+    <li>Decreto 1082 de 2015 — Decreto Único Reglamentario.</li>
+    <li>Decreto 1075 de 2015 — Art. 2.3.1.6.3.17: Criterios de contratación FSE.</li>
+    <li>Ley 1474 de 2011 — Estatuto Anticorrupción.</li>
+    <li>Circular vigente de Colombia Compra Eficiente — Lineamientos contratación en período electoral.</li>
+    <li>Concepto Consejo de Estado, Sala de Consulta y Servicio Civil, Exp. 2.382/2018.</li>
+  </ul>
+</div>
+
+<!-- COMPROMISO DE TRANSPARENCIA -->
+<div class="ep-section">
+  <h3>Compromiso de Transparencia, Buenas Prácticas y Medidas Anticorrupción</h3>
+  <p>
+    La Institución Educativa, en cumplimiento de la Ley 1474 de 2011 (Estatuto
+    Anticorrupción) y demás normas concordantes, se compromete a adelantar el presente
+    proceso contractual con sujeción a los principios de transparencia, responsabilidad,
+    selección objetiva y moralidad administrativa. Se invita a los participantes a denunciar
+    cualquier acto de corrupción ante los organismos de control competentes. Se promueve el
+    ejercicio de veedurías ciudadanas conforme a la Ley 850 de 2003.
+  </p>
+</div>
+
+<!-- ─────────── FIRMAS ─────────── -->
+<div class="ep-firma-section">
+  <h3>Aprobación</h3>
+  <p>
+    El presente Estudio Previo ha sido elaborado y revisado por la dependencia competente,
+    y se somete a consideración y aprobación del(la) Rector(a) de la institución.
+  </p>
+  <div class="ep-firma-grid">
+    <div class="ep-firma-block">
+      <div class="ep-firma-linea">
+        <p><strong>{{ rector | upper }}</strong></p>
+        <p>C.C. {{ format_id(cc_rector) }}</p>
+        <p>Rector(a) — Ordenador del Gasto</p>
+        <p>{{ inst_nombre }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

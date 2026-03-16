@@ -1,0 +1,498 @@
+{% extends "docs/base_doc.html" %}
+
+{% block doc_title %}Orden de Pago — {{ numero }}{% endblock %}
+{% block doc_titulo %}ORDEN DE PAGO{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ══════════════════════════════════════════════════════
+   ORDEN DE PAGO  ·  estilos pantalla + impresión
+   ══════════════════════════════════════════════════════ */
+
+@page {
+  size: letter portrait;
+  margin: 18mm 16mm 18mm 20mm;
+}
+
+/* ── Número de contrato ───────────────────────────── */
+.op-numero {
+  text-align: center;
+  font-size: 10.5pt;
+  font-weight: bold;
+  color: #1a6b3c;
+  margin: -8px 0 14px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Secciones ────────────────────────────────────── */
+.op-section {
+  margin: 10px 0 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.op-section-titulo {
+  font-size: 10pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8f5e9;
+  padding: 5px 10px;
+  border-left: 5px solid #1a6b3c;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.op-section p {
+  font-size: 9.5pt;
+  text-align: justify;
+  margin: 5px 0;
+  line-height: 1.6;
+}
+.op-section ol {
+  font-size: 9.5pt;
+  padding-left: 22px;
+  margin: 5px 0 8px;
+  line-height: 1.6;
+}
+.op-section ol li {
+  margin-bottom: 4px;
+  text-align: justify;
+}
+
+/* ── Tabla de datos generales ─────────────────────── */
+table.op-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.op-tabla th {
+  background: #e8f5e9;
+  font-weight: bold;
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 22%;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.op-tabla td {
+  padding: 5px 9px;
+  border: 1.5px solid #aaa;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+
+/* ── Tablas de datos financieros ──────────────────── */
+table.op-data {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.op-data thead th {
+  background: #1a6b3c;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 9px;
+  border: 1.5px solid #1a6b3c;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.op-data tbody td {
+  padding: 5px 9px;
+  border: 1.5px solid #bbb;
+  vertical-align: top;
+  font-size: 9.5pt;
+  line-height: 1.4;
+}
+table.op-data tbody tr:nth-child(even) td {
+  background: #f7faf7;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+table.op-data tfoot td {
+  padding: 6px 9px;
+  border: 1.5px solid #bbb;
+  background: #e8f5e9;
+  font-weight: bold;
+  font-size: 9.5pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Tabla Imputación Presupuestal ────────────────── */
+table.op-imputacion {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6px;
+  font-size: 9pt;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.op-imputacion td,
+table.op-imputacion th {
+  border: 1.5px solid #999;
+  padding: 5px 8px;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+.op-imp-titulo {
+  background: #d4e8d4;
+  font-weight: bold;
+  font-size: 9.5pt;
+  text-align: center;
+  letter-spacing: 0.3px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.op-imp-sector-hdr {
+  background: #e8f5e9;
+  font-weight: bold;
+  font-size: 9pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.op-imp-col-hdr {
+  background: #e8f5e9;
+  font-weight: bold;
+  font-size: 9pt;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.op-imp-total {
+  background: #e8f5e9;
+  font-weight: bold;
+  font-size: 9pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ── Caja de autorización ─────────────────────────── */
+.op-autorizacion {
+  border: 2px solid #1a6b3c;
+  border-radius: 3px;
+  padding: 10px 14px;
+  margin: 4px 0;
+  background: #f0f7f0;
+  font-size: 9.5pt;
+  text-align: justify;
+  line-height: 1.6;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.op-autorizacion p { margin: 4px 0; }
+
+/* ── Firma ────────────────────────────────────────── */
+.op-firma-section {
+  margin-top: 44px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+table.op-firma-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+table.op-firma-tabla td {
+  width: 50%;
+  text-align: center;
+  padding: 0 12px;
+  border: none;
+  vertical-align: bottom;
+}
+.op-firma-linea {
+  border-top: 1.5px solid #000;
+  padding-top: 6px;
+  margin-top: 58px;
+}
+.op-firma-nombre {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.op-firma-cargo {
+  font-size: 8.5pt;
+  margin: 1px 0;
+  color: #222;
+}
+</style>
+{% endblock %}
+
+{% block doc_content %}
+
+{% set supervisor = nombre_supervisor if nombre_supervisor else rector %}
+{% set cargo_sup  = cargo_supervisor  if cargo_supervisor  else 'Rector(a)' %}
+{% set fp = forma_pago or 'Pago único' %}
+{% set _nom_fuente = fuente_nombre if fuente_nombre else fuente %}
+
+<p class="op-numero">
+  Orden de Pago N.° <strong>{{ num_egreso or '—' }}</strong>
+  <span style="font-weight:normal; color:#555; font-size:9pt">&nbsp;·&nbsp; Contrato N.° {{ numero }}</span>
+</p>
+
+<!-- ── 1. DATOS GENERALES ─────────────────────────────────────── -->
+<div class="op-section">
+  <div class="op-section-titulo">1. Datos Generales</div>
+  <table class="op-tabla">
+    <tr>
+      <th>Institución</th>
+      <td colspan="3">{{ inst_nombre }}</td>
+    </tr>
+    <tr>
+      <th>NIT Institución</th>
+      <td>{{ format_id(inst_nit) }}</td>
+      <th>Fecha</th>
+      <td>{{ fecha_fin_larga }}</td>
+    </tr>
+    <tr>
+      <th>Contrato N.°</th>
+      <td>{{ numero }}</td>
+      <th>Tipo de contrato</th>
+      <td>{{ tipo_contrato }}</td>
+    </tr>
+    <tr>
+      <th>
+        {% if sexo_contratista == 'E' %}Empresa / Beneficiario
+        {% elif sexo_contratista == 'F' %}Beneficiaria
+        {% else %}Beneficiario{% endif %}
+      </th>
+      <td colspan="3">
+        {{ nombre_contratista }}
+        {% if sexo_contratista == 'E' and rep_legal_nombre %}
+          <br><small style="color:#555">Repr. Legal: {{ rep_legal_nombre }}, CC {{ format_id(rep_legal_cc) }}</small>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Tipo de identificación</th>
+      <td>{{ tipo_id_contratista }}</td>
+      <th>Número</th>
+      <td>{{ format_id(num_id_contratista) }}</td>
+    </tr>
+    <tr>
+      <th>Concepto del pago</th>
+      <td colspan="3">{{ fp }} — {{ objeto }}</td>
+    </tr>
+    <tr>
+      <th>CDP N.°</th>
+      <td>{{ num_cdp }} &nbsp;·&nbsp; {{ fecha_cdp_larga }}</td>
+      <th>RP N.°</th>
+      <td>{{ num_rp }} &nbsp;·&nbsp; {{ fecha_rp_larga }}</td>
+    </tr>
+    <tr>
+      <th>Rubro presupuestal</th>
+      <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
+      <th>Fuente</th>
+      <td>{{ fuente }}</td>
+    </tr>
+    <tr>
+      <th>Banco</th>
+      <td>{{ banco_contratista }}</td>
+      <th>Tipo de cuenta</th>
+      <td>{{ tipo_cuenta }}</td>
+    </tr>
+    <tr>
+      <th>N.° de cuenta</th>
+      <td colspan="3">{{ cuenta_banco }}</td>
+    </tr>
+    <tr>
+      <th>N.° Factura / Cta. de Cobro</th>
+      <td colspan="3">{{ num_factura or '—' }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 2. RESUMEN DE PAGO ─────────────────────────────────────── -->
+<div class="op-section">
+  <div class="op-section-titulo">2. Resumen de Pago</div>
+  <table class="op-data">
+    <thead>
+      <tr>
+        <th style="width:60%">Concepto</th>
+        <th style="width:40%">Valor</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Valor total del contrato</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+      </tr>
+      <tr>
+        <td>Retención en la Fuente (Cta. {{ ret_cuenta or '236505' }})</td>
+        <td style="text-align:right">− {{ format_moneda(retencion) }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td><strong>VALOR NETO A PAGAR</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(neto) }}</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  <p>
+    <strong>Valor neto en letras:</strong> {{ neto_letras }}
+  </p>
+</div>
+
+<!-- ── 3. IMPUTACIÓN PRESUPUESTAL ─────────────────────────────── -->
+<div class="op-section">
+  <div class="op-section-titulo">3. Imputación Presupuestal</div>
+  <table class="op-imputacion">
+    <!-- Título principal -->
+    <tr>
+      <th colspan="5" class="op-imp-titulo">3) IMPUTACIÓN PRESUPUESTAL</th>
+    </tr>
+    <!-- Sub-encabezados Sector -->
+    <tr>
+      <th colspan="2" class="op-imp-sector-hdr" style="text-align:center">SECTOR</th>
+      <th colspan="3" class="op-imp-sector-hdr">NOMBRE DEL SECTOR PRESUPUESTAL</th>
+    </tr>
+    <!-- Datos del sector -->
+    <tr>
+      <td colspan="2" style="text-align:center;font-weight:bold">01</td>
+      <td colspan="3">SEDE PRINCIPAL</td>
+    </tr>
+    <!-- Fila separadora -->
+    <tr>
+      <td colspan="5" style="border-left:none;border-right:none;padding:2px">&nbsp;</td>
+    </tr>
+    <!-- Encabezados de columna -->
+    <tr>
+      <th class="op-imp-col-hdr" style="width:12%">Rubro Gasto</th>
+      <th class="op-imp-col-hdr" style="width:34%">Nombre de rubro presupuestal</th>
+      <th class="op-imp-col-hdr" style="width:8%">fuente</th>
+      <th class="op-imp-col-hdr" style="width:26%">Nombre de la fuente</th>
+      <th class="op-imp-col-hdr" style="width:20%">Valor Obligación</th>
+    </tr>
+    <!-- Fila de datos -->
+    <tr>
+      <td style="text-align:center">{{ rubro_codigo }}</td>
+      <td>{{ rubro_nombre }}</td>
+      <td style="text-align:center">{{ fuente }}</td>
+      <td>{{ _nom_fuente }}</td>
+      <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+    </tr>
+    <!-- Filas vacías adicionales -->
+    <tr>
+      <td>&nbsp;</td><td></td><td></td><td></td>
+      <td style="text-align:right">{{ format_moneda(0) }}</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td><td></td><td></td><td></td><td></td>
+    </tr>
+    <!-- Total -->
+    <tr>
+      <td colspan="3" style="border:none"></td>
+      <td class="op-imp-total">Total Obligación</td>
+      <td class="op-imp-total" style="text-align:right">{{ format_moneda(valor_total) }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── 4. REGISTRO CONTABLE ───────────────────────────────────── -->
+<div class="op-section">
+  <div class="op-section-titulo">4. Registro Contable</div>
+  <table class="op-data">
+    <thead>
+      <tr>
+        <th style="width:16%">Código Cuenta</th>
+        <th style="width:44%">Nombre de la Cuenta</th>
+        <th style="width:20%">DEBE</th>
+        <th style="width:20%">HABER</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Fila 1: cuenta contable del rubro (= fila 1 del Asiento Contable sección 9) -->
+      <tr>
+        <td style="text-align:center">{{ cuenta_contable or rubro_codigo }}</td>
+        <td>{{ nombre_cuenta or rubro_nombre }}</td>
+        <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
+        <td style="text-align:right"></td>
+      </tr>
+      <!-- Fila 2: banco institucional seleccionado -->
+      <tr>
+        <td style="text-align:center">111005</td>
+        <td>{{ banco_sel or 'BANCOS — Cuenta Institucional' }}{% if cta_sel %} — Cta. {{ cta_sel }}{% endif %}</td>
+        <td style="text-align:right"></td>
+        <td style="text-align:right">{{ format_moneda(neto) }}</td>
+      </tr>
+      <!-- Fila 3: retención en la fuente -->
+      <tr>
+        <td style="text-align:center">{{ ret_cuenta or '236505' }}</td>
+        <td>{{ ret_concepto or 'Retención en la Fuente por Pagar' }}</td>
+        <td style="text-align:right"></td>
+        <td style="text-align:right">{{ format_moneda(retencion) }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2" style="text-align:right"><strong>TOTALES:</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(valor_total) }}</strong></td>
+        <td style="text-align:right"><strong>{{ format_moneda(valor_total) }}</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- ── 5. SOPORTE DOCUMENTAL ─────────────────────────────────── -->
+<div class="op-section">
+  <div class="op-section-titulo">5. Soporte Documental</div>
+  <p>Se adjuntan los siguientes documentos soporte:</p>
+  <ol>
+    <li>Factura o cuenta de cobro del contratista.</li>
+    <li>Acta de recibido a satisfacción suscrita por el supervisor.</li>
+    <li>Informe de supervisión del contrato N.° {{ numero }}.</li>
+    <li>Informe de actividades del contratista.</li>
+    <li>CDP N.° {{ num_cdp }} del {{ fecha_cdp_larga }}.</li>
+    <li>RP N.° {{ num_rp }} del {{ fecha_rp_larga }}.</li>
+    <li>Comprobante de pago de seguridad social (cuando aplique).</li>
+    <li>Certificación bancaria del beneficiario.</li>
+  </ol>
+</div>
+
+<!-- ── 6. AUTORIZACIÓN ────────────────────────────────────────── -->
+<div class="op-section">
+  <div class="op-section-titulo">6. Autorización de Pago</div>
+  <div class="op-autorizacion">
+    <p>
+      Revisada la documentación soporte y verificado el cumplimiento del objeto
+      contractual del contrato N.° <strong>{{ numero }}</strong>, se autoriza el
+      pago mediante transferencia a la cuenta <strong>{{ tipo_cuenta }}</strong>
+      N.° <strong>{{ cuenta_banco }}</strong> del banco
+      <strong>{{ banco_contratista }}</strong>, a nombre de
+      {% if sexo_contratista == 'E' %}la empresa contratista
+      {% elif sexo_contratista == 'F' %}la contratista
+      {% else %}el contratista{% endif %}
+      <strong>{{ nombre_contratista }}</strong>, por los siguientes valores:
+    </p>
+    <p>
+      Valor bruto: <strong>{{ format_moneda(valor_total) }}</strong> —
+      Retención en la Fuente (Cta. {{ ret_cuenta or '236505' }}): <strong>{{ format_moneda(retencion) }}</strong> —
+      <strong>Valor neto a pagar: {{ format_moneda(neto) }}</strong>.
+    </p>
+  </div>
+</div>
+
+<!-- ── FIRMA ──────────────────────────────────────────────────── -->
+<div class="op-firma-section">
+  <div class="op-firma-linea" style="width:60%; margin:65px auto 0">
+    <p class="op-firma-nombre">{{ supervisor }}</p>
+    <p class="op-firma-cargo">{{ cargo_sup }}</p>
+    <p class="op-firma-cargo">Supervisor — Contrato N.° {{ numero }}</p>
+    <p class="op-firma-cargo"><strong>REVISÓ</strong></p>
+  </div>
+</div>
+
+{% endblock %}
