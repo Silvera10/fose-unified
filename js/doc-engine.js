@@ -628,6 +628,7 @@ function buildDocContext(contrato, d, templateName){
       const legacy = {'1':'SGP – Calidad','2':'Gratuidad','3':'Recursos Propios','4':'Aportes Departamento','5':'Recursos Propios IE'};
       return legacy[codF] || codF;
     })(),
+    ref_contrato_anterior: c.ref_contrato_anterior || '',
     num_cdp: c.cdp || '',
     num_rp: c.rp || '',
     num_egreso: c.num_egreso || '',

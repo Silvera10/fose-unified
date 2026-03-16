@@ -1152,6 +1152,7 @@ function abrirModalContrato(id=null){
     $('mc-id').value = id;
     // Datos básicos
     $('mc-numero').value = (c.numero||'').replace(/^\(Borrador\)/,''); $('mc-tipo').value = c.tipo||'';
+    if($('mc-ref-anterior')) $('mc-ref-anterior').value = c.ref_contrato_anterior||'';
     $('mc-modalidad').value = c.modalidad||''; $('mc-estado').value = c.estado||'En ejecucion';
     $('mc-objeto').value = (c.objeto||'').replace(/^\(Pendiente\)/,''); $('mc-obligaciones').value = c.obligaciones||'';
     $('mc-valor').value = c.valor||''; $('mc-fecha-inicio').value = c.fecha_inicio||'';
@@ -2355,6 +2356,7 @@ function guardarContrato(){
   const c = {
     id: $('mc-id').value || uid(),
     numero: numero, tipo:$('mc-tipo').value, modalidad:$('mc-modalidad').value,
+    ref_contrato_anterior: $('mc-ref-anterior')?.value?.trim()||'',
     estado:estadoFinal, objeto: objeto, obligaciones:$('mc-obligaciones').value.trim(),
     valor, fecha_inicio:_fixAnio($('mc-fecha-inicio').value), fecha_fin:_fixAnio($('mc-fecha-fin').value),
     plazo:Number($('mc-plazo').value)||0,
