@@ -788,6 +788,17 @@ function genContratos(d, trim){
     if(!c.contrato_full_id) return {};
     return (d.contratos_full||[]).find(cf=>cf.id===c.contrato_full_id) || {};
   }
+  // Nombre de la fuente a partir del código
+  const _legacyFuentes = {'1':'SGP – Calidad','2':'Gratuidad','3':'Recursos Propios','4':'Aportes Departamento','5':'Recursos Propios IE'};
+  function _nombreFuente(codF){
+    if(!codF) return '';
+    if(d.sifse_catalogo && d.sifse_catalogo.fuentes){
+      const f = d.sifse_catalogo.fuentes.find(x=>x.cod===codF);
+      if(f && f.nom) return f.nom;
+    }
+    if(d.rubros_ing){ const ri = d.rubros_ing.find(x=>x.cod===codF); if(ri && ri.con) return ri.con; }
+    return _legacyFuentes[codF] || '';
+  }
 
   const tl = {1:'T1 – Ene/Mar',2:'T2 – Abr/Jun',3:'T3 – Jul/Sep',4:'T4 – Oct/Dic'};
   let rows = cs.length ? cs.map((c,i)=>{
@@ -813,7 +824,7 @@ function genContratos(d, trim){
     <td class="num">${fmt(c.valor)}</td>
     <td class="num">${fmt(neto)}</td>
     <td>${c.cod_rubro}</td><td style="text-align:left;font-size:9px">${_nombreRubro(d,c.cod_rubro)}</td>
-    <td>${fuente||'—'}</td>
+    <td style="text-align:left;font-size:9px">${fuente ? fuente + ' ' + _nombreFuente(fuente) : '—'}</td>
     <td>${ue||'—'}</td>
   </tr>`;}).join('') : '<tr><td colspan="18" class="ctr">Sin registros</td></tr>';
   rows += `<tr class="gtot"><td colspan="12" style="text-align:right">TOTAL</td>

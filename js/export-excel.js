@@ -692,6 +692,14 @@ function _excelRelacionGastos(wb, d, trim){
     if(!c.contrato_full_id) return {};
     return (d.contratos_full||[]).find(cf=>cf.id===c.contrato_full_id) || {};
   }
+  // Nombre de la fuente
+  const _legacyF = {'1':'SGP – Calidad','2':'Gratuidad','3':'Recursos Propios','4':'Aportes Departamento','5':'Recursos Propios IE'};
+  function _nomFuente(codF){
+    if(!codF) return '';
+    if(d.sifse_catalogo && d.sifse_catalogo.fuentes){ const f=d.sifse_catalogo.fuentes.find(x=>x.cod===codF); if(f&&f.nom) return f.nom; }
+    if(d.rubros_ing){ const ri=d.rubros_ing.find(x=>x.cod===codF); if(ri&&ri.con) return ri.con; }
+    return _legacyF[codF]||'';
+  }
 
   let r=6,tot=0,totNeto=0;
   cs.forEach((c,i)=>{
@@ -700,13 +708,15 @@ function _excelRelacionGastos(wb, d, trim){
     const neto = Number(c.neto_pagar)||val;
     tot+=val; totNeto+=neto;
     const row=ws.getRow(r);
+    const codFuente = c.fuente||cf.fuente||'';
+    const fuenteCompleta = codFuente ? codFuente + ' ' + _nomFuente(codFuente) : '';
     const vals=[i+1, c.comp||'', c.fecha||'',
       c.banco_pago||cf.banco_pago||'', c.cuenta_pago||cf.cuenta_pago||'',
       c.prov||'', c.numdoc||'',
       c.rp||'', c.cdp||'', c.num_op||cf.num_op||'', vig,
       c.concepto||'', val, neto,
       c.cod_rubro||'', _nombreRubro(d,c.cod_rubro),
-      c.fuente||cf.fuente||'', cfg.unidad_ejecutora||''];
+      fuenteCompleta, cfg.unidad_ejecutora||''];
     vals.forEach((v,j)=>{
       const opts={font:_XS.fontNorm};
       if(j===12||j===13) opts.numFmt=_XS.numFmt;
