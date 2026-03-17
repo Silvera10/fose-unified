@@ -2052,8 +2052,22 @@ function _syncContratoTrimestral(contrato, d){
   const pagosReales = pagos.filter(p => p.fecha_pago && p.num_egreso && Number(p.valor) > 0);
   let totalPagado = pagosReales.reduce((s, p) => s + (Number(p.valor) || 0), 0);
 
+  // Auto-asignar num_op si falta y banco de la institución si falta
+  const _cfg = d.config || {};
+  const _bancoDefault = _cfg.banco_1 ? (_cfg.banco_1 + ' - ' + (_cfg.tipo_cuenta_1||'') + ' ' + (_cfg.cuenta_1||'')) : '';
+  const _cuentaDefault = _cfg.cuenta_1 || '';
+  // Consecutivo O.P.
+  function _nextOP(){
+    const existentes = (d.contratos_full||[]).flatMap(c=>(c.pagos||[]).map(pp=>Number(pp.num_op)||0)).filter(n=>n>0);
+    return existentes.length ? Math.max(...existentes) + 1 : 1;
+  }
+
   // Helper: registrar UN gasto desde un pago
   function _pushGasto(pago){
+    // Auto-asignar O.P. si no tiene
+    if(!pago.num_op){ pago.num_op = String(_nextOP()); }
+    // Auto-asignar banco si no tiene
+    if(!pago.banco_pago && _bancoDefault){ pago.banco_pago = _bancoDefault; pago.cuenta_pago = _cuentaDefault; }
     const tm = _trimDeFecha(pago.fecha_pago);
     if(!tm) return;
     d.contratos.push({
@@ -2083,7 +2097,10 @@ function _syncContratoTrimestral(contrato, d){
       retencion_valor:     Number(pago.retencion_valor) || 0,
       retencion_concepto:  pago.retencion_concepto || '',
       neto_pagar:          Number(pago.neto_pagar) || 0,
-      reteica:             Number(pago.reteica) || 0
+      reteica:             Number(pago.reteica) || 0,
+      num_op:              pago.num_op || '',
+      banco_pago:          pago.banco_pago || '',
+      cuenta_pago:         pago.cuenta_pago || ''
     });
   }
 
