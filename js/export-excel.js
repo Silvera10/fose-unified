@@ -710,8 +710,11 @@ function _excelRelacionGastos(wb, d, trim){
     const row=ws.getRow(r);
     const codFuente = c.fuente||cf.fuente||'';
     const fuenteCompleta = codFuente ? codFuente + ' ' + _nomFuente(codFuente) : '';
+    const _banco = cf.contratista_banco || c.banco_pago || '';
+    const _tipoCta = cf.contratista_tipocuenta || '';
+    const _ctaBanco = cf.contratista_numcuenta || c.cuenta_pago || '';
     const vals=[i+1, c.comp||'', c.fecha||'',
-      c.banco_pago||cf.banco_pago||'', c.cuenta_pago||cf.cuenta_pago||'',
+      _banco ? _banco + (_tipoCta ? ' ' + _tipoCta : '') : '', _ctaBanco,
       c.prov||'', c.numdoc||'',
       c.rp||'', c.cdp||'', c.num_op||cf.num_op||'', vig,
       c.concepto||'', val, neto,

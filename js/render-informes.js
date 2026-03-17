@@ -803,8 +803,10 @@ function genContratos(d, trim){
   const tl = {1:'T1 – Ene/Mar',2:'T2 – Abr/Jun',3:'T3 – Jul/Sep',4:'T4 – Oct/Dic'};
   let rows = cs.length ? cs.map((c,i)=>{
     const cf = _fullData(c);
-    const banco = c.banco_pago || cf.banco_pago || '';
-    const cuenta = c.cuenta_pago || cf.cuenta_pago || '';
+    // Banco y cuenta del contratista/proveedor (no de la institución)
+    const banco = cf.contratista_banco || c.banco_pago || '';
+    const tipoCta = cf.contratista_tipocuenta || '';
+    const cuenta = cf.contratista_numcuenta || c.cuenta_pago || '';
     const op = c.num_op || cf.num_op || '';
     const neto = Number(c.neto_pagar) || Number(c.valor) || 0;
     const fuente = c.fuente || cf.fuente || '';
@@ -813,7 +815,7 @@ function genContratos(d, trim){
     <td class="ctr">${i+1}</td>
     <td>${c.comp||'—'}</td>
     <td>${c.fecha||''}</td>
-    <td>${banco||'—'}</td><td>${cuenta||'—'}</td>
+    <td>${banco ? banco + (tipoCta ? ' ' + tipoCta : '') : '—'}</td><td>${cuenta||'—'}</td>
     <td style="text-align:left">${c.prov||''}</td>
     <td>${c.numdoc||'—'}</td>
     <td>${c.rp||'—'}</td>
