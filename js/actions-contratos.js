@@ -1831,29 +1831,16 @@ function _editarPago(idx){
   if($('mc-pe-neto')) $('mc-pe-neto').value = p.neto_pagar || '';
   if($('mc-pe-nota')) $('mc-pe-nota').value = p.nota || '';
 
-  // Campos auditor: CDP, RP (readonly del contrato), OP, Banco institución
+  // Campos auditor: CDP, RP (readonly del contrato), OP, Banco contratista
   if($('mc-pe-cdp')) $('mc-pe-cdp').value = $('mc-pp-cdp')?.value || $('mc-cdp')?.value || '';
   if($('mc-pe-rp')) $('mc-pe-rp').value = $('mc-pp-rp')?.value || $('mc-rp')?.value || '';
   if($('mc-pe-op')) $('mc-pe-op').value = p.num_op || '';
 
-  // Popular select de banco institucional
-  const selBanco = $('mc-pe-banco-inst');
-  if(selBanco){
-    const cfg = DB.load().config;
-    selBanco.innerHTML = '<option value="">-- Seleccionar --</option>';
-    [1,2,3].forEach(n => {
-      const b = cfg['banco_'+n], c = cfg['cuenta_'+n], t = cfg['tipo_cuenta_'+n]||'';
-      if(b) selBanco.innerHTML += `<option value="${b} - ${t} ${c}">${b} (${t} ${c})</option>`;
-    });
-    selBanco.value = p.banco_pago || '';
-    // Al cambiar banco, auto-llenar cuenta
-    selBanco.onchange = function(){
-      const sel = this.value;
-      const cta = sel ? sel.split(/\s/).pop() : '';
-      if($('mc-pe-cuenta-inst')) $('mc-pe-cuenta-inst').value = cta;
-    };
-    if($('mc-pe-cuenta-inst')) $('mc-pe-cuenta-inst').value = p.cuenta_pago || '';
-  }
+  // Banco y cuenta del contratista (readonly, viene de los datos del contratista)
+  const _bancoContratista = $('mc-ct-banco')?.value || p.banco_pago || '';
+  const _cuentaContratista = $('mc-ct-numcuenta')?.value || p.cuenta_pago || '';
+  if($('mc-pe-banco-inst')) $('mc-pe-banco-inst').value = _bancoContratista;
+  if($('mc-pe-cuenta-inst')) $('mc-pe-cuenta-inst').value = _cuentaContratista;
 
   _renderPagosTabla();
 }
@@ -2052,10 +2039,7 @@ function _syncContratoTrimestral(contrato, d){
   const pagosReales = pagos.filter(p => p.fecha_pago && p.num_egreso && Number(p.valor) > 0);
   let totalPagado = pagosReales.reduce((s, p) => s + (Number(p.valor) || 0), 0);
 
-  // Auto-asignar num_op si falta y banco de la institución si falta
-  const _cfg = d.config || {};
-  const _bancoDefault = _cfg.banco_1 ? (_cfg.banco_1 + ' - ' + (_cfg.tipo_cuenta_1||'') + ' ' + (_cfg.cuenta_1||'')) : '';
-  const _cuentaDefault = _cfg.cuenta_1 || '';
+  // Auto-asignar num_op si falta
   // Consecutivo O.P.
   function _nextOP(){
     const existentes = (d.contratos_full||[]).flatMap(c=>(c.pagos||[]).map(pp=>Number(pp.num_op)||0)).filter(n=>n>0);
@@ -2066,8 +2050,11 @@ function _syncContratoTrimestral(contrato, d){
   function _pushGasto(pago){
     // Auto-asignar O.P. si no tiene
     if(!pago.num_op){ pago.num_op = String(_nextOP()); }
-    // Auto-asignar banco si no tiene
-    if(!pago.banco_pago && _bancoDefault){ pago.banco_pago = _bancoDefault; pago.cuenta_pago = _cuentaDefault; }
+    // Banco y cuenta del contratista (tercero a quien se paga)
+    if(!pago.banco_pago){
+      pago.banco_pago = contrato.contratista_banco || '';
+      pago.cuenta_pago = contrato.contratista_numcuenta || '';
+    }
     const tm = _trimDeFecha(pago.fecha_pago);
     if(!tm) return;
     d.contratos.push({
