@@ -719,6 +719,11 @@
           <div class="col-md-4"><label class="form-label small">Fecha Modif. Plan Compras</label>
             <input type="date" class="form-control form-control-sm" id="inp-inst-fecha-mod-paa" min="2020-01-01" max="2035-12-31" onchange="validarFechaHabil(this)"></div>
         </div>
+        <!-- ── Unidad Ejecutora ── -->
+        <div class="row g-2 mb-2 mt-2">
+          <div class="col-md-6"><label class="form-label small fw-bold mb-0">Unidad Ejecutora</label>
+            <input class="form-control form-control-sm" id="inp-inst-unidad-ejecutora" placeholder="Ej: Rectoría, Tesorería"></div>
+        </div>
         <!-- ── Cuentas Bancarias de la Institución ── -->
         <div class="small fw-bold mb-2 mt-2" style="color:#fff;background:linear-gradient(135deg,#2980b9,#3498db);padding:5px 10px;border-radius:5px">
           <i class="bi bi-bank me-1"></i>Cuentas Bancarias de la Institución</div>
@@ -1214,7 +1219,7 @@
                   <input type="number" class="form-control form-control-sm" id="mc-pe-valor" oninput="_recalcNetoPago()"></div>
                 <div class="col-md-2"><label class="form-label small mb-0">Fecha Pago</label>
                   <input type="date" class="form-control form-control-sm" id="mc-pe-fecha"></div>
-                <div class="col-md-2"><label class="form-label small mb-0">N° Egreso</label>
+                <div class="col-md-2"><label class="form-label small mb-0">N° Egreso (C.E.)</label>
                   <input class="form-control form-control-sm" id="mc-pe-egreso" readonly style="background:#f0f7f0"></div>
                 <div class="col-md-2"><label class="form-label small mb-0">N° Factura</label>
                   <input class="form-control form-control-sm" id="mc-pe-factura"></div>
@@ -1222,6 +1227,18 @@
                   <input type="number" class="form-control form-control-sm" id="mc-pe-retencion" oninput="_recalcNetoPago()"></div>
                 <div class="col-md-2"><label class="form-label small mb-0">Neto a Pagar</label>
                   <input type="number" class="form-control form-control-sm bg-light" id="mc-pe-neto" readonly></div>
+              </div>
+              <div class="row g-2 mt-1">
+                <div class="col-md-2"><label class="form-label small mb-0">#CDP</label>
+                  <input class="form-control form-control-sm bg-light" id="mc-pe-cdp" readonly></div>
+                <div class="col-md-2"><label class="form-label small mb-0">#R.P.</label>
+                  <input class="form-control form-control-sm bg-light" id="mc-pe-rp" readonly></div>
+                <div class="col-md-2"><label class="form-label small mb-0">#O.P.</label>
+                  <input class="form-control form-control-sm" id="mc-pe-op" placeholder="N° Orden Pago"></div>
+                <div class="col-md-4"><label class="form-label small mb-0">Banco Institución (pago)</label>
+                  <select class="form-select form-select-sm" id="mc-pe-banco-inst"></select></div>
+                <div class="col-md-2"><label class="form-label small mb-0">#Cuenta</label>
+                  <input class="form-control form-control-sm bg-light" id="mc-pe-cuenta-inst" readonly></div>
               </div>
             </div>
             <!-- Campos legacy ocultos para compatibilidad -->

@@ -222,6 +222,8 @@ function abrirModalInstForm(id=null){
       // Mostrar preview de firma si existe
       window._firmaRectorBase64 = c.firma_rector||'';
       _mostrarPreviewFirma(c.firma_rector||'');
+      // Unidad ejecutora
+      $('inp-inst-unidad-ejecutora').value = c.unidad_ejecutora||'';
       // Cargar cuentas bancarias
       $('inp-inst-banco1').value = c.banco_1||'';
       $('inp-inst-cta1').value = c.cuenta_1||'';
@@ -266,6 +268,7 @@ async function guardarInstitucion(){
     fecha_paa: $('inp-inst-fecha-paa').value,
     fecha_mod_paa: $('inp-inst-fecha-mod-paa').value,
     firma_rector: window._firmaRectorBase64 || '',
+    unidad_ejecutora: $('inp-inst-unidad-ejecutora').value.trim(),
     // Cuentas bancarias institucionales
     banco_1: $('inp-inst-banco1').value.trim(),
     cuenta_1: $('inp-inst-cta1').value.trim(),
@@ -307,6 +310,7 @@ async function guardarInstitucion(){
   d.config.acuerdo = campos.acuerdo;
   d.config.fecha_paa = campos.fecha_paa;
   d.config.fecha_mod_paa = campos.fecha_mod_paa;
+  d.config.unidad_ejecutora = campos.unidad_ejecutora;
 
   if($('chk-copiar-rubros').checked){
     const origenId = $('sel-inst-origen').value;

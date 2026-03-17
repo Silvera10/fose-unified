@@ -576,6 +576,7 @@ function buildDocContext(contrato, d, templateName){
     inst_dir: cfg.direccion || '',
     inst_email: cfg.email || '',
     secretaria: cfg.secretaria || 'SECRETARÍA DE EDUCACIÓN',
+    unidad_ejecutora: cfg.unidad_ejecutora || '',
     anio: c.vigencia_fiscal || cfg.vigencia || new Date().getFullYear(),
 
     // Rector
@@ -942,6 +943,9 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
       const pagos = contrato.pagos;
       ctx.num_egreso = pago.num_egreso || '';
       ctx.num_factura = pago.num_factura || '';
+      ctx.num_op = pago.num_op || '';
+      ctx.banco_pago = pago.banco_pago || '';
+      ctx.cuenta_pago = pago.cuenta_pago || '';
       ctx.valor_total = Number(pago.valor) || 0;
       ctx.valor_letras = typeof numALetras === 'function' ? numALetras(ctx.valor_total) : '';
       ctx.retencion = Number(pago.retencion_valor) || 0;

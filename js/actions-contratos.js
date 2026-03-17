@@ -1818,6 +1818,30 @@ function _editarPago(idx){
   if($('mc-pe-neto')) $('mc-pe-neto').value = p.neto_pagar || '';
   if($('mc-pe-nota')) $('mc-pe-nota').value = p.nota || '';
 
+  // Campos auditor: CDP, RP (readonly del contrato), OP, Banco institución
+  if($('mc-pe-cdp')) $('mc-pe-cdp').value = $('mc-pp-cdp')?.value || $('mc-cdp')?.value || '';
+  if($('mc-pe-rp')) $('mc-pe-rp').value = $('mc-pp-rp')?.value || $('mc-rp')?.value || '';
+  if($('mc-pe-op')) $('mc-pe-op').value = p.num_op || '';
+
+  // Popular select de banco institucional
+  const selBanco = $('mc-pe-banco-inst');
+  if(selBanco){
+    const cfg = DB.load().config;
+    selBanco.innerHTML = '<option value="">-- Seleccionar --</option>';
+    [1,2,3].forEach(n => {
+      const b = cfg['banco_'+n], c = cfg['cuenta_'+n], t = cfg['tipo_cuenta_'+n]||'';
+      if(b) selBanco.innerHTML += `<option value="${b} - ${t} ${c}">${b} (${t} ${c})</option>`;
+    });
+    selBanco.value = p.banco_pago || '';
+    // Al cambiar banco, auto-llenar cuenta
+    selBanco.onchange = function(){
+      const sel = this.value;
+      const cta = sel ? sel.split(/\s/).pop() : '';
+      if($('mc-pe-cuenta-inst')) $('mc-pe-cuenta-inst').value = cta;
+    };
+    if($('mc-pe-cuenta-inst')) $('mc-pe-cuenta-inst').value = p.cuenta_pago || '';
+  }
+
   _renderPagosTabla();
 }
 
@@ -1854,6 +1878,9 @@ function _guardarPagoEditado(){
   p.retencion_valor = Number($('mc-pe-retencion').value) || 0;
   p.neto_pagar = p.valor - p.retencion_valor;
   p.nota = $('mc-pe-nota') ? $('mc-pe-nota').value.trim() : '';
+  p.num_op = $('mc-pe-op') ? $('mc-pe-op').value.trim() : '';
+  p.banco_pago = $('mc-pe-banco-inst') ? $('mc-pe-banco-inst').value : '';
+  p.cuenta_pago = $('mc-pe-cuenta-inst') ? $('mc-pe-cuenta-inst').value.trim() : '';
 
   if($('mc-pe-neto')) $('mc-pe-neto').value = p.neto_pagar;
 
