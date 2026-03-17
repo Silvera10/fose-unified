@@ -659,42 +659,66 @@ function _excelModificaciones(wb, d, trim, tipo){
 function _excelRelacionGastos(wb, d, trim){
   const ws = wb.addWorksheet('Relación Gastos');
   const esTrim = trim > 0;
-  const nCols = 19;
+  const nCols = 18;
+  const cfg = d.config || {};
+  const vig = cfg.vigencia || new Date().getFullYear();
   const TRIM_NOM = {1:'Trimestre 1 (Ene-Mar)',2:'Trimestre 2 (Abr-Jun)',3:'Trimestre 3 (Jul-Sep)',4:'Trimestre 4 (Oct-Dic)'};
   const periodoTxt = esTrim ? TRIM_NOM[trim] : 'Acumulado Anual';
-  _xHdr(ws, nCols, d, `RELACIÓN DE GASTOS — ${periodoTxt} — Vigencia ${d.config.vigencia||''}`);
+  _xHdr(ws, nCols, d, `RELACIÓN DE GASTOS — ${periodoTxt} — Vigencia ${vig}`);
+
+  // Fila banco institucional
+  if(cfg.banco_1){
+    const brRow = ws.getRow(4);
+    _xCell(brRow,1,`BANCO: 1   NOMBRE BANCO: ${cfg.banco_1} ${cfg.tipo_cuenta_1||''} ${cfg.cuenta_1||''}`,{font:{bold:true,size:10}});
+    ws.mergeCells(4,1,4,nCols);
+  }
 
   const hr=ws.getRow(5);
-  ['#','Trim.','Fecha','Tipo Doc.','N° Doc.','Fecha CDP','N° CDP','Fecha RP','N° RP','Comp.',
-   'Concepto','Proveedor','Rubro','Concepto Rubro','Fecha Contrato','N° Contrato','Valor','Pub.','Cont.'].forEach((h,i)=>
+  ['#','#C.E.','Fecha','Banco','#Cuenta','Beneficiario','NIT/Cédula',
+   '#R.P.','#D.P.','#O.P.','Vig.',
+   'Detalle','Vr. Obligac.','Pago Neto',
+   'Rubro','Concepto Rubro','Fuente','Unidad Ejecutora'].forEach((h,i)=>
     _xCell(hr,i+1,h,{fill:_XS.hdrAzul,font:_XS.fontWhite,align:{horizontal:'center',wrapText:true}}));
-  ws.columns=[{width:4},{width:10},{width:11},{width:8},{width:12},{width:11},{width:10},{width:11},{width:10},{width:8},
-    {width:35},{width:25},{width:14},{width:30},{width:11},{width:12},{width:15},{width:5},{width:5}];
+  ws.columns=[{width:4},{width:10},{width:11},{width:20},{width:16},{width:30},{width:14},
+    {width:10},{width:10},{width:10},{width:6},
+    {width:35},{width:15},{width:15},
+    {width:14},{width:25},{width:12},{width:18}];
 
   let cs = esTrim ? (d.contratos||[]).filter(c=>Number(c.trim)===trim) : [...(d.contratos||[])];
   cs = cs.sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||''));
-  const tl={1:'T1',2:'T2',3:'T3',4:'T4'};
 
-  let r=6,tot=0;
+  // Helper: datos del contrato_full
+  function _fullData(c){
+    if(!c.contrato_full_id) return {};
+    return (d.contratos_full||[]).find(cf=>cf.id===c.contrato_full_id) || {};
+  }
+
+  let r=6,tot=0,totNeto=0;
   cs.forEach((c,i)=>{
-    tot+=Number(c.valor);
+    const cf = _fullData(c);
+    const val = Number(c.valor)||0;
+    const neto = Number(c.neto_pagar)||val;
+    tot+=val; totNeto+=neto;
     const row=ws.getRow(r);
-    const vals=[i+1,tl[c.trim]||'T'+c.trim,c.fecha||'',c.tipodoc||'',c.numdoc||'',
-      c.fecha_cdp||'',c.cdp||'',c.fecha_rp||'',c.rp||'',c.comp||'',
-      c.concepto||'',c.prov||'',c.cod_rubro||'',_nombreRubro(d,c.cod_rubro),c.fecha_contrato||'',c.ncon||'',
-      Number(c.valor)||0,c.pub?'SÍ':'NO',c.cont?'SÍ':'NO'];
+    const vals=[i+1, c.comp||'', c.fecha||'',
+      c.banco_pago||cf.banco_pago||'', c.cuenta_pago||cf.cuenta_pago||'',
+      c.prov||'', c.numdoc||'',
+      c.rp||'', c.cdp||'', c.num_op||cf.num_op||'', vig,
+      c.concepto||'', val, neto,
+      c.cod_rubro||'', _nombreRubro(d,c.cod_rubro),
+      c.fuente||cf.fuente||'', cfg.unidad_ejecutora||''];
     vals.forEach((v,j)=>{
       const opts={font:_XS.fontNorm};
-      if(j===16) opts.numFmt=_XS.numFmt;
+      if(j===12||j===13) opts.numFmt=_XS.numFmt;
       _xCell(row,j+1,v,opts);
     });
     r++;
   });
   const totRow=ws.getRow(r);
-  for(let c=1;c<=16;c++)_xCell(totRow,c,c===1?'TOTAL':'',{fill:_XS.totFill,font:_XS.fontWhite});
-  _xCell(totRow,17,tot,{fill:_XS.totFill,font:_XS.fontWhite,numFmt:_XS.numFmt});
-  _xCell(totRow,18,'',{fill:_XS.totFill,font:_XS.fontWhite});
-  _xCell(totRow,19,'',{fill:_XS.totFill,font:_XS.fontWhite});
+  for(let c=1;c<=12;c++)_xCell(totRow,c,c===1?'TOTAL':'',{fill:_XS.totFill,font:_XS.fontWhite});
+  _xCell(totRow,13,tot,{fill:_XS.totFill,font:_XS.fontWhite,numFmt:_XS.numFmt});
+  _xCell(totRow,14,totNeto,{fill:_XS.totFill,font:_XS.fontWhite,numFmt:_XS.numFmt});
+  for(let c=15;c<=18;c++)_xCell(totRow,c,'',{fill:_XS.totFill,font:_XS.fontWhite});
 }
 
 /* ══════════════════════════════════════════════════════════

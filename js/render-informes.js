@@ -776,36 +776,64 @@ function genContratos(d, trim){
   const esTrim = trim > 0;
   const TRIM_NOM = ['','PRIMER','SEGUNDO','TERCER','CUARTO'];
   const vig = d.config.vigencia || new Date().getFullYear();
+  const cfg = d.config || {};
   const periodoLabel = esTrim ? `${TRIM_NOM[trim]} TRIMESTRE — Vigencia ${vig}` : `Acumulado Anual — Vigencia ${vig}`;
   let cs = esTrim ? (d.contratos||[]).filter(c=>Number(c.trim)===trim) : [...(d.contratos||[])];
   cs = cs.sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||''));
   const tot = cs.reduce((s,c)=>s+Number(c.valor),0);
+  const totNeto = cs.reduce((s,c)=>s+Number(c.neto_pagar||c.valor),0);
+
+  // Buscar datos completos del contrato_full si existe
+  function _fullData(c){
+    if(!c.contrato_full_id) return {};
+    return (d.contratos_full||[]).find(cf=>cf.id===c.contrato_full_id) || {};
+  }
+
   const tl = {1:'T1 – Ene/Mar',2:'T2 – Abr/Jun',3:'T3 – Jul/Sep',4:'T4 – Oct/Dic'};
-  let rows = cs.length ? cs.map((c,i)=>`<tr>
-    <td class="ctr">${i+1}</td><td class="ctr">${tl[c.trim]||'T'+c.trim}</td>
-    <td>${c.fecha||''}</td>
-    <td class="ctr">${c.tipodoc||'—'}</td><td>${c.numdoc||'—'}</td>
-    <td>${c.fecha_cdp||'—'}</td><td>${c.cdp||'—'}</td>
-    <td>${c.fecha_rp||'—'}</td><td>${c.rp||'—'}</td>
+  let rows = cs.length ? cs.map((c,i)=>{
+    const cf = _fullData(c);
+    const banco = c.banco_pago || cf.banco_pago || '';
+    const cuenta = c.cuenta_pago || cf.cuenta_pago || '';
+    const op = c.num_op || cf.num_op || '';
+    const neto = Number(c.neto_pagar) || Number(c.valor) || 0;
+    const fuente = c.fuente || cf.fuente || '';
+    const ue = cfg.unidad_ejecutora || '';
+    return `<tr>
+    <td class="ctr">${i+1}</td>
     <td>${c.comp||'—'}</td>
-    <td style="text-align:left">${c.concepto||''}</td><td style="text-align:left">${c.prov||''}</td>
-    <td>${c.cod_rubro}</td><td style="text-align:left;font-size:9px">${_nombreRubro(d,c.cod_rubro)}</td>
-    <td>${c.fecha_contrato||'—'}</td><td>${c.ncon||'—'}</td>
+    <td>${c.fecha||''}</td>
+    <td>${banco||'—'}</td><td>${cuenta||'—'}</td>
+    <td style="text-align:left">${c.prov||''}</td>
+    <td>${c.numdoc||'—'}</td>
+    <td>${c.rp||'—'}</td>
+    <td>${c.cdp||'—'}</td>
+    <td>${op||'—'}</td>
+    <td class="ctr">${vig}</td>
+    <td style="text-align:left">${c.concepto||''}</td>
     <td class="num">${fmt(c.valor)}</td>
-    <td class="ctr">${c.pub?'SÍ':'NO'}</td><td class="ctr">${c.cont?'SÍ':'NO'}</td>
-  </tr>`).join('') : '<tr><td colspan="19" class="ctr">Sin registros</td></tr>';
-  rows += `<tr class="gtot"><td colspan="16" style="text-align:right">TOTAL</td>
-    <td class="num">${fmt(tot)}</td><td colspan="2"></td></tr>`;
+    <td class="num">${fmt(neto)}</td>
+    <td>${c.cod_rubro}</td><td style="text-align:left;font-size:9px">${_nombreRubro(d,c.cod_rubro)}</td>
+    <td>${fuente||'—'}</td>
+    <td>${ue||'—'}</td>
+  </tr>`;}).join('') : '<tr><td colspan="18" class="ctr">Sin registros</td></tr>';
+  rows += `<tr class="gtot"><td colspan="12" style="text-align:right">TOTAL</td>
+    <td class="num">${fmt(tot)}</td><td class="num">${fmt(totNeto)}</td><td colspan="4"></td></tr>`;
+
+  // Encabezado del banco institucional
+  const bancoInst = cfg.banco_1 ? `BANCO: 1 &nbsp;&nbsp; NOMBRE BANCO: ${cfg.banco_1} ${cfg.tipo_cuenta_1||''} ${cfg.cuenta_1||''}` : '';
 
   return _infHdr(d, 'RELACIÓN DE GASTOS', periodoLabel) +
+  (bancoInst ? `<div style="text-align:center;font-size:11px;margin-bottom:6px"><b>${bancoInst}</b></div>` : '') +
   `<table class="ti" style="font-size:10px"><thead><tr>
-    <th>#</th><th>Trim.</th><th>Fecha</th>
-    <th>Tipo Doc.</th><th>N° Doc.</th>
-    <th>Fecha CDP</th><th>N° CDP</th>
-    <th>Fecha RP</th><th>N° RP</th>
-    <th>Comp.</th>
-    <th style="text-align:left">Concepto</th><th style="text-align:left">Proveedor</th>
-    <th>Rubro</th><th style="text-align:left">Concepto Rubro</th><th>Fecha Contrato</th><th>N° Contrato</th><th>Valor</th><th>Pub.</th><th>Cont.</th>
+    <th>#</th><th>#C.E.</th><th>Fecha</th>
+    <th>Banco</th><th>#Cuenta</th>
+    <th style="text-align:left">Beneficiario</th><th>NIT/Cédula</th>
+    <th>#R.P.</th><th>#D.P.</th><th>#O.P.</th>
+    <th>Vig.</th>
+    <th style="text-align:left">Detalle</th>
+    <th>Vr. Obligac.</th><th>Pago Neto</th>
+    <th>Rubro</th><th style="text-align:left">Concepto Rubro</th>
+    <th>Fuente</th><th>Unidad Ejecutora</th>
   </tr></thead><tbody>${rows}</tbody></table>`;
 }
 
