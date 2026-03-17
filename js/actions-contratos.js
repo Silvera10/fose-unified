@@ -1787,6 +1787,19 @@ function _editarPago(idx){
     p.num_egreso = String(_sigEg);
   }
 
+  // Si no tiene O.P., auto-generar consecutivo
+  if(!p.num_op){
+    const d2 = DB.load();
+    const _editId2 = $('mc-id').value || '';
+    const _otros2 = (d2.contratos_full||[]).filter(c => c.id !== _editId2);
+    const _numOps = [
+      ..._otros2.flatMap(c => (c.pagos||[]).map(pp=>Number(pp.num_op)||0)),
+      ..._pagosTemp.map(pp=>Number(pp.num_op)||0)
+    ].filter(n=>n>0);
+    const _sigOp = _numOps.length ? Math.max(..._numOps) + 1 : 1;
+    p.num_op = String(_sigOp);
+  }
+
   // Si no tiene fecha, pre-llenar con fecha estimada o fecha actual
   const fechaPreLlenar = p.fecha_pago || p.fecha_estimada || new Date().toISOString().split('T')[0];
 
