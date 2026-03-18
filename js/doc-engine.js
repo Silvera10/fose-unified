@@ -644,11 +644,11 @@ function buildDocContext(contrato, d, templateName){
     ret_concepto: retencion_concepto || 'Retención en la Fuente por Pagar',
     banco_sel: (function(){
       const idx = c.banco_inst_sel || '1';
-      return c['banco_inst_'+idx] || c.banco_inst_1 || cfg.banco || '';
+      return c['banco_'+idx] || c['banco_inst_'+idx] || c.banco_inst_1 || cfg.banco || '';
     })(),
     cta_sel: (function(){
       const idx = c.banco_inst_sel || '1';
-      return c['cta_inst_'+idx] || c.cta_inst_1 || cfg.cuenta_banco || '';
+      return c['cuenta_'+idx] || c['cta_inst_'+idx] || c.cta_inst_1 || cfg.cuenta_banco || '';
     })(),
 
     // Contratista
@@ -1106,10 +1106,10 @@ function buildDianEgresoContext(pago, d){
       // Buscar cuenta que corresponda al banco_origen del pago
       const bo = (pago.banco_origen||'').trim().toUpperCase();
       for(let i=1;i<=3;i++){
-        const b = (c['banco_inst_'+i]||'').trim().toUpperCase();
-        if(b && bo && b === bo) return c['cta_inst_'+i]||'';
+        const b = (c['banco_'+i]||c['banco_inst_'+i]||'').trim().toUpperCase();
+        if(b && bo && b === bo) return c['cuenta_'+i]||c['cta_inst_'+i]||'';
       }
-      return c.cta_inst_1 || c.cuenta_banco || '';
+      return c.cuenta_1 || c.cta_inst_1 || c.cuenta_banco || '';
     })(),
     num_comprobante_banco: pago.num_comprobante_banco || '',
 
