@@ -1105,7 +1105,7 @@ function buildDianEgresoContext(pago, d){
     cuenta_banco_inst:     (function(){
       // Buscar cuenta que corresponda al banco_origen del pago
       // Normalizar acentos para evitar diferencias À vs Á etc.
-      const _norm = s => (s||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const _norm = s => (s||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
       const bo = _norm(pago.banco_origen);
       for(let i=1;i<=3;i++){
         const b = _norm(c['banco_'+i]||c['banco_inst_'+i]||'');
