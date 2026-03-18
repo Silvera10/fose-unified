@@ -257,7 +257,7 @@ table.ao-firma-tabla td {
     </tr>
     <tr>
       <th>Fuente</th>
-      <td colspan="3">{{ fuente }}</td>
+      <td colspan="3">{{ fuente }} — {{ fuente_nombre }}</td>
     </tr>
   </table>
 </div>
@@ -614,7 +614,7 @@ table.ai-firma-tabla td {
       <th>Rubro presupuestal</th>
       <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
       <th>Fuente</th>
-      <td>{{ fuente }}</td>
+      <td>{{ fuente }} — {{ fuente_nombre }}</td>
     </tr>
   </table>
 </div>
@@ -1054,7 +1054,7 @@ table.al-firma-sup-tabla td {
       <th>Rubro presupuestal</th>
       <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
       <th>Fuente</th>
-      <td>{{ fuente }}</td>
+      <td>{{ fuente }} — {{ fuente_nombre }}</td>
     </tr>
   </table>
 </div>
@@ -2714,7 +2714,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     <tbody>
       <tr>
         <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
-        <td class="center">{{ fuente }}</td>
+        <td class="center">{{ fuente }} — {{ fuente_nombre }}</td>
         <td class="center">&nbsp;</td>
         <td class="right">{{ format_moneda(valor_total) }}</td>
       </tr>
@@ -3217,7 +3217,7 @@ table.ct-firma-tabla td {
     (<strong>{{ valor_letras }}</strong>), incluido el IVA y demás
     impuestos que apliquen, suma que será pagada con cargo al rubro
     presupuestal <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
-    fuente <strong>{{ fuente }}</strong>, amparado en el CDP N.°
+    fuente <strong>{{ fuente }} — {{ fuente_nombre }}</strong>, amparado en el CDP N.°
     <strong>{{ num_cdp }}</strong> expedido el
     <strong>{{ fecha_cdp_larga }}</strong>.
   </p>
@@ -3822,7 +3822,7 @@ table.ct-firma-tabla td {
     <strong>{{ format_moneda(valor_total) }}</strong>
     (<strong>{{ valor_letras }}</strong>), con cargo al rubro
     presupuestal <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
-    fuente <strong>{{ fuente }}</strong>, amparado en el CDP N.°
+    fuente <strong>{{ fuente }} — {{ fuente_nombre }}</strong>, amparado en el CDP N.°
     <strong>{{ num_cdp }}</strong> expedido el
     <strong>{{ fecha_cdp_larga }}</strong>.
   </p>
@@ -4638,7 +4638,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
   <p>
     El rubro presupuestal afectado corresponde a
     <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
-    con fuente de financiación <strong>{{ fuente }}</strong>.
+    con fuente de financiación <strong>{{ fuente }} — {{ fuente_nombre }}</strong>.
   </p>
 </div>
 
@@ -5093,7 +5093,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
   <p>
     El rubro presupuestal afectado corresponde a
     <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
-    con fuente de financiación <strong>{{ fuente }}</strong>.
+    con fuente de financiación <strong>{{ fuente }} — {{ fuente_nombre }}</strong>.
   </p>
 </div>
 
@@ -9435,7 +9435,7 @@ table.oc-firma-tabla td {
       <th>Rubro presupuestal</th>
       <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
       <th>Fuente</th>
-      <td>{{ fuente }}</td>
+      <td>{{ fuente }} — {{ fuente_nombre }}</td>
     </tr>
   </table>
 </div>
@@ -9886,7 +9886,7 @@ table.op-firma-tabla td {
       <th>Rubro presupuestal</th>
       <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
       <th>Fuente</th>
-      <td>{{ fuente }}</td>
+      <td>{{ fuente }} — {{ fuente_nombre }}</td>
     </tr>
     <tr>
       <th>Banco</th>
@@ -9971,7 +9971,7 @@ table.op-firma-tabla td {
     <tr>
       <td style="text-align:center">{{ rubro_codigo }}</td>
       <td>{{ rubro_nombre }}</td>
-      <td style="text-align:center">{{ fuente }}</td>
+      <td style="text-align:center">{{ fuente }} — {{ fuente_nombre }}</td>
       <td>{{ _nom_fuente }}</td>
       <td style="text-align:right">{{ format_moneda(valor_total) }}</td>
     </tr>
@@ -10331,7 +10331,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
     <tbody>
       <tr>
         <td>{{ rubro_codigo }} — {{ rubro_nombre }}</td>
-        <td class="center">{{ fuente }}</td>
+        <td class="center">{{ fuente }} — {{ fuente_nombre }}</td>
         <td class="right">{{ format_moneda(valor_total) }}</td>
       </tr>
     </tbody>
@@ -10550,7 +10550,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
   <div class="sc-subtitulo">Rubro</div>
   <div class="sc-bloque">
     <strong>{{ rubro_codigo }}</strong> — {{ rubro_nombre }}<br>
-    <strong>Fuente de financiación:</strong> {{ fuente }}
+    <strong>Fuente de financiación:</strong> {{ fuente }} — {{ fuente_nombre }}
   </div>
 
   <p>

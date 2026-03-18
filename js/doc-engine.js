@@ -624,7 +624,7 @@ function buildDocContext(contrato, d, templateName){
       // Buscar en rubros de ingreso
       if(d.rubros_ing){
         const ri = d.rubros_ing.find(x => x.cod === codF);
-        if(ri && ri.nombre) return ri.nombre;
+        if(ri && (ri.con || ri.nombre)) return ri.con || ri.nombre;
       }
       // Fallback mapa legacy
       const legacy = {'1':'SGP – Calidad','2':'Gratuidad','3':'Recursos Propios','4':'Aportes Departamento','5':'Recursos Propios IE'};
