@@ -331,7 +331,7 @@ table.ao-firma-tabla td {
   <table class="ao-firma-tabla">
     <tr>
       <td>
-        <div class="ao-firma-linea">
+        <div class="ao-firma-linea" style="border:none">
           <p class="ao-firma-nombre">{{ rector }}</p>
           <p class="ao-firma-cargo">CC N.° {{ format_id(cc_rector) }}</p>
           <p class="ao-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -686,7 +686,7 @@ table.ai-firma-tabla td {
     <tr>
       <!-- Rector -->
       <td>
-        <div class="ai-firma-linea">
+        <div class="ai-firma-linea" style="border:none">
           <p class="ai-firma-nombre">{{ rector }}</p>
           <p class="ai-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
           <p class="ai-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -696,7 +696,7 @@ table.ai-firma-tabla td {
       </td>
       <!-- Contratista -->
       <td>
-        <div class="ai-firma-linea">
+        <div class="ai-firma-linea" style="border:none">
           {% if es_empresa and rep_legal_nombre %}
             <p class="ai-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ai-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
@@ -1180,7 +1180,7 @@ table.al-firma-sup-tabla td {
     <tr>
       <!-- Rector / Institución -->
       <td>
-        <div class="al-firma-linea">
+        <div class="al-firma-linea" style="border:none">
           <p class="al-firma-nombre">{{ rector }}</p>
           <p class="al-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
           <p class="al-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -1191,7 +1191,7 @@ table.al-firma-sup-tabla td {
       </td>
       <!-- Contratista -->
       <td>
-        <div class="al-firma-linea">
+        <div class="al-firma-linea" style="border:none">
           <p class="al-firma-nombre">{{ nombre_contratista }}</p>
           <p class="al-firma-cargo">{{ tipo_id_contratista }} N.° {{ format_id(num_id_contratista) }}</p>
           <p class="al-firma-cargo">
@@ -1608,7 +1608,7 @@ table.ar-firma-tabla td {
     <tr>
       <!-- Rector -->
       <td>
-        <div class="ar-firma-linea">
+        <div class="ar-firma-linea" style="border:none">
           <p class="ar-firma-nombre">{{ rector }}</p>
           <p class="ar-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
           <p class="ar-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -1617,7 +1617,7 @@ table.ar-firma-tabla td {
       </td>
       <!-- Contratista -->
       <td>
-        <div class="ar-firma-linea">
+        <div class="ar-firma-linea" style="border:none">
           {% if es_empresa and rep_legal_nombre %}
             <p class="ar-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ar-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
@@ -2035,7 +2035,7 @@ table.cj-firma-tabla td {
   <table class="cj-firma-tabla">
     <tr>
       <td>
-        <div class="cj-firma-linea">
+        <div class="cj-firma-linea" style="border:none">
           {% if es_empresa and rep_legal_nombre %}
             <p class="cj-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="cj-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
@@ -2398,7 +2398,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
 <!-- Firma -->
 <div class="cp-firma-section">
   <div class="cp-firma-block">
-    <div class="cp-firma-linea">
+    <div class="cp-firma-linea" style="border:none">
       {% if es_empresa and rep_legal_nombre %}
         <p><strong>{{ rep_legal_nombre }}</strong></p>
         <p>CC N.° {{ rep_legal_cc }}</p>
@@ -2787,7 +2787,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
 <!-- Firma -->
 <div class="cdp-firma-section">
   <div class="cdp-firma-block" style="text-align:center;max-width:320px;margin:0 auto">
-    <div class="cdp-firma-linea">
+    <div class="cdp-firma-linea" style="border:none">
       <p><strong>{{ rector | upper }}</strong></p>
       <p>C.C. {{ format_id(cc_rector) }}</p>
       <p>Rector(a) — Ordenador del Gasto</p>
@@ -3438,7 +3438,7 @@ table.ct-firma-tabla td {
   <table class="ct-firma-tabla">
     <tr>
       <td>
-        <div class="ct-firma-linea">
+        <div class="ct-firma-linea" style="border:none">
           <p class="ct-firma-nombre">{{ rector }}</p>
           <p class="ct-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
           <p class="ct-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -3448,7 +3448,7 @@ table.ct-firma-tabla td {
         </div>
       </td>
       <td>
-        <div class="ct-firma-linea">
+        <div class="ct-firma-linea" style="border:none">
           {% if es_empresa and rep_legal_nombre %}
             <p class="ct-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ct-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
@@ -3896,7 +3896,7 @@ table.ct-firma-tabla td {
   <table class="ct-firma-tabla">
     <tr>
       <td>
-        <div class="ct-firma-linea">
+        <div class="ct-firma-linea" style="border:none">
           <p class="ct-firma-nombre">{{ rector }}</p>
           <p class="ct-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
           <p class="ct-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -3906,7 +3906,7 @@ table.ct-firma-tabla td {
         </div>
       </td>
       <td>
-        <div class="ct-firma-linea">
+        <div class="ct-firma-linea" style="border:none">
           {% if es_empresa and rep_legal_nombre %}
             <p class="ct-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ct-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
@@ -4359,7 +4359,7 @@ table.ce-firma-tabla td {
     <tr>
       <!-- Aprobó -->
       <td>
-        <div class="ce-firma-linea">
+        <div class="ce-firma-linea" style="border:none">
           <p class="ce-firma-nombre">{{ rector }}</p>
           <p class="ce-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
           <p class="ce-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -4369,7 +4369,7 @@ table.ce-firma-tabla td {
       </td>
       <!-- Recibí conforme -->
       <td>
-        <div class="ce-firma-linea">
+        <div class="ce-firma-linea" style="border:none">
           {% if es_empresa and rep_legal_nombre %}
             <p class="ce-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ce-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
@@ -4814,7 +4814,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
   </p>
   <div class="ep-firma-grid">
     <div class="ep-firma-block">
-      <div class="ep-firma-linea">
+      <div class="ep-firma-linea" style="border:none">
         <p><strong>{{ rector | upper }}</strong></p>
         <p>C.C. {{ format_id(cc_rector) }}</p>
         <p>Rector(a) — Ordenador del Gasto</p>
@@ -5298,7 +5298,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
   </p>
   <div class="ep-firma-grid">
     <div class="ep-firma-block">
-      <div class="ep-firma-linea">
+      <div class="ep-firma-linea" style="border:none">
         <p><strong>{{ rector | upper }}</strong></p>
         <p>C.C. {{ format_id(cc_rector) }}</p>
         <p>Rector(a) — Ordenador del Gasto</p>
@@ -5684,7 +5684,7 @@ table.ev-firma-tabla td {
   <table class="ev-firma-tabla">
     <tr>
       <td>
-        <div class="ev-firma-linea">
+        <div class="ev-firma-linea" style="border:none">
           <p class="ev-firma-nombre">{{ rector }}</p>
           <p class="ev-firma-cargo">CC N.° {{ format_id(cc_rector) }}</p>
           <p class="ev-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -6124,7 +6124,7 @@ table.ev-firma-tabla td {
   <table class="ev-firma-tabla">
     <tr>
       <td>
-        <div class="ev-firma-linea">
+        <div class="ev-firma-linea" style="border:none">
           <p class="ev-firma-nombre">{{ rector }}</p>
           <p class="ev-firma-cargo">CC N.° {{ format_id(cc_rector) }}</p>
           <p class="ev-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -6494,7 +6494,7 @@ table.hd-firma-tabla td {
   <table class="hd-firma-tabla">
     <tr>
       <td>
-        <div class="hd-firma-linea">
+        <div class="hd-firma-linea" style="border:none">
           {{ habeas_firma_html }}
         </div>
       </td>
@@ -6961,7 +6961,7 @@ table.ic-firma-tabla td {
   <table class="ic-firma-tabla">
     <tr>
       <td>
-        <div class="ic-firma-linea">
+        <div class="ic-firma-linea" style="border:none">
           {% if es_empresa and rep_legal_nombre %}
             <p class="ic-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="ic-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
@@ -7494,7 +7494,7 @@ table.is-firma-tabla td {
   <table class="is-firma-tabla">
     <tr>
       <td>
-        <div class="is-firma-linea">
+        <div class="is-firma-linea" style="border:none">
           <p class="is-firma-nombre">{{ rector }}</p>
           <p class="is-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
           <p class="is-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -7804,7 +7804,7 @@ DOC_TEMPLATES["docs/invitacion.html"] = `{% extends "docs/base_doc.html" %}
 
 <!-- Firma -->
 <div class="inv-firma">
-  <div class="inv-firma-linea"></div>
+  <div class="inv-firma-linea" style="border:none"></div>
   <p><strong>{{ rector | upper }}</strong></p>
   <p>C.C. {{ format_id(cc_rector) }}</p>
   <p>Rector(a) — Ordenador del Gasto</p>
@@ -8245,7 +8245,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
 <!-- Firma -->
 <div class="inv2-firma-section">
   <div class="inv2-firma-block">
-    <div class="inv2-firma-linea">
+    <div class="inv2-firma-linea" style="border:none">
       <p><strong>{{ rector | upper }}</strong></p>
       <p>C.C. {{ format_id(cc_rector) }}</p>
       <p>Rector(a) — Ordenador del Gasto</p>
@@ -8688,7 +8688,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
 <!-- Firma -->
 <div class="inv3-firma-section">
   <div class="inv3-firma-block">
-    <div class="inv3-firma-linea">
+    <div class="inv3-firma-linea" style="border:none">
       <p><strong>{{ rector | upper }}</strong></p>
       <p>C.C. {{ format_id(cc_rector) }}</p>
       <p>Rector(a) — Ordenador del Gasto</p>
@@ -9253,7 +9253,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
 <!-- Firma -->
 <div class="invg-firma-section">
   <div class="invg-firma-block">
-    <div class="invg-firma-linea">
+    <div class="invg-firma-linea" style="border:none">
       <p><strong>{{ rector | upper }}</strong></p>
       <p>C.C. {{ format_id(cc_rector) }}</p>
       <p>Rector(a) — Ordenador del Gasto</p>
@@ -9535,7 +9535,7 @@ table.oc-firma-tabla td {
     <tr>
       <!-- Rector -->
       <td>
-        <div class="oc-firma-linea">
+        <div class="oc-firma-linea" style="border:none">
           <p class="oc-firma-nombre">{{ rector }}</p>
           <p class="oc-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
           <p class="oc-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -9545,7 +9545,7 @@ table.oc-firma-tabla td {
       </td>
       <!-- Contratista -->
       <td>
-        <div class="oc-firma-linea">
+        <div class="oc-firma-linea" style="border:none">
           {% if es_empresa and rep_legal_nombre %}
             <p class="oc-firma-nombre">{{ rep_legal_nombre }}</p>
             <p class="oc-firma-cargo">C.C. N.° {{ format_id(rep_legal_cc) }}</p>
@@ -10356,7 +10356,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
 <div class="rp-firma-section">
   <div class="rp-firma-grid">
     <div class="rp-firma-block">
-      <div class="rp-firma-linea">
+      <div class="rp-firma-linea" style="border:none">
         <p><strong>{{ rector | upper }}</strong></p>
         <p>C.C. {{ format_id(cc_rector) }}</p>
         <p>Rector(a) — Ordenador del Gasto</p>
@@ -10552,7 +10552,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
 
 <!-- Firma -->
 <div class="sc-firma-section">
-  <div class="sc-firma-linea">
+  <div class="sc-firma-linea" style="border:none">
     <p><strong>{{ rector | upper }}</strong></p>
     <p>C.C. {{ format_id(cc_rector) }}</p>
     <p>Rector(a) — Ordenador del Gasto</p>
@@ -10810,7 +10810,7 @@ table.ed-firma-tabla td {
 <!-- FIRMAS -->
 <div class="ed-firma-section">
   <div style="text-align:center;max-width:320px;margin:0 auto">
-    <div class="ed-firma-linea">
+    <div class="ed-firma-linea" style="border:none">
       <p class="ed-firma-nombre">{{ rector }}</p>
       <p class="ed-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
       <p class="ed-firma-cargo">Rector(a)</p>
