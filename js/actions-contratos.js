@@ -2099,9 +2099,14 @@ function _syncContratoTrimestral(contrato, d){
     });
   }
 
-  // Trimestre de referencia (fecha CDP)
-  const fechaCDP = contrato.fecha_cdp || '';
-  const tmCDP = fechaCDP ? _trimDeFecha(fechaCDP) : null;
+  // Trimestre de referencia
+  // Para contratos de vigencia anterior (ref_contrato_anterior), usar fecha RP (vigencia actual)
+  // Para contratos normales, usar fecha CDP
+  const esVigenciaAnterior = !!(contrato.ref_contrato_anterior);
+  const fechaRef = esVigenciaAnterior
+    ? (contrato.fecha_rp || contrato.fecha_inicio || contrato.fecha_cdp || '')
+    : (contrato.fecha_cdp || '');
+  const tmCDP = fechaRef ? _trimDeFecha(fechaRef) : null;
 
   // ═══ PASO 2: REGISTRAR CDP (DISPONIBILIDAD) ═══
   // Se registra SIEMPRE que haya fecha CDP y valor — cualquier estado
