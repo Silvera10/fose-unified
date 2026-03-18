@@ -982,29 +982,21 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
     // 5. Procesar bloques y variables
     html = _processBlocks(html, ctx);
 
-    // 5b. Inyectar imagen de firma del rector si existe
+    // 5b. Inyectar imagen de firma del rector en TODOS los documentos
     if(ctx.firma_rector_img){
       const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma">`;
-      const rectorName = (ctx.rector||'').trim();
-      if(rectorName){
-        const rEsc = rectorName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-        // Universal: insertar firma ANTES de cualquier <p><strong>NOMBRE_RECTOR</strong></p>
-        // Cubre todas las plantillas (CDP, RP, contrato, egreso, actas, etc.)
-        html = html.replace(
-          new RegExp(`(<p[^>]*>\\s*<strong>\\s*${rEsc}\\s*</strong>\\s*</p>)`, 'gi'),
-          firmaTag + '$1'
-        );
-        // También sin <strong>: <p class="xx-firma-nombre">NOMBRE_RECTOR</p>
-        html = html.replace(
-          new RegExp(`(<p[^>]*>\\s*${rEsc}\\s*</p>)`, 'gi'),
-          (match, p1, offset) => {
-            // Solo insertar si no ya tiene firma arriba
-            const before = html.substring(Math.max(0, offset - 100), offset);
-            if(before.includes('alt="Firma"')) return match;
-            return firmaTag + p1;
-          }
-        );
-      }
+      // Buscar cualquier div con clase *-firma-linea que contenga "Rector"
+      // Insertar la imagen justo después del tag de apertura del div
+      html = html.replace(
+        /(<div[^>]*\w+-firma-linea[^>]*>)([\s\S]*?Rector[\s\S]*?<\/div>)/gi,
+        '$1' + firmaTag + '$2'
+      );
+      // También capturar firma-section sin firma-linea (invitaciones, etc.)
+      // Patrón: <div class="xx-firma-linea"></div> seguido de <p><strong>RECTOR</strong></p>
+      html = html.replace(
+        /(<div[^>]*\w+-firma-linea[^>]*><\/div>\s*)(<p>)/gi,
+        '$1' + firmaTag + '$2'
+      );
     }
 
     // 6. Limpiar tags Jinja2 residuales
