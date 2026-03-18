@@ -1651,9 +1651,21 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; font-size: 11pt; color: #000; background: #fff; }
-    @page { size: Letter; margin: 2cm 2cm 2cm 2.5cm; }
+    @page { size: Letter; margin: 1.5cm 1.5cm 1.5cm 2cm; }
     @media screen { body { max-width: 21cm; margin: 20px auto; padding: 2cm; border: 1px solid #ccc; } }
-    @media print { .no-print { display: none !important; } body { margin: 0; padding: 0; border: none; } }
+    @media print {
+      .no-print { display: none !important; }
+      body { margin: 0; padding: 0; border: none; font-size: 10pt; }
+      table { width: 100% !important; table-layout: auto !important; font-size: 9pt; }
+      td, th { padding: 3px 4px !important; word-wrap: break-word; overflow-wrap: break-word; }
+      tr { page-break-inside: avoid; }
+      .seccion { page-break-inside: avoid; }
+      [class*="-firma"] { page-break-inside: avoid; }
+      img { max-width: 100% !important; height: auto !important; }
+      h1, h2, h3 { margin: 6px 0 !important; }
+      p { margin: 4px 0 !important; }
+      .header-inst { margin-bottom: 10px !important; }
+    }
 
     .header-inst { border-bottom: 3px double #000; padding-bottom: 8px; margin-bottom: 15px;
       display: flex; align-items: center; gap: 12px; }
@@ -2806,7 +2818,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
 
 {% block extra_css %}
 <style>
-  @page { size: Letter; margin: 2cm 2cm 2cm 2.5cm; }
+  @page { size: Letter; margin: 1.5cm 1.5cm 1.5cm 2cm; }
 
   /* ── Caja con borde y fondo gris claro ── */
   .cpc-caja {

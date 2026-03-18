@@ -1028,12 +1028,32 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
       }
     }
 
-    // 5c. Inyectar CSS global para eliminar TODAS las líneas de firma
+    // 5c. Inyectar CSS global: firma sin línea + ajuste automático de impresión
     html = html.replace('</head>', `<style>
+      /* Firma sin líneas */
       [class*="firma-linea"],[class*="firma-bloque"],[class*="firma-wrap"],
       [class*="firma-linea"] *,[class*="firma-bloque"] *,[class*="firma-wrap"] *,
       [class*="firma-section"] *,[class*="firma-grid"] * {
         border:none !important; border-top:none !important; border-bottom:none !important;
+      }
+      /* ═══ AJUSTE AUTOMÁTICO DE IMPRESIÓN ═══ */
+      @media print {
+        @page { size: Letter; margin: 1.5cm 1.5cm 1.5cm 2cm; }
+        body { font-size: 10pt !important; margin: 0 !important; padding: 0 !important; }
+        table { width: 100% !important; table-layout: auto !important; font-size: 9pt !important; }
+        td, th { padding: 3px 4px !important; word-wrap: break-word !important; overflow-wrap: break-word !important; }
+        tr { page-break-inside: avoid !important; }
+        img { max-width: 100% !important; height: auto !important; }
+        h1,h2,h3 { margin: 6px 0 !important; }
+        p { margin: 3px 0 !important; line-height: 1.4 !important; }
+        .header-inst { margin-bottom: 8px !important; }
+        /* Firmas no se cortan entre páginas */
+        [class*="firma"] { page-break-inside: avoid !important; }
+        /* Tablas no desbordan */
+        .tabla-datos, .ep-table, .ev-table, .cdp-tabla,
+        [class*="-tabla"], [class*="-table"] {
+          font-size: 9pt !important; width: 100% !important;
+        }
       }
     </style></head>`);
 
@@ -1154,7 +1174,20 @@ async function generarDocumentoDian(pagoId){
     html = html.replace(/\{%[\s\S]*?%\}/g, '');
     html = html.replace(/\{\{[\s\S]*?\}\}/g, '');
 
-    // 6b. Inyectar firma del rector
+    // 6b. Inyectar CSS de impresión para DIAN
+    html = html.replace('</head>', `<style>
+      @media print {
+        @page { size: Letter; margin: 1.5cm 1.5cm 1.5cm 2cm; }
+        body { font-size: 10pt !important; margin: 0 !important; padding: 0 !important; }
+        table { width: 100% !important; font-size: 9pt !important; }
+        td, th { padding: 3px 4px !important; word-wrap: break-word !important; }
+        tr { page-break-inside: avoid !important; }
+        img { max-width: 100% !important; height: auto !important; }
+        [class*="firma"] { page-break-inside: avoid !important; }
+      }
+    </style></head>`);
+
+    // 6c. Inyectar firma del rector
     const _cfg = d.config || {};
     const firmaImg = _cfg.firma_rector;
     if(firmaImg){
