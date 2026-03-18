@@ -2267,7 +2267,9 @@ function guardarContrato(){
   }
 
   // ═══ Validación cronológica de fechas del proceso contractual ═══
-  {
+  // Si tiene Cto. Anterior (contrato de vigencia pasada), no validar secuencia de fechas
+  const _esContratoAnterior = ($('mc-ref-anterior')?.value?.trim() || '') !== '';
+  if(!_esContratoAnterior){
     const _f = id => { const v = $(id)?.value; return v ? new Date(v+'T00:00:00') : null; };
     const fCdp       = _f('mc-pp-fecha-cdp');
     const fEstudio   = _f('mc-fecha-estudio');
