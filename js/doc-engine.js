@@ -986,7 +986,7 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
 
     // 5b. Inyectar imagen de firma del rector en TODOS los documentos
     if(ctx.firma_rector_img){
-      const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
+      const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:85px;max-width:280px;display:block;margin:0 auto 4px" alt="Firma Rector">`;
       const rName = (ctx.rector||'').trim();
       const rNameUp = rName.toUpperCase();
       // Buscar TODAS las secciones de firma que contengan el nombre del rector
@@ -1031,7 +1031,7 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
 
     // 5b2. Inyectar firma del CONTRATISTA (si existe en el directorio de personas)
     if(ctx.firma_contratista){
-      const firmaCtaTag = `<img src="${ctx.firma_contratista}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Contratista">`;
+      const firmaCtaTag = `<img src="${ctx.firma_contratista}" style="max-height:85px;max-width:280px;display:block;margin:0 auto 4px" alt="Firma Contratista">`;
       const cName = (ctx.nombre_contratista||'').trim();
       const cNameUp = cName.toUpperCase();
       if(cName){
@@ -1222,7 +1222,7 @@ async function generarDocumentoDian(pagoId){
     const _cfg = d.config || {};
     const firmaImg = _cfg.firma_rector;
     if(firmaImg){
-      const firmaTag = `<img src="${firmaImg}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
+      const firmaTag = `<img src="${firmaImg}" style="max-height:85px;max-width:280px;display:block;margin:0 auto 4px" alt="Firma Rector">`;
       const rName = (_cfg.rector||'').trim();
       const rNameUp = rName.toUpperCase();
       const _kw = ['Rector', 'Ordenador', rName, rNameUp].filter(Boolean).map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
