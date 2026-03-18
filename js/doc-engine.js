@@ -965,14 +965,29 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
       ctx.fecha_egreso = pago.fecha_pago || '';
       ctx.fecha_egreso_larga = _fechaLarga(pago.fecha_pago);
 
-      // Calcular período: desde fecha_estimada del pago anterior (o fecha_inicio) hasta fecha_estimada de este pago
-      const fechaInicio = contrato.fecha_inicio || '';
+      // Calcular período del informe:
+      // - Desde: fecha de inicio del contrato (o fecha estimada del pago anterior para pagos parciales)
+      // - Hasta: fecha de fin del contrato (para pago único) o fecha estimada del pago (para parciales)
+      const fechaInicioC = contrato.fecha_inicio || '';
+      const fechaFinC = contrato.fecha_fin || '';
       const prevPago = pagoIdx > 0 ? pagos[pagoIdx - 1] : null;
-      ctx.pago_periodo_desde = prevPago ? (prevPago.fecha_estimada || prevPago.fecha_pago || fechaInicio) : fechaInicio;
-      ctx.pago_periodo_hasta = pago.fecha_estimada || pago.fecha_pago || '';
+
+      if(pagos.length <= 1){
+        // Pago único: período = toda la duración del contrato
+        ctx.pago_periodo_desde = fechaInicioC;
+        ctx.pago_periodo_hasta = fechaFinC;
+      } else {
+        // Pagos parciales: período = desde pago anterior hasta este pago
+        ctx.pago_periodo_desde = prevPago ? (prevPago.fecha_estimada || prevPago.fecha_pago || fechaInicioC) : fechaInicioC;
+        ctx.pago_periodo_hasta = pago.fecha_estimada || pago.fecha_pago || fechaFinC;
+      }
       ctx.pago_periodo_desde_larga = _fechaLarga(ctx.pago_periodo_desde);
       ctx.pago_periodo_hasta_larga = _fechaLarga(ctx.pago_periodo_hasta);
       ctx.pago_periodo_texto = 'Del ' + _fechaLarga(ctx.pago_periodo_desde) + ' al ' + _fechaLarga(ctx.pago_periodo_hasta);
+
+      // Fecha de elaboración = fecha de terminación del contrato
+      ctx.fecha_elaboracion = fechaFinC;
+      ctx.fecha_elaboracion_larga = _fechaLarga(fechaFinC);
 
       // Acumulado de pagos realizados hasta este índice
       let acumulado = 0;

@@ -6785,7 +6785,7 @@ table.ic-firma-tabla td {
     </tr>
     <tr>
       <th>Fecha de elaboración</th>
-      <td>{{ fecha_pago_larga }}</td>
+      <td>{{ fecha_elaboracion_larga if fecha_elaboracion_larga else fecha_fin_larga }}</td>
     </tr>
     {% else %}
     <tr>
@@ -7281,7 +7281,7 @@ table.is-firma-tabla td {
       <th>Pago</th>
       <td>{{ pago_nota }}</td>
       <th>Fecha del informe</th>
-      <td>{{ fecha_pago_larga }}</td>
+      <td>{{ fecha_elaboracion_larga if fecha_elaboracion_larga else fecha_fin_larga }}</td>
     </tr>
     <tr>
       <th>Período supervisado</th>
@@ -7425,7 +7425,7 @@ table.is-firma-tabla td {
         <td>{{ objeto }}</td>
         {% if pago_numero %}
         <td style="text-align:center">{{ pago_periodo_desde_larga }}<br>— {{ pago_periodo_hasta_larga }}</td>
-        <td style="text-align:center">{{ pago_periodo_desde_larga }}<br>— {{ fecha_pago_larga }}</td>
+        <td style="text-align:center">{{ pago_periodo_desde_larga }}<br>— {{ pago_periodo_hasta_larga }}</td>
         {% else %}
         <td style="text-align:center">{{ fecha_inicio_larga }}<br>— {{ fecha_fin_larga }}</td>
         <td style="text-align:center">{{ fecha_inicio_larga }}<br>— {{ fecha_fin_larga }}</td>
