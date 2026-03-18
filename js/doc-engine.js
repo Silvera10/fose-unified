@@ -1144,10 +1144,11 @@ async function generarDocumentoDian(pagoId){
     html = html.replace(/\{\{[\s\S]*?\}\}/g, '');
 
     // 6b. Inyectar firma del rector
-    const firmaImg = c.firma_rector;
+    const _cfg = d.config || {};
+    const firmaImg = _cfg.firma_rector;
     if(firmaImg){
       const firmaTag = `<img src="${firmaImg}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
-      const rName = (c.rector||'').trim();
+      const rName = (_cfg.rector||'').trim();
       const rNameUp = rName.toUpperCase();
       const _kw = ['Rector', 'Ordenador', rName, rNameUp].filter(Boolean).map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
       html = html.replace(
