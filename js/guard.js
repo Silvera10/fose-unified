@@ -243,3 +243,51 @@ function _mostrarEstadoGuard(){
   }
 }
 document.addEventListener('DOMContentLoaded', _mostrarEstadoGuard);
+
+/* ── F) RECORDATORIO MENSUAL DE BACKUP ── */
+function _verificarRecordatorioBackup(){
+  try {
+    const KEY = 'fose_last_backup_reminder';
+    const ultimo = localStorage.getItem(KEY);
+    const ahora = Date.now();
+    const TREINTA_DIAS = 30 * 24 * 60 * 60 * 1000;
+
+    // Si nunca se ha mostrado o pasaron 30 días
+    if(!ultimo || (ahora - Number(ultimo)) > TREINTA_DIAS){
+      // Esperar 10 segundos para que la app cargue completamente
+      setTimeout(()=>{
+        const banner = document.createElement('div');
+        banner.id = 'backup-reminder-banner';
+        banner.innerHTML = `
+          <div style="position:fixed;bottom:60px;left:50%;transform:translateX(-50%);z-index:99999;
+            background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;padding:12px 20px;
+            border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.3);font-size:13px;
+            max-width:500px;text-align:center;font-family:sans-serif">
+            <div style="font-weight:700;font-size:14px;margin-bottom:6px">
+              ⚠️ Recordatorio de Seguridad
+            </div>
+            <div>
+              Ha pasado más de <strong>30 días</strong> sin descargar un backup.<br>
+              Descargue un <strong>Backup JSON</strong> desde Configuración para mayor seguridad.
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
+              <button onclick="localStorage.setItem('${KEY}',Date.now());this.closest('#backup-reminder-banner').remove()"
+                style="background:#fff;color:#e67e22;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-weight:600;font-size:12px">
+                Ya lo hice ✓
+              </button>
+              <button onclick="localStorage.setItem('${KEY}',Date.now());this.closest('#backup-reminder-banner').remove();navTo('config')"
+                style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.5);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:12px">
+                Ir a Configuración →
+              </button>
+              <button onclick="this.closest('#backup-reminder-banner').remove()"
+                style="background:transparent;color:rgba(255,255,255,0.7);border:none;padding:6px 8px;cursor:pointer;font-size:11px">
+                Después
+              </button>
+            </div>
+          </div>`;
+        document.body.appendChild(banner);
+      }, 10000);
+    }
+  } catch(e){ /* silenciar errores */ }
+}
+document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(_verificarRecordatorioBackup, 5000); });
