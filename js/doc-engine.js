@@ -985,27 +985,16 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
     // 5b. Inyectar imagen de firma del rector en TODOS los documentos
     if(ctx.firma_rector_img){
       const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
-      // Buscar firma-block o firma-section que contenga "Rector"
-      // Patrón 1: div.firma-linea CON contenido que incluye "Rector" (antes del cierre </div>)
+      // Inyectar firma DENTRO de cualquier div firma-linea o firma-bloque que contenga "Rector"
+      // Justo después del tag de apertura del div
       html = html.replace(
-        /(<div[^>]*\w+-firma-linea[^>]*>)((?:(?!<\/div>)[\s\S])*?Rector[\s\S]*?<\/div>)/gi,
-        (m, div, content) => m.includes('Firma Rector') ? m : firmaTag + div + content
+        /(<div[^>]*(?:\w+-firma-linea|\w+-firma-bloque)[^>]*>)([\s\S]{0,500}?Rector)/gi,
+        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
       );
-      // Patrón 2: div.firma-linea VACÍO seguido de contenido con "Rector" (inv, rp, etc.)
-      // <div class="xx-firma-linea"></div>\n  <p>..RECTOR..</p>..Rector(a)..
+      // Patrón 2: div.firma-linea VACÍO seguido de contenido con "Rector"
       html = html.replace(
         /(<div[^>]*\w+-firma-linea[^>]*><\/div>)([\s\S]{0,400}?Rector)/gi,
-        (m, div, after) => m.includes('Firma Rector') ? m : firmaTag + div + after
-      );
-      // Patrón 3: op-firma-linea con style (orden de pago)
-      html = html.replace(
-        /(<div[^>]*\w+-firma-linea[^>]*style[^>]*>)([\s\S]{0,400}?Rector)/gi,
-        (m, div, after) => m.includes('Firma Rector') ? m : firmaTag + div + after
-      );
-      // Patrón 4: cualquier div con firma-bloque que contenga Rector
-      html = html.replace(
-        /(<div[^>]*\w+-firma-bloque[^>]*>)([\s\S]{0,400}?Rector)/gi,
-        (m, div, after) => m.includes('Firma Rector') ? m : firmaTag + div + after
+        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
       );
       // Patrón 5: fallback - <p><strong>RECTOR_NAME</strong></p> en sección de firma
       const rName = (ctx.rector||'').trim();
