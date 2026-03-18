@@ -1104,9 +1104,11 @@ function buildDianEgresoContext(pago, d){
     banco_origen:          pago.banco_origen || '',
     cuenta_banco_inst:     (function(){
       // Buscar cuenta que corresponda al banco_origen del pago
-      const bo = (pago.banco_origen||'').trim().toUpperCase();
+      // Normalizar acentos para evitar diferencias À vs Á etc.
+      const _norm = s => (s||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const bo = _norm(pago.banco_origen);
       for(let i=1;i<=3;i++){
-        const b = (c['banco_'+i]||c['banco_inst_'+i]||'').trim().toUpperCase();
+        const b = _norm(c['banco_'+i]||c['banco_inst_'+i]||'');
         if(b && bo && b === bo) return c['cuenta_'+i]||c['cta_inst_'+i]||'';
       }
       return c.cuenta_1 || c.cta_inst_1 || c.cuenta_banco || '';
