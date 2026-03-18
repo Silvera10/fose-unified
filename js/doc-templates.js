@@ -146,7 +146,7 @@ table.ao-firma-tabla td {
   vertical-align: bottom;
 }
 .ao-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -471,7 +471,7 @@ table.ai-firma-tabla td {
   vertical-align: bottom;
 }
 .ai-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -903,7 +903,7 @@ table.al-firma-tabla.al-firma-tres td {
   width: 33.33%;
 }
 .al-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -1427,7 +1427,7 @@ table.ar-firma-tabla td {
   vertical-align: bottom;
 }
 .ar-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -1606,13 +1606,13 @@ table.ar-firma-tabla td {
 <div class="ar-firma-section">
   <table class="ar-firma-tabla">
     <tr>
-      <!-- Supervisor -->
+      <!-- Rector -->
       <td>
         <div class="ar-firma-linea">
-          <p class="ar-firma-nombre">{{ supervisor }}</p>
-          <p class="ar-firma-cargo">{{ cargo_sup }}</p>
+          <p class="ar-firma-nombre">{{ rector }}</p>
+          <p class="ar-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+          <p class="ar-firma-cargo">Rector(a) — Ordenador del Gasto</p>
           <p class="ar-firma-cargo">{{ inst_nombre }}</p>
-          <p class="ar-firma-cargo"><strong>SUPERVISOR DEL CONTRATO</strong></p>
         </div>
       </td>
       <!-- Contratista -->
@@ -1683,7 +1683,7 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
     table.info td:first-child { font-weight: bold; background: #f5f5f5; width: 35%; }
 
     .firma-block { margin-top: 40px; }
-    .firma-linea { border-top: 1px solid #000; width: 250px; text-align: center; padding-top: 4px; margin-top: 60px; }
+    .firma-linea { border-top: none; width: 250px; text-align: center; padding-top: 4px; margin-top: 60px; }
     .firma-nombre { font-weight: bold; text-transform: uppercase; }
     [class$="-firma-nombre"] { text-transform: uppercase; }
     .firma-cargo { font-size: 9.5pt; }
@@ -1883,7 +1883,7 @@ table.cj-firma-tabla td {
   vertical-align: bottom;
 }
 .cj-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -2246,7 +2246,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     min-width: 240px;
   }
   .cp-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
   }
@@ -2617,7 +2617,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     text-align: center;
   }
   .cdp-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
   }
@@ -2783,22 +2783,14 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
   </p>
 </div>
 
-<!-- Firmas -->
+<!-- Firma -->
 <div class="cdp-firma-section">
-  <div class="cdp-firma-grid">
-    <div class="cdp-firma-block">
-      <div class="cdp-firma-linea">
-        <p><strong>TESORERO(A)</strong></p>
-        <p>{{ inst_nombre }}</p>
-      </div>
-    </div>
-    <div class="cdp-firma-block">
-      <div class="cdp-firma-linea">
-        <p><strong>{{ rector | upper }}</strong></p>
-        <p>C.C. {{ format_id(cc_rector) }}</p>
-        <p>Rector(a) — Ordenador del Gasto</p>
-        <p>{{ inst_nombre }}</p>
-      </div>
+  <div class="cdp-firma-block" style="text-align:center;max-width:320px;margin:0 auto">
+    <div class="cdp-firma-linea">
+      <p><strong>{{ rector | upper }}</strong></p>
+      <p>C.C. {{ format_id(cc_rector) }}</p>
+      <p>Rector(a) — Ordenador del Gasto</p>
+      <p>{{ inst_nombre }}</p>
     </div>
   </div>
 </div>
@@ -2917,7 +2909,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
     margin-bottom: 48px;
   }
   .cpc-firma-bloque {
-    border-top: 1.5px solid #000;
+    border-top: none;
     width: 60%;
     padding-top: 5px;
   }
@@ -3135,7 +3127,7 @@ table.ct-firma-tabla td {
   vertical-align: bottom;
 }
 .ct-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -3607,7 +3599,7 @@ table.ct-firma-tabla td {
   vertical-align: bottom;
 }
 .ct-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -4121,7 +4113,7 @@ table.ce-firma-tabla td {
   vertical-align: bottom;
 }
 .ce-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -4537,7 +4529,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
     text-align: center;
   }
   .ep-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
   }
@@ -4947,7 +4939,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
   .ep-firma-grid { display: flex; gap: 30px; margin-top: 8px; }
   .ep-firma-block { flex: 1; text-align: center; }
   .ep-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
   }
@@ -5535,7 +5527,7 @@ table.ev-firma-tabla td {
   vertical-align: bottom;
 }
 .ev-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -5922,7 +5914,7 @@ table.ev-firma-tabla td {
   vertical-align: bottom;
 }
 .ev-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -6270,7 +6262,7 @@ table.hd-firma-tabla td {
   vertical-align: bottom;
 }
 .hd-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -6684,7 +6676,7 @@ table.ic-firma-tabla td {
   vertical-align: bottom;
 }
 .ic-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -7178,7 +7170,7 @@ table.is-firma-tabla td {
   vertical-align: bottom;
 }
 .is-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -7500,11 +7492,10 @@ table.is-firma-tabla td {
     <tr>
       <td>
         <div class="is-firma-linea">
-          <p class="is-firma-nombre">{{ supervisor }}</p>
-          <p class="is-firma-cargo">{{ cargo_sup }}</p>
-          <p class="is-firma-cargo">Supervisor — Contrato N.° {{ numero }}</p>
+          <p class="is-firma-nombre">{{ rector }}</p>
+          <p class="is-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+          <p class="is-firma-cargo">Rector(a) — Ordenador del Gasto</p>
           <p class="is-firma-cargo">{{ inst_nombre }}</p>
-          <p class="is-firma-cargo"><strong>SUPERVISOR DEL CONTRATO</strong></p>
         </div>
       </td>
     </tr>
@@ -7529,7 +7520,7 @@ DOC_TEMPLATES["docs/invitacion.html"] = `{% extends "docs/base_doc.html" %}
   .inv-parrafo { text-align:justify; margin:6px 0; font-size:10.5pt; }
   .inv-num { text-align:center; }
   .inv-firma { text-align:center; margin-top:50px; }
-  .inv-firma-linea { border-top:1px solid #000; width:260px; margin:55px auto 4px auto; padding-top:4px; }
+  .inv-firma-linea { border-top:none; width:260px; margin:55px auto 4px auto; padding-top:4px; }
   ul.inv-list { margin:6px 0 6px 24px; }
   ul.inv-list li { margin:2px 0; font-size:10.5pt; }
 </style>
@@ -7933,7 +7924,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
     min-width: 220px;
   }
   .inv2-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
   }
@@ -8376,7 +8367,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
     min-width: 220px;
   }
   .inv3-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
   }
@@ -8852,7 +8843,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     min-width: 220px;
   }
   .invg-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
   }
@@ -9378,7 +9369,7 @@ table.oc-firma-tabla td {
   vertical-align: bottom;
 }
 .oc-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -9791,7 +9782,7 @@ table.op-firma-tabla td {
   vertical-align: bottom;
 }
 .op-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin-top: 58px;
 }
@@ -10070,10 +10061,10 @@ table.op-firma-tabla td {
 <!-- ── FIRMA ──────────────────────────────────────────────────── -->
 <div class="op-firma-section">
   <div class="op-firma-linea" style="width:60%; margin:65px auto 0">
-    <p class="op-firma-nombre">{{ supervisor }}</p>
-    <p class="op-firma-cargo">{{ cargo_sup }}</p>
-    <p class="op-firma-cargo">Supervisor — Contrato N.° {{ numero }}</p>
-    <p class="op-firma-cargo"><strong>REVISÓ</strong></p>
+    <p class="op-firma-nombre">{{ rector }}</p>
+    <p class="op-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+    <p class="op-firma-cargo">Rector(a) — Ordenador del Gasto</p>
+    <p class="op-firma-cargo">{{ inst_nombre }}</p>
   </div>
 </div>
 
@@ -10209,7 +10200,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
     text-align: center;
   }
   .rp-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
   }
@@ -10471,7 +10462,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
     page-break-inside: avoid;
   }
   .sc-firma-linea {
-    border-top: 1px solid #000;
+    border-top: none;
     margin-top: 65px;
     padding-top: 5px;
     width: 260px;
@@ -10699,7 +10690,7 @@ table.ed-firma-tabla td {
   width: 50%;
 }
 .ed-firma-linea {
-  border-top: 1.5px solid #000;
+  border-top: none;
   padding-top: 6px;
   margin: 58px 30px 0;
 }
@@ -10815,26 +10806,14 @@ table.ed-firma-tabla td {
 
 <!-- FIRMAS -->
 <div class="ed-firma-section">
-  <table class="ed-firma-tabla">
-    <tr>
-      <td>
-        <div class="ed-firma-linea">
-          <p class="ed-firma-nombre">{{ rector }}</p>
-          <p class="ed-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
-          <p class="ed-firma-cargo">Rector(a)</p>
-          <p class="ed-firma-cargo">Ordenador del Gasto</p>
-        </div>
-      </td>
-      <td>
-        <div class="ed-firma-linea">
-          <p class="ed-firma-nombre">&nbsp;</p>
-          <p class="ed-firma-cargo">&nbsp;</p>
-          <p class="ed-firma-cargo">Auxiliar Administrativo</p>
-          <p class="ed-firma-cargo">Pagador(a)</p>
-        </div>
-      </td>
-    </tr>
-  </table>
+  <div style="text-align:center;max-width:320px;margin:0 auto">
+    <div class="ed-firma-linea">
+      <p class="ed-firma-nombre">{{ rector }}</p>
+      <p class="ed-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
+      <p class="ed-firma-cargo">Rector(a)</p>
+      <p class="ed-firma-cargo">Ordenador del Gasto</p>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

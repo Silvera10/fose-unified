@@ -1002,6 +1002,26 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
         /(<div[^>]*\w+-firma-linea[^>]*style[^>]*>)([\s\S]{0,400}?Rector)/gi,
         (m, div, after) => m.includes('Firma Rector') ? m : firmaTag + div + after
       );
+      // Patrón 4: plantillas sin firma-linea (cert plan compras, etc.)
+      // Buscar "Firma" como etiqueta seguida del nombre del rector
+      const rName = (ctx.rector||'').trim();
+      if(rName){
+        const rEsc = rName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+        html = html.replace(
+          new RegExp(`(Firma</p>\\s*<div[^>]*>\\s*)(<p><strong>\\s*${rEsc}\\s*</strong></p>)`, 'gi'),
+          (m) => m.includes('Firma Rector') ? m : '$1' + firmaTag + '$2'
+        );
+        // Patrón 5: fallback - cualquier <p><strong>RECTOR_NAME</strong></p> en sección de firma
+        html = html.replace(
+          new RegExp(`(<p><strong>\\s*${rEsc}\\s*</strong></p>)`, 'gi'),
+          (m, p1, offset) => {
+            const before = html.substring(Math.max(0, offset - 200), offset);
+            if(before.includes('Firma Rector')) return m;
+            if(before.includes('firma') || before.includes('Firma') || before.includes('FIRMA')) return firmaTag + p1;
+            return m;
+          }
+        );
+      }
     }
 
     // 6. Limpiar tags Jinja2 residuales
