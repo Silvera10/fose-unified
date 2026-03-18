@@ -710,16 +710,17 @@ function _excelRelacionGastos(wb, d, trim){
     const row=ws.getRow(r);
     const codFuente = c.fuente||cf.fuente||'';
     const fuenteCompleta = codFuente ? codFuente + ' ' + _nomFuente(codFuente) : '';
-    const _banco = cf.contratista_banco || c.banco_pago || '';
-    const _tipoCta = cf.contratista_tipocuenta || '';
-    const _ctaBanco = cf.contratista_numcuenta || c.cuenta_pago || '';
+    const _banco = c.contratista_banco || c.banco_pago || cf.contratista_banco || '';
+    const _tipoCta = c.contratista_tipocuenta || cf.contratista_tipocuenta || '';
+    const _ctaBanco = c.contratista_numcuenta || c.cuenta_pago || cf.contratista_numcuenta || '';
+    const _ue = c.unidad_ejecutora || cfg.unidad_ejecutora || '';
     const vals=[i+1, c.comp||'', c.fecha||'',
       _banco ? _banco + (_tipoCta ? ' ' + _tipoCta : '') : '', _ctaBanco,
       c.prov||'', c.numdoc||'',
       c.rp||'', c.cdp||'', c.num_op||cf.num_op||'', vig,
       c.concepto||'', val, neto,
       c.cod_rubro||'', _nombreRubro(d,c.cod_rubro),
-      fuenteCompleta, cfg.unidad_ejecutora||''];
+      fuenteCompleta, _ue];
     vals.forEach((v,j)=>{
       const opts={font:_XS.fontNorm};
       if(j===12||j===13) opts.numFmt=_XS.numFmt;

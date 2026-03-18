@@ -804,13 +804,13 @@ function genContratos(d, trim){
   let rows = cs.length ? cs.map((c,i)=>{
     const cf = _fullData(c);
     // Banco y cuenta del contratista/proveedor (no de la institución)
-    const banco = cf.contratista_banco || c.banco_pago || '';
-    const tipoCta = cf.contratista_tipocuenta || '';
-    const cuenta = cf.contratista_numcuenta || c.cuenta_pago || '';
+    const banco = c.contratista_banco || c.banco_pago || cf.contratista_banco || '';
+    const tipoCta = c.contratista_tipocuenta || cf.contratista_tipocuenta || '';
+    const cuenta = c.contratista_numcuenta || c.cuenta_pago || cf.contratista_numcuenta || '';
     const op = c.num_op || cf.num_op || '';
     const neto = Number(c.neto_pagar) || Number(c.valor) || 0;
     const fuente = c.fuente || cf.fuente || '';
-    const ue = cfg.unidad_ejecutora || '';
+    const ue = c.unidad_ejecutora || cfg.unidad_ejecutora || '';
     return `<tr>
     <td class="ctr">${i+1}</td>
     <td>${c.comp||'—'}</td>

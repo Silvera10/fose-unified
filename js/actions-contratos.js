@@ -2094,8 +2094,12 @@ function _syncContratoTrimestral(contrato, d){
       neto_pagar:          Number(pago.neto_pagar) || 0,
       reteica:             Number(pago.reteica) || 0,
       num_op:              pago.num_op || '',
-      banco_pago:          pago.banco_pago || '',
-      cuenta_pago:         pago.cuenta_pago || ''
+      banco_pago:          pago.banco_pago || contrato.contratista_banco || '',
+      cuenta_pago:         pago.cuenta_pago || contrato.contratista_numcuenta || '',
+      contratista_banco:   contrato.contratista_banco || '',
+      contratista_numcuenta: contrato.contratista_numcuenta || '',
+      contratista_tipocuenta: contrato.contratista_tipocuenta || '',
+      unidad_ejecutora:    (d.config||{}).unidad_ejecutora || ''
     });
   }
 
