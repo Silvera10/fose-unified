@@ -1012,6 +1012,16 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
       }
     }
 
+    // 5c. Eliminar border-top de TODOS los divs firma-linea y firma-bloque via inline style
+    html = html.replace(
+      /<div([^>]*)(class="[^"]*(?:firma-linea|firma-bloque)[^"]*")([^>]*)>/gi,
+      (m, before, cls, after) => {
+        // Si ya tiene style, agregar border:none
+        if(m.includes('style="')) return m.replace('style="', 'style="border:none !important;');
+        return `<div${before}${cls}${after} style="border:none !important">`;
+      }
+    );
+
     // 6. Limpiar tags Jinja2 residuales
     html = html.replace(/\{%[\s\S]*?%\}/g, '');
     html = html.replace(/\{\{[\s\S]*?\}\}/g, '');

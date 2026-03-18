@@ -2990,7 +2990,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
 
   <!-- 8. Firma -->
   <div class="cpc-firma-wrap">
-    <div class="cpc-firma-bloque">
+    <div class="cpc-firma-bloque" style="border:none;border-top:none">
       <p><strong>{{ (rector or '________________________________') | upper }}</strong></p>
       {% if cc_rector %}<p>C.C. {{ format_id(cc_rector) }}</p>{% endif %}
       <p>Rector(a) — Ordenador del Gasto</p>
