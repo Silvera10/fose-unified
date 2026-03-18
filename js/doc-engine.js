@@ -1074,6 +1074,7 @@ function buildDianEgresoContext(pago, d){
     anio:              c.vigencia || String(new Date().getFullYear()),
     rector:            c.rector || '',
     cc_rector:         c.idRector || '',
+    firma_rector_img:  c.firma_rector || '',
 
     /* Pago */
     num_egreso:            pago.num_egreso || '',
@@ -1101,7 +1102,7 @@ function buildDianEgresoContext(pago, d){
     nit_beneficiario_fmt:  _formatId(pago.nit_beneficiario || ''),
     medio_pago:            pago.medio_pago || '',
     banco_origen:          pago.banco_origen || '',
-    cuenta_banco_inst:     cfg.cuenta_banco || '',
+    cuenta_banco_inst:     c.cuenta_banco || '',
     num_comprobante_banco: pago.num_comprobante_banco || '',
 
     /* Contabilidad */
@@ -1141,6 +1142,21 @@ async function generarDocumentoDian(pagoId){
     // 6. Limpiar residuales
     html = html.replace(/\{%[\s\S]*?%\}/g, '');
     html = html.replace(/\{\{[\s\S]*?\}\}/g, '');
+
+    // 6b. Inyectar firma del rector
+    const firmaImg = c.firma_rector;
+    if(firmaImg){
+      const firmaTag = `<img src="${firmaImg}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
+      const rName = (c.rector||'').trim();
+      const rNameUp = rName.toUpperCase();
+      const _kw = ['Rector', 'Ordenador', rName, rNameUp].filter(Boolean).map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+      html = html.replace(
+        new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kw}))`, 'gi'),
+        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
+      );
+    }
+    // Quitar líneas de firma
+    html = html.replace(/border-top:\s*[\d.]+px\s+solid\s+#000/gi, 'border-top:none');
 
     // 7. Abrir en ventana nueva
     const w = window.open('', '_blank');
