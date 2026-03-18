@@ -364,23 +364,13 @@
   </p>
 </div>
 
-<!-- Firmas -->
-<div class="cdp-firma-section">
-  <div class="cdp-firma-grid">
-    <div class="cdp-firma-block">
-      <div class="cdp-firma-linea">
-        <p><strong>TESORERO(A)</strong></p>
-        <p>{{ inst_nombre }}</p>
-      </div>
-    </div>
-    <div class="cdp-firma-block">
-      <div class="cdp-firma-linea">
-        <p><strong>{{ rector | upper }}</strong></p>
-        <p>C.C. {{ format_id(cc_rector) }}</p>
-        <p>Rector(a) — Ordenador del Gasto</p>
-        <p>{{ inst_nombre }}</p>
-      </div>
-    </div>
+<!-- Firma del Rector -->
+<div class="cdp-firma-section" style="text-align:right; margin-top:20px;">
+  <div class="cdp-firma-linea" style="display:inline-block; text-align:center;">
+    <p><strong>{{ rector | upper }}</strong></p>
+    <p>C.C. {{ format_id(cc_rector) }}</p>
+    <p>Rector(a) — Ordenador del Gasto</p>
+    <p>{{ inst_nombre }}</p>
   </div>
 </div>
 
