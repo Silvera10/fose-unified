@@ -531,7 +531,7 @@ function _buildDocAcuerdo(d, ac){
   miembrosCD.forEach((m, idx) => {
     const esFirmaRector = idx === 0 && _firmaImg;
     firmasHTML += `<div style="width:45%;text-align:center;margin-bottom:30px">
-      ${esFirmaRector ? '<img src="'+_firmaImg+'" style="max-height:85px;max-width:280px;display:block;margin:0 auto 4px" alt="Firma">' : ''}
+      ${esFirmaRector ? '<img src="'+_firmaImg+'" style="max-height:110px;max-width:320px;display:block;margin:0 auto 4px" alt="Firma">' : ''}
       <div style="border-bottom:1px solid #333;width:80%;margin:0 auto 4px">&nbsp;</div>
       <div style="font-weight:bold;font-size:10pt">${m.nombre||''}</div>
       <div style="font-size:9pt">C.C. No. ${m.cc || '_______________'}</div>
