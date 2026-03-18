@@ -1683,7 +1683,8 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
     table.info td:first-child { font-weight: bold; background: #f5f5f5; width: 35%; }
 
     .firma-block { margin-top: 40px; }
-    .firma-linea { border-top: none; width: 250px; text-align: center; padding-top: 4px; margin-top: 60px; }
+    .firma-linea, [class*="-firma-linea"], [class*="-firma-bloque"] { border-top: none !important; border: none !important; }
+    .firma-linea { width: 250px; text-align: center; padding-top: 4px; margin-top: 60px; }
     .firma-nombre { font-weight: bold; text-transform: uppercase; }
     [class$="-firma-nombre"] { text-transform: uppercase; }
     .firma-cargo { font-size: 9.5pt; }
@@ -2908,9 +2909,11 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
     color: #555;
     margin-bottom: 48px;
   }
-  .cpc-firma-bloque {
+  .cpc-firma-bloque, .cpc-firma-bloque * {
     border-top: none !important;
     border: none !important;
+  }
+  .cpc-firma-bloque {
     width: 60%;
     padding-top: 5px;
   }
