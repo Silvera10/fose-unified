@@ -9826,7 +9826,7 @@ table.op-firma-tabla td {
 {% set _nom_fuente = _fuentes_map[fuente|string] if fuente|string in _fuentes_map else fuente %}
 
 <p class="op-numero">
-  Orden de Pago N.° <strong>{{ num_egreso or '—' }}</strong>
+  Orden de Pago N.° <strong>{{ num_op or num_egreso or '—' }}</strong>
   <span style="font-weight:normal; color:#555; font-size:9pt">&nbsp;·&nbsp; Contrato N.° {{ numero }}</span>
   {% if pago_numero %}
   <br><span style="font-weight:normal; color:#8e44ad; font-size:9pt">{{ pago_nota }}</span>

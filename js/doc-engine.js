@@ -634,6 +634,7 @@ function buildDocContext(contrato, d, templateName){
     num_cdp: c.cdp || '',
     num_rp: c.rp || '',
     num_egreso: c.num_egreso || '',
+    num_op: c.num_op || '',
     num_factura: c.num_factura || '',
     saldo_ppto: c.saldo_ppto || 0,
     saldo_compromiso: c.saldo_compromiso || valor_total,
