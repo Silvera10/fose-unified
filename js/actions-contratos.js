@@ -1153,6 +1153,11 @@ function abrirModalContrato(id=null){
     // Datos básicos
     $('mc-numero').value = (c.numero||'').replace(/^\(Borrador\)/,''); $('mc-tipo').value = c.tipo||'';
     if($('mc-ref-anterior')) $('mc-ref-anterior').value = c.ref_contrato_anterior||'';
+    // Si es contrato anterior, desbloquear CDP y RP para editar números originales
+    if(c.ref_contrato_anterior){
+      $('mc-pp-cdp').readOnly = false; $('mc-pp-cdp').style.background = '#fff';
+      $('mc-pp-rp').readOnly = false; $('mc-pp-rp').style.background = '#fff';
+    }
     $('mc-modalidad').value = c.modalidad||''; $('mc-estado').value = c.estado||'En ejecucion';
     $('mc-objeto').value = (c.objeto||'').replace(/^\(Pendiente\)/,''); $('mc-obligaciones').value = c.obligaciones||'';
     $('mc-valor').value = c.valor||''; $('mc-fecha-inicio').value = c.fecha_inicio||'';

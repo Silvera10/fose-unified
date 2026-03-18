@@ -802,7 +802,7 @@
                 <input class="form-control form-control-sm" id="mc-numero" oninput="_auditarCampo('mc-numero','hint-numero','numero');_autoRP()" onblur="_validarDatosBasicos()">
                 <small id="hint-numero" style="font-size:9px"></small></div>
               <div class="col-md-3"><label class="form-label small mb-0" style="color:#6c757d">Cto. Anterior (Ref.)</label>
-                <input class="form-control form-control-sm" id="mc-ref-anterior" placeholder="Ej: CTO2025-003" style="font-size:11px">
+                <input class="form-control form-control-sm" id="mc-ref-anterior" placeholder="Ej: CTO2025-003" style="font-size:11px" oninput="(function(v){var cdp=$('mc-pp-cdp'),rp=$('mc-pp-rp');if(v){cdp.readOnly=false;cdp.style.background='#fff';rp.readOnly=false;rp.style.background='#fff'}else{cdp.readOnly=true;cdp.style.background='#f0f7f0';rp.readOnly=true;rp.style.background='#f0f7f0'}})(this.value.trim())">
                 <small style="font-size:8px;color:#999">Si es continuación de vigencia anterior</small></div>
               <div class="col-md-3"><label class="form-label small fw-bold mb-0">Tipo *</label>
                 <select class="form-select form-select-sm" id="mc-tipo">
