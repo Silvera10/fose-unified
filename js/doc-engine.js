@@ -985,28 +985,43 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
     // 5b. Inyectar imagen de firma del rector en TODOS los documentos
     if(ctx.firma_rector_img){
       const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
-      // Inyectar firma DENTRO de cualquier div firma-linea o firma-bloque que contenga "Rector"
-      // Justo después del tag de apertura del div
-      html = html.replace(
-        /(<div[^>]*(?:\w+-firma-linea|\w+-firma-bloque)[^>]*>)([\s\S]{0,500}?Rector)/gi,
-        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
-      );
-      // Patrón 2: div.firma-linea VACÍO seguido de contenido con "Rector"
-      html = html.replace(
-        /(<div[^>]*\w+-firma-linea[^>]*><\/div>)([\s\S]{0,400}?Rector)/gi,
-        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
-      );
-      // Patrón 5: fallback - <p><strong>RECTOR_NAME</strong></p> en sección de firma
       const rName = (ctx.rector||'').trim();
+      const rNameUp = rName.toUpperCase();
+      // Buscar TODAS las secciones de firma que contengan el nombre del rector
+      // (puede aparecer como Rector, Supervisor, Docente, Ordenador, etc.)
+      const _keywords = ['Rector', 'Supervisor', 'Ordenador', 'CONTRATANTE', 'Cordialmente'];
+      if(rName) _keywords.push(rName, rNameUp);
+      const _kwPattern = _keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+
+      // Patrón 1: div firma-linea/firma-bloque que contenga nombre del rector o cargo
+      html = html.replace(
+        new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kwPattern}))`, 'gi'),
+        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
+      );
+      // Patrón 2: div.firma-linea VACÍO seguido de contenido con rector
+      html = html.replace(
+        new RegExp(`(<div[^>]*\\w+-firma-linea[^>]*><\\/div>)([\\s\\S]{0,400}?(?:${_kwPattern}))`, 'gi'),
+        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
+      );
+      // Patrón 3: fallback - <p><strong>RECTOR_NAME</strong></p> o <p class="*firma-nombre">RECTOR_NAME</p>
       if(rName){
         const rEsc = rName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+        // Con <strong>
         html = html.replace(
           new RegExp(`(<p><strong>\\s*${rEsc}\\s*</strong></p>)`, 'gi'),
           (m, p1, offset) => {
-            const before = html.substring(Math.max(0, offset - 200), offset);
+            const before = html.substring(Math.max(0, offset - 300), offset);
             if(before.includes('Firma Rector')) return m;
-            if(before.includes('firma') || before.includes('Firma') || before.includes('FIRMA') || before.includes('Cordialmente')) return firmaTag + p1;
-            return m;
+            return firmaTag + p1;
+          }
+        );
+        // Con clase firma-nombre
+        html = html.replace(
+          new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*${rEsc}\\s*</p>)`, 'gi'),
+          (m, p1, offset) => {
+            const before = html.substring(Math.max(0, offset - 300), offset);
+            if(before.includes('Firma Rector')) return m;
+            return firmaTag + p1;
           }
         );
       }
