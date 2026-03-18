@@ -2909,7 +2909,8 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
     margin-bottom: 48px;
   }
   .cpc-firma-bloque {
-    border-top: none;
+    border-top: none !important;
+    border: none !important;
     width: 60%;
     padding-top: 5px;
   }
@@ -2986,9 +2987,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
 
   <!-- 8. Firma -->
   <div class="cpc-firma-wrap">
-    <p class="cpc-firma-etiq">Firma</p>
     <div class="cpc-firma-bloque">
-      {% if firma_rector_img %}<img src="{{ firma_rector_img }}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Rector">{% endif %}
       <p><strong>{{ (rector or '________________________________') | upper }}</strong></p>
       {% if cc_rector %}<p>C.C. {{ format_id(cc_rector) }}</p>{% endif %}
       <p>Rector(a) — Ordenador del Gasto</p>
