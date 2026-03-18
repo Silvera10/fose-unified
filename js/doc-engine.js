@@ -984,18 +984,23 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
 
     // 5b. Inyectar imagen de firma del rector en TODOS los documentos
     if(ctx.firma_rector_img){
-      const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma">`;
-      // Buscar cualquier div con clase *-firma-linea que contenga "Rector"
-      // Insertar la imagen justo después del tag de apertura del div
+      const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
+      // Buscar firma-block o firma-section que contenga "Rector"
+      // Patrón 1: div.firma-linea CON contenido que incluye "Rector" (antes del cierre </div>)
       html = html.replace(
-        /(<div[^>]*\w+-firma-linea[^>]*>)([\s\S]*?Rector[\s\S]*?<\/div>)/gi,
-        '$1' + firmaTag + '$2'
+        /(<div[^>]*\w+-firma-linea[^>]*>)((?:(?!<\/div>)[\s\S])*?Rector[\s\S]*?<\/div>)/gi,
+        (m, div, content) => m.includes('Firma Rector') ? m : firmaTag + div + content
       );
-      // También capturar firma-section sin firma-linea (invitaciones, etc.)
-      // Patrón: <div class="xx-firma-linea"></div> seguido de <p><strong>RECTOR</strong></p>
+      // Patrón 2: div.firma-linea VACÍO seguido de contenido con "Rector" (inv, rp, etc.)
+      // <div class="xx-firma-linea"></div>\n  <p>..RECTOR..</p>..Rector(a)..
       html = html.replace(
-        /(<div[^>]*\w+-firma-linea[^>]*><\/div>\s*)(<p>)/gi,
-        '$1' + firmaTag + '$2'
+        /(<div[^>]*\w+-firma-linea[^>]*><\/div>)([\s\S]{0,400}?Rector)/gi,
+        (m, div, after) => m.includes('Firma Rector') ? m : firmaTag + div + after
+      );
+      // Patrón 3: op-firma-linea con style (orden de pago)
+      html = html.replace(
+        /(<div[^>]*\w+-firma-linea[^>]*style[^>]*>)([\s\S]{0,400}?Rector)/gi,
+        (m, div, after) => m.includes('Firma Rector') ? m : firmaTag + div + after
       );
     }
 
