@@ -1340,6 +1340,17 @@
           <div class="col-md-4"><label class="form-label small">CC Rep. Legal</label>
             <input class="form-control form-control-sm" id="mp-replegal-cc"></div>
         </div>
+        <!-- Firma del contratista -->
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label class="form-label small"><i class="bi bi-pen me-1"></i>Firma (imagen)</label>
+            <input type="file" class="form-control form-control-sm" id="mp-firma" accept="image/*" onchange="_cargarFirmaPersona(this)">
+            <small class="text-muted" style="font-size:9px">PNG o JPG, máx. 500KB</small>
+          </div>
+          <div class="col-md-6" id="mp-firma-preview" style="text-align:center">
+            <!-- Preview de la firma -->
+          </div>
+        </div>
       </div>
       <div class="modal-footer py-1">
         <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>

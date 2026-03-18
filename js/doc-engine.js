@@ -667,6 +667,7 @@ function buildDocContext(contrato, d, templateName){
     cuenta_banco: c.contratista_numcuenta || c.contratista_cuenta || (personaC ? personaC.cuenta_banco : ''),
     rep_legal_nombre: c.contratista_replegal || c.rep_legal_nombre || '',
     rep_legal_cc: c.contratista_replegal_cc || c.rep_legal_cc || '',
+    firma_contratista: (personaC ? personaC.firma : '') || '',
 
     // Supervisor
     nombre_supervisor: c.supervisor || '',
@@ -1023,6 +1024,36 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
             const before = html.substring(Math.max(0, offset - 300), offset);
             if(before.includes('Firma Rector')) return m;
             return firmaTag + p1;
+          }
+        );
+      }
+    }
+
+    // 5b2. Inyectar firma del CONTRATISTA (si existe en el directorio de personas)
+    if(ctx.firma_contratista){
+      const firmaCtaTag = `<img src="${ctx.firma_contratista}" style="max-height:60px;max-width:200px;display:block;margin:0 auto 2px" alt="Firma Contratista">`;
+      const cName = (ctx.nombre_contratista||'').trim();
+      const cNameUp = cName.toUpperCase();
+      if(cName){
+        const _kwCta = ['CONTRATISTA', 'Beneficiario', 'Contratista', cName, cNameUp]
+          .map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+        // Patrón: div firma-linea/firma-bloque que contenga nombre del contratista
+        html = html.replace(
+          new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kwCta}))`, 'gi'),
+          (m, div, after) => {
+            // No inyectar si ya tiene firma o si es la sección del rector
+            if(m.includes('Firma Contratista') || m.includes('Rector') || m.includes('Ordenador')) return m;
+            return div + firmaCtaTag + after;
+          }
+        );
+        // Patrón 2: <p> con clase firma-nombre que contenga el nombre del contratista
+        const cEsc = cName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+        html = html.replace(
+          new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*${cEsc}\\s*</p>)`, 'gi'),
+          (m, p1, offset) => {
+            const before = html.substring(Math.max(0, offset - 300), offset);
+            if(before.includes('Firma Contratista') || before.includes('Rector')) return m;
+            return firmaCtaTag + p1;
           }
         );
       }

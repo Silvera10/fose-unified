@@ -21,14 +21,46 @@ function abrirModalPersona(id=null){
     $('mp-numcuenta').value = p.numcuenta||p.cuenta_banco||p.cuenta_bancaria||'';
     $('mp-replegal').value = p.rep_legal||p.rep_legal_nombre||'';
     $('mp-replegal-cc').value = p.rep_legal_cc||p.rep_legal_num_documento||'';
+    _firmaPersonaBase64 = p.firma || '';
+    _mostrarPreviewFirmaPersona(_firmaPersonaBase64);
   } else {
     $('mp-id').value = '';
     ['mp-nombre','mp-cargo','mp-numdoc','mp-telefono','mp-email','mp-direccion',
      'mp-municipio','mp-banco','mp-numcuenta','mp-replegal','mp-replegal-cc'
     ].forEach(id => $(id).value = '');
     $('mp-tipodoc').value = 'CC'; $('mp-tipocuenta').value = 'Ahorros';
+    _firmaPersonaBase64 = '';
+    _mostrarPreviewFirmaPersona('');
   }
   new bootstrap.Modal($('mPersona')).show();
+}
+
+/* ── Firma de persona ── */
+let _firmaPersonaBase64 = '';
+
+function _cargarFirmaPersona(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  if(file.size > 500*1024){ toast('La imagen de firma no debe superar 500KB','danger'); input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    _firmaPersonaBase64 = e.target.result;
+    _mostrarPreviewFirmaPersona(_firmaPersonaBase64);
+  };
+  reader.readAsDataURL(file);
+}
+
+function _mostrarPreviewFirmaPersona(base64){
+  const preview = $('mp-firma-preview');
+  if(!preview) return;
+  if(base64){
+    preview.innerHTML = `
+      <img src="${base64}" style="max-height:60px;max-width:180px;border:1px solid #ddd;border-radius:4px;padding:2px" alt="Firma">
+      <br><button class="btn btn-outline-danger btn-sm py-0 px-2 mt-1" style="font-size:9px" onclick="_firmaPersonaBase64='';_mostrarPreviewFirmaPersona('')">
+        <i class="bi bi-x me-1"></i>Quitar firma</button>`;
+  } else {
+    preview.innerHTML = '<span class="text-muted" style="font-size:10px">Sin firma</span>';
+  }
 }
 
 function guardarPersona(){
@@ -55,7 +87,8 @@ function guardarPersona(){
     rep_legal: $('mp-replegal').value.trim(),
     rep_legal_nombre: $('mp-replegal').value.trim(),
     rep_legal_cc: $('mp-replegal-cc').value.trim(),
-    rep_legal_num_documento: $('mp-replegal-cc').value.trim()
+    rep_legal_num_documento: $('mp-replegal-cc').value.trim(),
+    firma: _firmaPersonaBase64 || ''
   };
 
   const personas = DB._personas || [];
