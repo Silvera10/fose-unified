@@ -584,8 +584,9 @@ function buildDocContext(contrato, d, templateName){
     cc_rector: cfg.idRector || cfg.cc_rector || '',
     firma_rector_img: cfg.firma_rector || '',
 
-    // Contrato
-    numero: c.numero || '',
+    // Contrato — si tiene referencia a contrato anterior, usar ese número
+    numero: c.ref_contrato_anterior || c.numero || '',
+    numero_actual: c.numero || '',
     tipo_contrato: c.tipo_contrato || c.tipo || 'Contrato de Prestación de Servicios',
     modalidad_seleccion: c.modalidad || 'Mínima Cuantía',
     objeto: c.objeto || '',
