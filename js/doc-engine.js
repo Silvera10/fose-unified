@@ -989,13 +989,14 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
       // Buscar patrones: <p class="...firma-nombre...">RECTOR_NAME</p>
       const rectorName = (ctx.rector||'').toUpperCase();
       if(rectorName){
+        // Buscar clases como ao-firma-nombre, ai-firma-nombre, etc.
         html = html.replace(
-          new RegExp(`(<p[^>]*firma-nombre[^>]*>)(\\s*${rectorName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),
+          new RegExp(`(<p[^>]*\\w+-firma-nombre[^>]*>)(\\s*${rectorName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),
           firmaTag + '$1$2'
         );
         // También capturar divs con firma-linea seguidos del nombre
         html = html.replace(
-          new RegExp(`(<div[^>]*firma-linea[^>]*>[^<]*</div>\\s*<[^>]*>\\s*${rectorName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),
+          new RegExp(`(<div[^>]*\\w+-firma-linea[^>]*>[^<]*</div>\\s*<[^>]*>\\s*${rectorName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),
           firmaTag + '$1'
         );
       }
