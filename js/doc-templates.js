@@ -10760,7 +10760,7 @@ table.ed-firma-tabla td {
     </tr>
     <tr>
       <th>Banco Origen</th>
-      <td>{{ banco_origen }}{% if cuenta_banco_inst %} — Cta. {{ cuenta_banco_inst }}{% endif %}</td>
+      <td>{{ banco_origen }} — Cta. {{ cuenta_banco_inst }}</td>
       <th>Comprobante Bancario</th>
       <td>{{ num_comprobante_banco }}</td>
     </tr>
