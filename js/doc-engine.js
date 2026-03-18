@@ -1101,6 +1101,7 @@ function buildDianEgresoContext(pago, d){
     nit_beneficiario_fmt:  _formatId(pago.nit_beneficiario || ''),
     medio_pago:            pago.medio_pago || '',
     banco_origen:          pago.banco_origen || '',
+    cuenta_banco_inst:     cfg.cuenta_banco || '',
     num_comprobante_banco: pago.num_comprobante_banco || '',
 
     /* Contabilidad */
