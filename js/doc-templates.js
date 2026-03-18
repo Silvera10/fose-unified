@@ -9800,15 +9800,18 @@ table.op-firma-tabla td {
   border-top: none;
   padding-top: 6px;
   margin-top: 58px;
+  text-align: center;
 }
 .op-firma-nombre {
   font-size: 9.5pt;
   font-weight: bold;
   margin: 2px 0;
+  text-align: center;
 }
 .op-firma-cargo {
   font-size: 8.5pt;
   margin: 1px 0;
+  text-align: center;
   color: #222;
 }
 </style>
