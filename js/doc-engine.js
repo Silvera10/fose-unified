@@ -1102,7 +1102,15 @@ function buildDianEgresoContext(pago, d){
     nit_beneficiario_fmt:  _formatId(pago.nit_beneficiario || ''),
     medio_pago:            pago.medio_pago || '',
     banco_origen:          pago.banco_origen || '',
-    cuenta_banco_inst:     c.cuenta_banco || '',
+    cuenta_banco_inst:     (function(){
+      // Buscar cuenta que corresponda al banco_origen del pago
+      const bo = (pago.banco_origen||'').trim().toUpperCase();
+      for(let i=1;i<=3;i++){
+        const b = (c['banco_inst_'+i]||'').trim().toUpperCase();
+        if(b && bo && b === bo) return c['cta_inst_'+i]||'';
+      }
+      return c.cta_inst_1 || c.cuenta_banco || '';
+    })(),
     num_comprobante_banco: pago.num_comprobante_banco || '',
 
     /* Contabilidad */
