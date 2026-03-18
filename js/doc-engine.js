@@ -669,7 +669,7 @@ function buildDocContext(contrato, d, templateName){
 
     // Supervisor
     nombre_supervisor: c.supervisor || '',
-    cargo_supervisor: c.supervisor_cargo || 'Rector(a)',
+    cargo_supervisor: 'Rector(a)',
 
     // Fechas (raw y largas)
     fecha_cdp: c.fecha_cdp || '',
