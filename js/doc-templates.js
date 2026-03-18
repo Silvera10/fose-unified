@@ -1676,7 +1676,7 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
     .header-inst .inst-nombre { font-size: 13pt; font-weight: bold; text-transform: uppercase; }
     .header-inst .inst-nit { font-size: 10pt; }
     .header-inst .doc-titulo { font-size: 12pt; font-weight: bold; text-transform: uppercase;
-      background: #333; color: #fff; padding: 4px 12px; border-radius: 4px; margin-top: 6px; display: inline-block; }
+      background: none; color: #000; padding: 4px 12px; border: 2px solid #000; border-radius: 4px; margin-top: 6px; display: inline-block; }
 
     .seccion { margin: 12px 0; }
     .seccion-titulo { font-weight: bold; text-transform: uppercase; background: #eee;
@@ -1707,7 +1707,7 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
 
     .print-btn {
       position: fixed; top: 10px; right: 10px; z-index: 999;
-      background: #333; color: #fff; border: none; padding: 10px 20px;
+      background: #eee; color: #333; border: 1px solid #999; padding: 10px 20px;
       border-radius: 8px; cursor: pointer; font-size: 14px;
     }
   </style>
