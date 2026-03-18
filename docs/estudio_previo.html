@@ -108,8 +108,8 @@
 
   /* Bloque de firmas */
   .ep-firma-section {
-    margin-top: 50px;
-    page-break-inside: avoid;
+    margin-top: 20px;
+    
   }
   .ep-firma-section h3 {
     font-size: 10pt;
@@ -137,7 +137,7 @@
   }
   .ep-firma-linea {
     border-top: 1px solid #000;
-    margin-top: 65px;
+    margin-top: 20px;
     padding-top: 5px;
   }
   .ep-firma-block p {
@@ -147,10 +147,10 @@
 
   /* Print: evitar cortes en tablas y firmas */
   @media print {
-    .ep-section       { page-break-inside: avoid; }
+    .ep-section       {  }
     table.ep-table    { page-break-inside: avoid; }
     table.ep-info     { page-break-inside: avoid; }
-    .ep-firma-section { page-break-inside: avoid; }
+    .ep-firma-section {  }
   }
 </style>
 {% endblock %}
