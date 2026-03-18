@@ -236,6 +236,9 @@ function validarFechaHabil(inp){
 }
 
 function _autoFechasContrato(force){
+  // Si es contrato de vigencia anterior, no auto-calcular fechas
+  const _esAnterior = ($('mc-ref-anterior')?.value?.trim() || '') !== '';
+  if(_esAnterior) return;
   // force=true: recalcular TODO (cuando el usuario cambia una fecha manualmente)
   // force=false/undefined: solo llenar campos vacíos (al cargar contrato guardado)
   const _si = (id, val) => { if(force || !$(id).value) $(id).value = val; };
