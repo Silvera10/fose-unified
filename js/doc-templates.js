@@ -1651,7 +1651,7 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Arial, sans-serif; font-size: 11pt; color: #000; background: #fff; }
-    @page { size: Letter; margin: 1.5cm 1.5cm 1.5cm 2cm; }
+    @page { size: Letter; margin: 1.5cm 1.5cm 0.8cm 2cm; }
     @media screen { body { max-width: 21cm; margin: 20px auto; padding: 2cm; border: 1px solid #ccc; } }
     @media print {
       .no-print { display: none !important; }
