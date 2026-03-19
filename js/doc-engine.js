@@ -966,8 +966,8 @@ function _inyectarFirmas(html, ctx){
   }
 
   // ── Firma del Contratista ──
-  // Solo inyectar si el documento tiene una sección de firma del contratista
-  // (buscar "CONTRATISTA" como label de firma cerca del nombre)
+  // Solo inyectar si el nombre del contratista está DENTRO de un div/section con clase "firma"
+  // Esto evita inyectar en zonas de destinatario (como en Aceptación de Oferta)
   if(ctx.firma_contratista){
     const cName = (ctx.nombre_contratista||'').trim();
     if(cName){
@@ -975,6 +975,7 @@ function _inyectarFirmas(html, ctx){
       const cEsc = cName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
       const cUpper = cName.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 
+      // Buscar con clase firma-nombre (más confiable)
       const patronesFirma = [
         new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*(?:<strong>\\s*)?)(${cEsc}|${cUpper})`, 'g'),
         new RegExp(`(<p>\\s*<strong>\\s*)(${cEsc}|${cUpper})(\\s*</strong>\\s*</p>)`, 'g')
@@ -982,19 +983,24 @@ function _inyectarFirmas(html, ctx){
 
       let ultimaPosicion = -1;
 
-      patronesFirma.forEach(re => {
+      patronesFirma.forEach((re, pIdx) => {
         let m;
         while((m = re.exec(html)) !== null){
           if(m.index > html.length * 0.4 && m.index > ultimaPosicion){
-            // Verificar que está en zona de firma del contratista:
-            // 1) NO cerca de "Rector"/"Ordenador"
-            // 2) SÍ cerca de "CONTRATISTA" como label (dentro de 500 chars después)
-            const ctxBefore = html.substring(Math.max(0, m.index - 200), m.index);
-            const ctxAfter  = html.substring(m.index, Math.min(html.length, m.index + 500));
-            const esZonaRector = ctxBefore.includes('Rector') || ctxBefore.includes('Ordenador') || ctxBefore.includes('Firma Rector');
-            const esZonaContratista = ctxAfter.includes('CONTRATISTA') || ctxAfter.includes('Contratista') || ctxBefore.includes('firma-') || ctxBefore.includes('CONTRATISTA');
-            if(!esZonaRector && esZonaContratista){
+            // Patrón 0 (firma-nombre class): siempre confiable
+            if(pIdx === 0){
               ultimaPosicion = m.index;
+            } else {
+              // Patrón 1 (genérico): verificar que está en sección de firma
+              // Buscar hacia atrás un div con clase "firma" (max 500 chars)
+              const ctxBefore = html.substring(Math.max(0, m.index - 500), m.index);
+              const ctxAfter  = html.substring(m.index, Math.min(html.length, m.index + 400));
+              // Debe estar dentro de un contenedor de firma Y tener label "CONTRATISTA" cerca
+              const enDivFirma = /class="[^"]*firma[^"]*"/.test(ctxBefore);
+              const tieneLabel = ctxAfter.includes('EL CONTRATISTA') || ctxAfter.includes('LA EMPRESA CONTRATISTA') || ctxAfter.includes('LA CONTRATISTA');
+              if(enDivFirma && tieneLabel){
+                ultimaPosicion = m.index;
+              }
             }
           }
         }
