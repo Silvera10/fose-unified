@@ -918,6 +918,69 @@ function _buildHabeasConstancia(ctx){
 }
 
 /* ══════════════════════════════════════════════════════════
+   INYECCIÓN DE FIRMAS — función compartida
+   Inyecta firma del rector y contratista UNA SOLA VEZ
+══════════════════════════════════════════════════════════ */
+function _inyectarFirmas(html, ctx){
+  const MARCA_R = '<!--FR_OK-->';
+  const MARCA_C = '<!--FC_OK-->';
+
+  // ── Firma del Rector ──
+  if(ctx.firma_rector_img){
+    const firmaR = `${MARCA_R}<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:220px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
+    const rName = (ctx.rector||'').trim();
+    if(rName){
+      const rEsc = rName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+
+      // Patrón A: dentro de div firma-linea/firma-bloque
+      if(!html.includes(MARCA_R)){
+        const reA = new RegExp(`(<div[^>]*(?:firma-linea|firma-bloque)[^>]*>[\\s\\S]{0,300}?)((?:<p[^>]*>\\s*(?:<strong>\\s*)?)?${rEsc})`, 'i');
+        html = html.replace(reA, (m, before, namepart) => before + firmaR + namepart);
+      }
+      // Patrón B: <p><strong>NOMBRE</strong></p>
+      if(!html.includes(MARCA_R)){
+        const reB = new RegExp(`(<p>\\s*<strong>\\s*${rEsc}\\s*</strong>\\s*</p>)`, 'i');
+        html = html.replace(reB, (m) => firmaR + m);
+      }
+      // Patrón C: <p class="firma-nombre">NOMBRE</p>
+      if(!html.includes(MARCA_R)){
+        const reC = new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*${rEsc}\\s*</p>)`, 'i');
+        html = html.replace(reC, (m) => firmaR + m);
+      }
+    }
+  }
+
+  // ── Firma del Contratista ──
+  if(ctx.firma_contratista){
+    const firmaC = `${MARCA_C}<img src="${ctx.firma_contratista}" style="max-height:60px;max-width:220px;display:block;margin:0 auto 2px" alt="Firma Contratista">`;
+    const cName = (ctx.nombre_contratista||'').trim();
+    if(cName){
+      const cEsc = cName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+
+      // Patrón A: div firma que contenga nombre del contratista (no del rector)
+      if(!html.includes(MARCA_C)){
+        const reA = new RegExp(`(<div[^>]*(?:firma-linea|firma-bloque)[^>]*>[\\s\\S]{0,300}?)((?:<p[^>]*>\\s*(?:<strong>\\s*)?)?${cEsc})`, 'gi');
+        let found = false;
+        html = html.replace(reA, (m, before, namepart) => {
+          if(found || m.includes(MARCA_C) || m.includes(MARCA_R) || m.includes('Rector') || m.includes('Ordenador')) return m;
+          found = true;
+          return before + firmaC + namepart;
+        });
+      }
+      // Patrón B: <p><strong>NOMBRE_CONTRATISTA</strong></p>
+      if(!html.includes(MARCA_C)){
+        const reB = new RegExp(`(<p>\\s*<strong>\\s*${cEsc}\\s*</strong>\\s*</p>)`, 'i');
+        html = html.replace(reB, (m) => firmaC + m);
+      }
+    }
+  }
+
+  // Limpiar marcadores
+  html = html.replace(/<!--FR_OK-->/g, '').replace(/<!--FC_OK-->/g, '');
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════
    FUNCIÓN PRINCIPAL: Generar y abrir documento
 ══════════════════════════════════════════════════════════ */
 async function generarDocumento(templateName, contratoId, pagoIdx){
@@ -1006,80 +1069,8 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
     // 5. Procesar bloques y variables
     html = _processBlocks(html, ctx);
 
-    // 5b. Inyectar imagen de firma del rector en TODOS los documentos
-    if(ctx.firma_rector_img){
-      const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:75px;max-width:250px;display:block;margin:0 auto 3px" alt="Firma Rector">`;
-      const rName = (ctx.rector||'').trim();
-      const rNameUp = rName.toUpperCase();
-      // Buscar TODAS las secciones de firma que contengan el nombre del rector
-      // (puede aparecer como Rector, Supervisor, Docente, Ordenador, etc.)
-      const _keywords = ['Rector', 'Supervisor', 'Ordenador', 'CONTRATANTE', 'Cordialmente'];
-      if(rName) _keywords.push(rName, rNameUp);
-      const _kwPattern = _keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
-
-      // Patrón 1: div firma-linea/firma-bloque que contenga nombre del rector o cargo
-      html = html.replace(
-        new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kwPattern}))`, 'gi'),
-        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
-      );
-      // Patrón 2: div.firma-linea VACÍO seguido de contenido con rector
-      html = html.replace(
-        new RegExp(`(<div[^>]*\\w+-firma-linea[^>]*><\\/div>)([\\s\\S]{0,400}?(?:${_kwPattern}))`, 'gi'),
-        (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after
-      );
-      // Patrón 3: fallback - <p><strong>RECTOR_NAME</strong></p> o <p class="*firma-nombre">RECTOR_NAME</p>
-      if(rName){
-        const rEsc = rName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-        // Con <strong>
-        html = html.replace(
-          new RegExp(`(<p><strong>\\s*${rEsc}\\s*</strong></p>)`, 'gi'),
-          (m, p1, offset) => {
-            const before = html.substring(Math.max(0, offset - 300), offset);
-            if(before.includes('Firma Rector')) return m;
-            return firmaTag + p1;
-          }
-        );
-        // Con clase firma-nombre
-        html = html.replace(
-          new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*${rEsc}\\s*</p>)`, 'gi'),
-          (m, p1, offset) => {
-            const before = html.substring(Math.max(0, offset - 300), offset);
-            if(before.includes('Firma Rector')) return m;
-            return firmaTag + p1;
-          }
-        );
-      }
-    }
-
-    // 5b2. Inyectar firma del CONTRATISTA (si existe en el directorio de personas)
-    if(ctx.firma_contratista){
-      const firmaCtaTag = `<img src="${ctx.firma_contratista}" style="max-height:75px;max-width:250px;display:block;margin:0 auto 3px" alt="Firma Contratista">`;
-      const cName = (ctx.nombre_contratista||'').trim();
-      const cNameUp = cName.toUpperCase();
-      if(cName){
-        const _kwCta = ['CONTRATISTA', 'Beneficiario', 'Contratista', cName, cNameUp]
-          .map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
-        // Patrón: div firma-linea/firma-bloque que contenga nombre del contratista
-        html = html.replace(
-          new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kwCta}))`, 'gi'),
-          (m, div, after) => {
-            // No inyectar si ya tiene firma o si es la sección del rector
-            if(m.includes('Firma Contratista') || m.includes('Rector') || m.includes('Ordenador')) return m;
-            return div + firmaCtaTag + after;
-          }
-        );
-        // Patrón 2: <p> con clase firma-nombre que contenga el nombre del contratista
-        const cEsc = cName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-        html = html.replace(
-          new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*${cEsc}\\s*</p>)`, 'gi'),
-          (m, p1, offset) => {
-            const before = html.substring(Math.max(0, offset - 300), offset);
-            if(before.includes('Firma Contratista') || before.includes('Rector')) return m;
-            return firmaCtaTag + p1;
-          }
-        );
-      }
-    }
+    // 5b. Inyectar firmas (rector y contratista) — UNA SOLA VEZ cada una
+    html = _inyectarFirmas(html, ctx);
 
     // 5c. Inyectar CSS global: firma sin línea + ajuste automático de impresión
     html = html.replace('</head>', `<style>
@@ -1390,35 +1381,8 @@ async function _generarDocHTML(templateName, contratoId, pagoIdx){
 
   html = _processBlocks(html, ctx);
 
-  // Inyectar firmas (rector)
-  if(ctx.firma_rector_img){
-    const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:75px;max-width:250px;display:block;margin:0 auto 3px" alt="Firma Rector">`;
-    const rName = (ctx.rector||'').trim();
-    const rNameUp = rName.toUpperCase();
-    const _keywords = ['Rector', 'Supervisor', 'Ordenador', 'CONTRATANTE', 'Cordialmente'];
-    if(rName) _keywords.push(rName, rNameUp);
-    const _kwPattern = _keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
-    html = html.replace(new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kwPattern}))`, 'gi'),
-      (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after);
-    if(rName){
-      const rEsc = rName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      html = html.replace(new RegExp(`(<p><strong>\\s*${rEsc}\\s*</strong></p>)`, 'gi'),
-        (m) => m.includes('Firma Rector') ? m : firmaTag + m);
-      html = html.replace(new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*${rEsc}\\s*</p>)`, 'gi'),
-        (m) => m.includes('Firma Rector') ? m : firmaTag + m);
-    }
-  }
-  // Firma contratista
-  if(ctx.firma_contratista){
-    const firmaCtaTag = `<img src="${ctx.firma_contratista}" style="max-height:75px;max-width:250px;display:block;margin:0 auto 3px" alt="Firma Contratista">`;
-    const cName = (ctx.nombre_contratista||'').trim();
-    if(cName){
-      const _kwCta = ['CONTRATISTA', 'Beneficiario', 'Contratista', cName, cName.toUpperCase()]
-        .map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
-      html = html.replace(new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kwCta}))`, 'gi'),
-        (m, div, after) => (m.includes('Firma Contratista') || m.includes('Rector') || m.includes('Ordenador')) ? m : div + firmaCtaTag + after);
-    }
-  }
+  // Inyectar firmas usando la función compartida
+  html = _inyectarFirmas(html, ctx);
 
   // Limpiar Jinja2 residuales
   html = html.replace(/\{%[\s\S]*?%\}/g, '');
