@@ -2622,11 +2622,12 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
   }
   .cdp-firma-grid {
     display: flex;
-    gap: 40px;
+    gap: 20px;
+    justify-content: center;
     margin-top: 10px;
   }
   .cdp-firma-block {
-    flex: 1;
+    flex: 0 1 45%;
     text-align: center;
   }
   .cdp-firma-linea {
@@ -4536,11 +4537,12 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
   }
   .ep-firma-grid {
     display: flex;
-    gap: 30px;
+    gap: 20px;
+    justify-content: center;
     margin-top: 8px;
   }
   .ep-firma-block {
-    flex: 1;
+    flex: 0 1 45%;
     text-align: center;
   }
   .ep-firma-linea {
@@ -4951,8 +4953,8 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
     margin-bottom: 8px;
     line-height: 1.4;
   }
-  .ep-firma-grid { display: flex; gap: 30px; margin-top: 8px; }
-  .ep-firma-block { flex: 1; text-align: center; }
+  .ep-firma-grid { display: flex; gap: 20px; justify-content: center; margin-top: 8px; }
+  .ep-firma-block { flex: 0 1 45%; text-align: center; }
   .ep-firma-linea {
     border-top: none;
     margin-top: 65px;
@@ -6785,7 +6787,7 @@ table.ic-firma-tabla td {
     </tr>
     <tr>
       <th>Fecha de elaboración</th>
-      <td>{{ fecha_elaboracion_larga if fecha_elaboracion_larga else fecha_fin_larga }}</td>
+      <td>{{ fecha_elaboracion_larga }}</td>
     </tr>
     {% else %}
     <tr>
@@ -7281,7 +7283,7 @@ table.is-firma-tabla td {
       <th>Pago</th>
       <td>{{ pago_nota }}</td>
       <th>Fecha del informe</th>
-      <td>{{ fecha_elaboracion_larga if fecha_elaboracion_larga else fecha_fin_larga }}</td>
+      <td>{{ fecha_elaboracion_larga }}</td>
     </tr>
     <tr>
       <th>Período supervisado</th>
@@ -10210,11 +10212,12 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
   }
   .rp-firma-grid {
     display: flex;
-    gap: 40px;
+    gap: 20px;
+    justify-content: center;
     margin-top: 10px;
   }
   .rp-firma-block {
-    flex: 1;
+    flex: 0 1 45%;
     text-align: center;
   }
   .rp-firma-linea {

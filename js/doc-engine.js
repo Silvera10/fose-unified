@@ -1126,9 +1126,15 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
         [class*="firma"] { page-break-inside: avoid !important; }
         [class*="firma-linea"], [class*="firma-bloque"] { margin-top: 10px !important; padding-top: 0 !important; }
       }
-      /* Reducir espacio de firmas */
+      /* Reducir espacio de firmas y compactar */
       [class*="firma-section"], [class*="firma-grid"], [class*="firma-tabla"] {
         margin-top: 20px !important;
+      }
+      [class*="firma-grid"] {
+        gap: 20px !important; justify-content: center !important;
+      }
+      [class*="firma-block"], [class*="firma-bloque"] {
+        flex: 0 1 45% !important;
       }
       [class*="firma-linea"], [class*="firma-bloque"] {
         margin-top: 10px !important; padding-top: 5px !important;
@@ -1564,6 +1570,9 @@ ${body}
   [class*="firma-tabla"] tr {
     border: none !important;
   }
+  /* Firmas compactas */
+  [class*="firma-grid"] { gap: 20px !important; justify-content: center !important; }
+  [class*="firma-block"], [class*="firma-bloque"] { flex: 0 1 45% !important; }
   /* hr separador solo visible en pantalla, no en impresión */
   hr { display: none; }
   @media screen { hr.no-print { display: block; } }
