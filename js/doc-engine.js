@@ -1424,9 +1424,17 @@ async function _generarDocHTML(templateName, contratoId, pagoIdx){
   html = html.replace(/\{%[\s\S]*?%\}/g, '');
   html = html.replace(/\{\{[\s\S]*?\}\}/g, '');
 
-  // Extraer solo el contenido del body
+  // Extraer estilos del head + contenido del body
+  const styles = [];
+  html.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, (m, css) => { styles.push(css); return ''; });
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  return bodyMatch ? bodyMatch[1] : html;
+  const bodyContent = bodyMatch ? bodyMatch[1] : html;
+
+  // Remover la barra no-print de cada documento individual
+  const cleanBody = bodyContent.replace(/<div[^>]*class="no-print"[^>]*>[\s\S]*?<\/div>/gi, '');
+
+  // Retornar estilos + body juntos, envueltos con scope
+  return `<style>${styles.join('\n')}</style>\n${cleanBody}`;
 }
 
 // Definición de los dos grupos de documentos
@@ -1511,36 +1519,44 @@ async function imprimirGrupoDocumentos(contratoId, grupo){
   }
 
   // Combinar todos en un solo HTML con saltos de página
+  // Cada sección empieza en nueva página (excepto la primera)
   const combinedBody = secciones.map((sec, i) =>
-    `<div class="doc-seccion" style="${i > 0 ? 'page-break-before:always' : ''}">${sec}</div>`
-  ).join('\n<hr class="no-print" style="border:3px dashed #ccc;margin:30px 0">\n');
+    `<div class="doc-seccion" ${i > 0 ? 'style="page-break-before:always"' : ''}>\n${sec}\n</div>`
+  ).join('\n<hr class="no-print" style="border:3px dashed #07a;margin:40px 0">\n');
 
   const finalHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8">
 <title>${label} — Contrato ${contrato.numero||'S/N'}</title>
 <style>
   @page { size: Letter; margin: 1.5cm 1.5cm 0.8cm 2cm; }
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #000; margin: 0; padding: 0; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; margin: 0; padding: 0; line-height: 1.4; }
   @media print {
     body { margin: 0 !important; padding: 0 !important; }
     .no-print { display: none !important; }
-    .doc-seccion { page-break-inside: avoid; }
+    hr.no-print { display: none !important; }
     table { width: 100% !important; table-layout: auto !important; font-size: 9pt !important; }
-    td, th { padding: 3px 4px !important; word-wrap: break-word !important; }
+    td, th { padding: 3px 4px !important; word-wrap: break-word !important; overflow-wrap: break-word !important; }
     tr { page-break-inside: avoid !important; }
     img { max-width: 100% !important; height: auto !important; }
     [class*="firma"] { page-break-inside: avoid !important; }
-    hr { display: none !important; }
+    h1,h2,h3 { margin: 6px 0 !important; }
+    p { margin: 3px 0 !important; line-height: 1.4 !important; }
+    .header-inst { margin-bottom: 8px !important; }
+    [class*="firma-linea"], [class*="firma-bloque"] { margin-top: 10px !important; padding-top: 0 !important; }
   }
   /* Firma sin líneas */
   [class*="firma-linea"],[class*="firma-bloque"],[class*="firma-wrap"],
-  [class*="firma-linea"] *,[class*="firma-bloque"] *,[class*="firma-wrap"] * {
+  [class*="firma-linea"] *,[class*="firma-bloque"] *,[class*="firma-wrap"] *,
+  [class*="firma-section"] *,[class*="firma-grid"] * {
     border:none !important; border-top:none !important; border-bottom:none !important;
+  }
+  [class*="firma-section"], [class*="firma-grid"], [class*="firma-tabla"] {
+    margin-top: 20px !important;
   }
 </style></head>
 <body>
 <div class="no-print" style="background:#2c3e50;color:#fff;padding:8px 16px;text-align:right;font-family:Arial;font-size:12px;position:fixed;top:0;left:0;right:0;z-index:100">
-  <span style="float:left;font-size:13px;font-weight:bold">📄 ${label} — ${secciones.length} documentos</span>
-  <button onclick="window.print()" style="background:#27ae60;color:#fff;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px;margin-right:8px"><b>🖨️ Imprimir Todo</b></button>
+  <span style="float:left;font-size:13px;font-weight:bold">${label} — ${secciones.length} documentos</span>
+  <button onclick="window.print()" style="background:#27ae60;color:#fff;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px;margin-right:8px"><b>Imprimir Todo</b></button>
   <button onclick="window.close()" style="background:#e74c3c;color:#fff;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px">Cerrar</button>
 </div>
 <div style="margin-top:50px">
