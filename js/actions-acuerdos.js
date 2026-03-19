@@ -9,8 +9,13 @@ let _acpOptEg = '', _acpOptIng = '';
 function _acpRefrescarOpts(){
   const d = DB.load();
   const trim = Number(($('acp-trim')||{}).value)||1;
-  _acpOptEg  = optsEg(d,trim);
-  _acpOptIng = optsIng(d,trim);
+  // Opciones SIN saldo para acuerdos presupuestales
+  _acpOptEg = d.rubros.filter(r=>!r.esGrupo).map(r =>
+    `<option value="${r.cod}">${r.cod} - ${r.con}</option>`
+  ).join('');
+  _acpOptIng = (d.rubros_ing||[]).filter(r=>!r.esGrupo).map(r =>
+    `<option value="${r.cod}">${r.cod} - ${r.con}</option>`
+  ).join('');
 }
 
 /* ── Consecutivo automático ── */
@@ -123,7 +128,8 @@ function _acpGetFilas(tbodyId){
     const sel = tr.querySelector('select');
     const inp = tr.querySelector('input[type=number]');
     const cod = sel ? sel.value : '';
-    const nombre = sel ? sel.options[sel.selectedIndex]?.textContent||'' : '';
+    let nombre = sel ? sel.options[sel.selectedIndex]?.textContent||'' : '';
+    nombre = nombre.replace(/\s*\[Disp:.*?\]/g, '').trim(); // Limpiar saldo si existe
     return { cod, nombre, valor: Number(inp?.value)||0 };
   }).filter(f => f.cod && f.valor > 0);
 }
@@ -382,6 +388,18 @@ function imprimirDocAcuerdoPres(id){
   setTimeout(() => w.print(), 500);
 }
 
+/* ── Normalizar texto: MAYÚSCULAS → formato oración ── */
+function _normalizarTexto(txt){
+  const letras = txt.replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ]/g,'');
+  const mayus = letras.replace(/[^A-ZÁÉÍÓÚÑ]/g,'').length;
+  if(letras.length > 10 && mayus/letras.length > 0.7){
+    let res = txt.toLowerCase().replace(/(^|[.]\s*)([a-záéíóúñ])/g, (m,p,c) => p + c.toUpperCase());
+    res = res.replace(/\bque\b/gi, 'Que');
+    return res;
+  }
+  return txt;
+}
+
 /* ── Construir HTML del documento ── */
 function _buildDocAcuerdo(d, ac){
   const cfg = d.config || {};
@@ -403,12 +421,15 @@ function _buildDocAcuerdo(d, ac){
 
   // Construir considerandos como párrafos
   let consParrafos = (ac.considerandos||'').split('\n').filter(l=>l.trim()).map(l =>
-    `<p style="text-align:justify;margin:0 0 8px;line-height:1.6">${l.trim()}</p>`
+    `<p style="text-align:justify;margin:0 0 8px;line-height:1.6">${_normalizarTexto(l.trim())}</p>`
   ).join('');
   // Agregar el concepto como último considerando
   if(ac.concepto){
     consParrafos += `<p style="text-align:justify;margin:0 0 8px;line-height:1.6"><strong>Que</strong> el presente acuerdo se realiza con el fin de: ${ac.concepto}.</p>`;
   }
+
+  // Limpiar [Disp: XXX] de nombres guardados en versiones anteriores
+  const _limpNom = n => (n||'').replace(/\s*\[Disp:.*?\]/g,'').trim();
 
   // Tablas según tipo
   let articulosHTML = '';
@@ -423,7 +444,7 @@ function _buildDocAcuerdo(d, ac){
     if(ac.filas_ing && ac.filas_ing.length > 0){
       let rowsIng = ac.filas_ing.map(f =>
         `<tr><td style="padding:4px 8px;border:1px solid #999">${f.cod}</td>
-         <td style="padding:4px 8px;border:1px solid #999">${f.nombre||f.cod}</td>
+         <td style="padding:4px 8px;border:1px solid #999">${_limpNom(f.nombre)||f.cod}</td>
          <td style="padding:4px 8px;border:1px solid #999;text-align:right">$ ${fmt(f.valor)}</td></tr>`
       ).join('');
       articulosHTML += `<p style="text-align:justify;line-height:1.6;margin:16px 0 8px"><strong>ARTÍCULO ${_numRomano(artNum)}. ${ac.tipo==='adicion'?'ADICIÓN':'REDUCCIÓN'} AL PRESUPUESTO DE INGRESOS:</strong> ${accion} al Presupuesto de Ingresos del ${inst} para la vigencia fiscal ${vig}, la suma de ${numALetras(totalIng)} ($ ${fmt(totalIng)}), distribuidos así:</p>
@@ -447,7 +468,7 @@ function _buildDocAcuerdo(d, ac){
     if(ac.filas_eg && ac.filas_eg.length > 0){
       let rowsEg = ac.filas_eg.map(f =>
         `<tr><td style="padding:4px 8px;border:1px solid #999">${f.cod}</td>
-         <td style="padding:4px 8px;border:1px solid #999">${f.nombre||f.cod}</td>
+         <td style="padding:4px 8px;border:1px solid #999">${_limpNom(f.nombre)||f.cod}</td>
          <td style="padding:4px 8px;border:1px solid #999;text-align:right">$ ${fmt(f.valor)}</td></tr>`
       ).join('');
       articulosHTML += `<p style="text-align:justify;line-height:1.6;margin:16px 0 8px"><strong>ARTÍCULO ${_numRomano(artNum)}. ${ac.tipo==='adicion'?'ADICIÓN':'REDUCCIÓN'} AL PRESUPUESTO DE GASTOS:</strong> ${accion} al Presupuesto de Gastos del ${inst} para la vigencia fiscal ${vig}, la suma de ${numALetras(totalEg)} ($ ${fmt(totalEg)}), en las siguientes cuentas:</p>
@@ -475,7 +496,7 @@ function _buildDocAcuerdo(d, ac){
     // Art 1: Contracrédito
     let rowsCco = (ac.filas_cco||[]).map(f =>
       `<tr><td style="padding:4px 8px;border:1px solid #999">${f.cod}</td>
-       <td style="padding:4px 8px;border:1px solid #999">${f.nombre||f.cod}</td>
+       <td style="padding:4px 8px;border:1px solid #999">${_limpNom(f.nombre)||f.cod}</td>
        <td style="padding:4px 8px;border:1px solid #999;text-align:right">$ ${fmt(f.valor)}</td></tr>`
     ).join('');
     articulosHTML += `<p style="text-align:justify;line-height:1.6;margin:16px 0 8px"><strong>ARTÍCULO ${_numRomano(artNum)}. CONTRACRÉDITO:</strong> Redúzcase del Presupuesto de Gastos del ${inst} para la vigencia fiscal ${vig}, la suma de ${numALetras(totalCco)} ($ ${fmt(totalCco)}), de los siguientes rubros:</p>
@@ -497,7 +518,7 @@ function _buildDocAcuerdo(d, ac){
     // Art 2: Crédito
     let rowsCre = (ac.filas_cre||[]).map(f =>
       `<tr><td style="padding:4px 8px;border:1px solid #999">${f.cod}</td>
-       <td style="padding:4px 8px;border:1px solid #999">${f.nombre||f.cod}</td>
+       <td style="padding:4px 8px;border:1px solid #999">${_limpNom(f.nombre)||f.cod}</td>
        <td style="padding:4px 8px;border:1px solid #999;text-align:right">$ ${fmt(f.valor)}</td></tr>`
     ).join('');
     articulosHTML += `<p style="text-align:justify;line-height:1.6;margin:16px 0 8px"><strong>ARTÍCULO ${_numRomano(artNum)}. CRÉDITO:</strong> Adiciónese al Presupuesto de Gastos del ${inst} para la vigencia fiscal ${vig}, la suma de ${numALetras(totalCre)} ($ ${fmt(totalCre)}), en los siguientes rubros:</p>
@@ -697,7 +718,7 @@ async function exportarAcuerdoWord(acuerdoId){
   children.push(pCenter('CONSIDERANDO:', { bold: true, size: 24, after: 200 }));
   const consLineas = (ac.considerandos||'').split('\n').filter(l => l.trim());
   consLineas.forEach(linea => {
-    children.push(pJust(linea.trim()));
+    children.push(pJust(_normalizarTexto(linea.trim())));
   });
   if(ac.concepto){
     children.push(pJust([
@@ -726,7 +747,7 @@ async function exportarAcuerdoWord(acuerdoId){
         { text: accion + ' al Presupuesto de Ingresos del ' + inst + ' para la vigencia fiscal ' + vig + ', la suma de ' + numALetras(totalIng) + ' ($ ' + fmt(totalIng) + '), distribuidos así:' }
       ]));
       const rows = [tRow('CÓDIGO', 'RUBRO', 'VALOR', true)];
-      ac.filas_ing.forEach(f => rows.push(tRow(f.cod, f.nombre||f.cod, '$ ' + fmt(f.valor), false)));
+      ac.filas_ing.forEach(f => rows.push(tRow(f.cod, (f.nombre||f.cod).replace(/\s*\[Disp:.*?\]/g,'').trim()||f.cod, '$ ' + fmt(f.valor), false)));
       rows.push(tRow('', 'TOTAL', '$ ' + fmt(totalIng), true, 'F0F0F0'));
       children.push(new Table({
         width: { size: 9360, type: WidthType.DXA },
@@ -745,7 +766,7 @@ async function exportarAcuerdoWord(acuerdoId){
         { text: accion + ' al Presupuesto de Gastos del ' + inst + ' para la vigencia fiscal ' + vig + ', la suma de ' + numALetras(totalEg) + ' ($ ' + fmt(totalEg) + '), en las siguientes cuentas:' }
       ]));
       const rows = [tRow('CÓDIGO', 'RUBRO', 'VALOR', true)];
-      ac.filas_eg.forEach(f => rows.push(tRow(f.cod, f.nombre||f.cod, '$ ' + fmt(f.valor), false)));
+      ac.filas_eg.forEach(f => rows.push(tRow(f.cod, (f.nombre||f.cod).replace(/\s*\[Disp:.*?\]/g,'').trim()||f.cod, '$ ' + fmt(f.valor), false)));
       rows.push(tRow('', 'TOTAL', '$ ' + fmt(totalEg), true, 'F0F0F0'));
       children.push(new Table({
         width: { size: 9360, type: WidthType.DXA },
@@ -765,7 +786,7 @@ async function exportarAcuerdoWord(acuerdoId){
       { text: 'Redúzcase del Presupuesto de Gastos del ' + inst + ' para la vigencia fiscal ' + vig + ', la suma de ' + numALetras(totalCco) + ' ($ ' + fmt(totalCco) + '), de los siguientes rubros:' }
     ]));
     const rowsCco = [tRow('CÓDIGO', 'RUBRO', 'VALOR', true, 'F5B7B1')];
-    (ac.filas_cco||[]).forEach(f => rowsCco.push(tRow(f.cod, f.nombre||f.cod, '$ ' + fmt(f.valor), false)));
+    (ac.filas_cco||[]).forEach(f => rowsCco.push(tRow(f.cod, (f.nombre||f.cod).replace(/\s*\[Disp:.*?\]/g,'').trim()||f.cod, '$ ' + fmt(f.valor), false)));
     rowsCco.push(tRow('', 'TOTAL', '$ ' + fmt(totalCco), true, 'FADBD8'));
     children.push(new Table({
       width: { size: 9360, type: WidthType.DXA },
@@ -782,7 +803,7 @@ async function exportarAcuerdoWord(acuerdoId){
       { text: 'Adiciónese al Presupuesto de Gastos del ' + inst + ' para la vigencia fiscal ' + vig + ', la suma de ' + numALetras(totalCre) + ' ($ ' + fmt(totalCre) + '), en los siguientes rubros:' }
     ]));
     const rowsCre = [tRow('CÓDIGO', 'RUBRO', 'VALOR', true, 'D6EAF8')];
-    (ac.filas_cre||[]).forEach(f => rowsCre.push(tRow(f.cod, f.nombre||f.cod, '$ ' + fmt(f.valor), false)));
+    (ac.filas_cre||[]).forEach(f => rowsCre.push(tRow(f.cod, (f.nombre||f.cod).replace(/\s*\[Disp:.*?\]/g,'').trim()||f.cod, '$ ' + fmt(f.valor), false)));
     rowsCre.push(tRow('', 'TOTAL', '$ ' + fmt(totalCre), true, 'EBF5FB'));
     children.push(new Table({
       width: { size: 9360, type: WidthType.DXA },
