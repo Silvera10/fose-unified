@@ -1424,17 +1424,8 @@ async function _generarDocHTML(templateName, contratoId, pagoIdx){
   html = html.replace(/\{%[\s\S]*?%\}/g, '');
   html = html.replace(/\{\{[\s\S]*?\}\}/g, '');
 
-  // Extraer estilos del head + contenido del body
-  const styles = [];
-  html.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, (m, css) => { styles.push(css); return ''; });
-  const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  const bodyContent = bodyMatch ? bodyMatch[1] : html;
-
-  // Remover la barra no-print de cada documento individual
-  const cleanBody = bodyContent.replace(/<div[^>]*class="no-print"[^>]*>[\s\S]*?<\/div>/gi, '');
-
-  // Retornar estilos + body juntos, envueltos con scope
-  return `<style>${styles.join('\n')}</style>\n${cleanBody}`;
+  // Retornar HTML completo (lo usará la función de impresión agrupada)
+  return html;
 }
 
 // Definición de los dos grupos de documentos
@@ -1480,77 +1471,89 @@ async function imprimirGrupoDocumentos(contratoId, grupo){
   if(!contrato){ toast('Contrato no encontrado','danger'); return; }
   const pagos = contrato.pagos || [];
 
-  // Mostrar progreso
-  toast(`Generando ${label}... 0/${templates.length}`, 'info');
+  toast(`Generando ${label}... por favor espere`, 'info');
 
-  const secciones = [];
-  let count = 0;
-
+  // Recopilar HTML completo de cada documento
+  const docsHTML = [];
   for(const tpl of templates){
     try {
-      // Documentos con pago: generar uno por cada pago realizado
       const esPagoDoc = ['orden_pago.html','egreso.html','informe_contratista.html','informe_supervisor.html'].includes(tpl);
       if(esPagoDoc && pagos.length > 0){
         const pagosRealizados = pagos.filter(p => p.fecha_pago);
         if(pagosRealizados.length > 0){
           for(const p of pagosRealizados){
             const idx = pagos.indexOf(p);
-            const bodyHTML = await _generarDocHTML(tpl, contratoId, idx);
-            secciones.push(bodyHTML);
+            docsHTML.push(await _generarDocHTML(tpl, contratoId, idx));
           }
         } else {
-          const bodyHTML = await _generarDocHTML(tpl, contratoId);
-          secciones.push(bodyHTML);
+          docsHTML.push(await _generarDocHTML(tpl, contratoId));
         }
       } else {
-        const bodyHTML = await _generarDocHTML(tpl, contratoId);
-        secciones.push(bodyHTML);
+        docsHTML.push(await _generarDocHTML(tpl, contratoId));
       }
     } catch(e){
       console.warn('Error generando', tpl, e.message);
     }
-    count++;
-    if(count % 3 === 0) toast(`Generando ${label}... ${count}/${templates.length}`, 'info');
   }
 
-  if(secciones.length === 0){
+  if(docsHTML.length === 0){
     toast('No se pudieron generar los documentos', 'danger');
     return;
   }
 
-  // Combinar todos en un solo HTML con saltos de página
-  // Cada sección empieza en nueva página (excepto la primera)
-  const combinedBody = secciones.map((sec, i) =>
-    `<div class="doc-seccion" ${i > 0 ? 'style="page-break-before:always"' : ''}>\n${sec}\n</div>`
-  ).join('\n<hr class="no-print" style="border:3px dashed #07a;margin:40px 0">\n');
+  // De cada HTML completo, extraer: todos los <style> del head + contenido del body
+  // y encapsular cada doc en un <article> con sus propios estilos scoped
+  const secciones = docsHTML.map((fullHTML, idx) => {
+    // Extraer todos los <style> (incluye los inyectados por doc-engine)
+    const estilos = [];
+    fullHTML.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, (m, css) => { estilos.push(css); });
+
+    // Extraer body
+    const bm = fullHTML.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    let body = bm ? bm[1] : fullHTML;
+
+    // Remover barra no-print de cada documento individual
+    body = body.replace(/<div[^>]*class="no-print"[\s\S]*?<\/div>/i, '');
+    // Remover scripts individuales
+    body = body.replace(/<script[\s\S]*?<\/script>/gi, '');
+    // Remover margin-top del wrapper (era para la barra)
+    body = body.replace(/style="margin-top:\s*50px"/gi, '');
+
+    // Scope: agregar prefijo doc-N a las clases para evitar conflictos
+    // Más simple: envolver estilos en un scope con id único
+    const scopeId = 'doc-' + idx;
+
+    // Re-scope estilos: agregar #doc-N antes de cada selector
+    const scopedCSS = estilos.map(css => {
+      // No re-scope @page ni @media print (son globales)
+      return css.replace(/([^{}@]+)\{/g, (m, selectors) => {
+        if(selectors.includes('@')) return m; // @media, @page — dejar como está
+        const scoped = selectors.split(',').map(s => {
+          s = s.trim();
+          if(!s || s.startsWith('@')) return s;
+          if(s === 'body' || s === 'html') return '#' + scopeId;
+          return '#' + scopeId + ' ' + s;
+        }).join(', ');
+        return scoped + ' {';
+      });
+    }).join('\n');
+
+    return `<style>${scopedCSS}</style>
+<article id="${scopeId}" class="doc-seccion" ${idx > 0 ? 'style="page-break-before:always"' : ''}>
+${body}
+</article>`;
+  });
+
+  const combinedBody = secciones.join('\n<hr class="no-print" style="border:3px dashed #07a;margin:40px 0">\n');
 
   const finalHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8">
 <title>${label} — Contrato ${contrato.numero||'S/N'}</title>
 <style>
   @page { size: Letter; margin: 1.5cm 1.5cm 0.8cm 2cm; }
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; margin: 0; padding: 0; line-height: 1.4; }
+  body { margin: 0; padding: 0; color: #000; }
   @media print {
-    body { margin: 0 !important; padding: 0 !important; }
     .no-print { display: none !important; }
     hr.no-print { display: none !important; }
-    table { width: 100% !important; table-layout: auto !important; font-size: 9pt !important; }
-    td, th { padding: 3px 4px !important; word-wrap: break-word !important; overflow-wrap: break-word !important; }
-    tr { page-break-inside: avoid !important; }
-    img { max-width: 100% !important; height: auto !important; }
-    [class*="firma"] { page-break-inside: avoid !important; }
-    h1,h2,h3 { margin: 6px 0 !important; }
-    p { margin: 3px 0 !important; line-height: 1.4 !important; }
-    .header-inst { margin-bottom: 8px !important; }
-    [class*="firma-linea"], [class*="firma-bloque"] { margin-top: 10px !important; padding-top: 0 !important; }
-  }
-  /* Firma sin líneas */
-  [class*="firma-linea"],[class*="firma-bloque"],[class*="firma-wrap"],
-  [class*="firma-linea"] *,[class*="firma-bloque"] *,[class*="firma-wrap"] *,
-  [class*="firma-section"] *,[class*="firma-grid"] * {
-    border:none !important; border-top:none !important; border-bottom:none !important;
-  }
-  [class*="firma-section"], [class*="firma-grid"], [class*="firma-tabla"] {
-    margin-top: 20px !important;
   }
 </style></head>
 <body>
@@ -1569,7 +1572,7 @@ ${combinedBody}
   if(!w){ toast('Permita ventanas emergentes','danger'); return; }
   w.document.write(finalHTML);
   w.document.close();
-  toast(`${label}: ${secciones.length} documentos generados ✓`);
+  toast(`${label}: ${secciones.length} documentos generados`);
 }
 
 /* ══════════════════════════════════════════════════════════
