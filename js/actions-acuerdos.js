@@ -581,3 +581,296 @@ function _numRomano(n){
   const rom = ['','PRIMERO','SEGUNDO','TERCERO','CUARTO','QUINTO','SEXTO','SÉPTIMO','OCTAVO','NOVENO','DÉCIMO'];
   return rom[n] || String(n);
 }
+
+/* ══════════════════════════════════════════════════════════
+   EXPORTAR ACUERDO A WORD (.docx)
+   Para que el rector pueda agregar membrete
+   ══════════════════════════════════════════════════════════ */
+async function exportarAcuerdoWord(acuerdoId){
+  if(typeof docx === 'undefined'){
+    toast('Librería docx no disponible. Recargue la página.','danger');
+    return;
+  }
+
+  const d = DB.load();
+  const ac = (d.acuerdos||[]).find(a => a.id === acuerdoId);
+  if(!ac){ toast('Acuerdo no encontrado','danger'); return; }
+
+  const cfg = d.config || {};
+  const inst = cfg.institucion || '[NOMBRE INSTITUCIÓN]';
+  const nit  = cfg.nit || '';
+  const dv   = cfg.dv || '';
+  const muni = cfg.municipio || '[MUNICIPIO]';
+  const dept = cfg.departamento || '[DEPARTAMENTO]';
+  const vig  = cfg.vigencia || new Date().getFullYear();
+  const rector = cfg.rector || '';
+  const ccRector = cfg.idRector || '';
+
+  const tipoLabel = {adicion:'ADICIÓN', reduccion:'REDUCCIÓN', traslado:'TRASLADO PRESUPUESTAL'};
+  const tipoPrep  = {adicion:'una adición', reduccion:'una reducción', traslado:'un traslado presupuestal'};
+
+  const meses = ['','ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+  const fp = (ac.fecha||'').split('-');
+  const dia = Number(fp[2])||1, mesN = Number(fp[1])||1, anio = fp[0]||vig;
+
+  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+          AlignmentType, BorderStyle, WidthType, ShadingType, HeadingLevel } = docx;
+
+  const border = { style: BorderStyle.SINGLE, size: 1, color: '999999' };
+  const borders = { top: border, bottom: border, left: border, right: border };
+  const noBorder = { style: BorderStyle.NONE, size: 0 };
+  const noBorders = { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder };
+
+  // Helper: párrafo centrado
+  const pCenter = (text, opts={}) => new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { after: opts.after || 100 },
+    children: [new TextRun({ text, bold: opts.bold || false, size: opts.size || 22, font: 'Arial' })]
+  });
+
+  // Helper: párrafo justificado
+  const pJust = (text, opts={}) => new Paragraph({
+    alignment: AlignmentType.JUSTIFIED,
+    spacing: { after: opts.after || 120, line: 276 },
+    children: Array.isArray(text)
+      ? text.map(t => new TextRun({ text: t.text||t, bold: t.bold||false, size: t.size||22, font: 'Arial' }))
+      : [new TextRun({ text, size: opts.size || 22, font: 'Arial', bold: opts.bold||false })]
+  });
+
+  // Helper: fila de tabla presupuestal
+  const tRow = (cod, nombre, valor, isHeader, headerColor) => {
+    const fill = isHeader ? (headerColor||'E8E8E8') : 'FFFFFF';
+    return new TableRow({
+      children: [
+        new TableCell({ borders, width:{size:1500,type:WidthType.DXA},
+          shading:{fill, type:ShadingType.CLEAR},
+          margins:{top:40,bottom:40,left:80,right:80},
+          children:[new Paragraph({children:[new TextRun({text:cod,bold:isHeader,size:20,font:'Arial'})]})]
+        }),
+        new TableCell({ borders, width:{size:5500,type:WidthType.DXA},
+          shading:{fill, type:ShadingType.CLEAR},
+          margins:{top:40,bottom:40,left:80,right:80},
+          children:[new Paragraph({children:[new TextRun({text:nombre,bold:isHeader,size:20,font:'Arial'})]})]
+        }),
+        new TableCell({ borders, width:{size:2360,type:WidthType.DXA},
+          shading:{fill, type:ShadingType.CLEAR},
+          margins:{top:40,bottom:40,left:80,right:80},
+          children:[new Paragraph({alignment:AlignmentType.RIGHT,
+            children:[new TextRun({text:valor,bold:isHeader,size:20,font:'Arial'})]})]
+        })
+      ]
+    });
+  };
+
+  // ═══ CONTENIDO DEL DOCUMENTO ═══
+  const children = [];
+
+  // ── Espacio para membrete del rector (3 líneas vacías) ──
+  children.push(new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: ' ', size: 22 })] }));
+  children.push(new Paragraph({ spacing: { after: 0 }, children: [new TextRun({ text: ' ', size: 22 })] }));
+  children.push(new Paragraph({ spacing: { after: 200 }, children: [new TextRun({ text: ' ', size: 22 })] }));
+
+  // ── Encabezado institucional ──
+  children.push(pCenter(inst, { bold: true, size: 24 }));
+  children.push(pCenter('NIT: ' + (nit ? nit + (dv ? '-' + dv : '') : '') + (cfg.ciudad ? ' — DANE: ' + cfg.ciudad : ''), { size: 18 }));
+  children.push(pCenter(muni + ', Dpto. de ' + dept, { size: 18, after: 300 }));
+
+  // ── Título del acuerdo ──
+  children.push(pCenter('ACUERDO DE ' + (tipoLabel[ac.tipo]||'MODIFICACIÓN') + ' No: ' + ac.numero, { bold: true, size: 26, after: 60 }));
+  children.push(pCenter('del ' + dia + ' de ' + meses[mesN] + ' del ' + anio, { size: 22, after: 300 }));
+
+  // ── Preámbulo ──
+  children.push(pJust([
+    { text: 'Por medio del cual, se realiza ' },
+    { text: tipoPrep[ac.tipo]||'una modificación' },
+    { text: ' en el presupuesto del Fondo de Servicios Educativos, se modifica el plan de compras y el PAC, del ' },
+    { text: inst, bold: true },
+    { text: ' para la vigencia fiscal de ' + vig + '.' }
+  ]));
+
+  children.push(pJust('El Consejo Directivo, en el uso de las facultades legales, especial las conferidas en la Ley 715 de 2001 y el Decreto 4791 de 2008, 4807 de 2012, 1075 de 2015 y'));
+
+  // ── CONSIDERANDO ──
+  children.push(pCenter('CONSIDERANDO:', { bold: true, size: 24, after: 200 }));
+  const consLineas = (ac.considerandos||'').split('\n').filter(l => l.trim());
+  consLineas.forEach(linea => {
+    children.push(pJust(linea.trim()));
+  });
+  if(ac.concepto){
+    children.push(pJust([
+      { text: 'Que ', bold: true },
+      { text: 'el presente acuerdo se realiza con el fin de: ' + ac.concepto + '.' }
+    ]));
+  }
+
+  children.push(pJust('Que, con base a las anteriores consideraciones,', { after: 200 }));
+
+  // ── ACUERDA ──
+  children.push(pCenter('ACUERDA:', { bold: true, size: 24, after: 200 }));
+
+  let artNum = 1;
+
+  // ── Artículos según tipo ──
+  if(ac.tipo === 'adicion' || ac.tipo === 'reduccion'){
+    const accion = ac.tipo === 'adicion' ? 'Adiciónese' : 'Redúzcase';
+    const label = ac.tipo === 'adicion' ? 'ADICIÓN' : 'REDUCCIÓN';
+
+    // Ingresos
+    if(ac.filas_ing && ac.filas_ing.length > 0){
+      const totalIng = ac.total_ing || 0;
+      children.push(pJust([
+        { text: 'ARTÍCULO ' + _numRomano(artNum) + '. ' + label + ' AL PRESUPUESTO DE INGRESOS: ', bold: true },
+        { text: accion + ' al Presupuesto de Ingresos del ' + inst + ' para la vigencia fiscal ' + vig + ', la suma de ' + numALetras(totalIng) + ' ($ ' + fmt(totalIng) + '), distribuidos así:' }
+      ]));
+      const rows = [tRow('CÓDIGO', 'RUBRO', 'VALOR', true)];
+      ac.filas_ing.forEach(f => rows.push(tRow(f.cod, f.nombre||f.cod, '$ ' + fmt(f.valor), false)));
+      rows.push(tRow('', 'TOTAL', '$ ' + fmt(totalIng), true, 'F0F0F0'));
+      children.push(new Table({
+        width: { size: 9360, type: WidthType.DXA },
+        columnWidths: [1500, 5500, 2360],
+        rows
+      }));
+      children.push(new Paragraph({ spacing: { after: 200 }, children: [] }));
+      artNum++;
+    }
+
+    // Egresos
+    if(ac.filas_eg && ac.filas_eg.length > 0){
+      const totalEg = ac.total_eg || 0;
+      children.push(pJust([
+        { text: 'ARTÍCULO ' + _numRomano(artNum) + '. ' + label + ' AL PRESUPUESTO DE GASTOS: ', bold: true },
+        { text: accion + ' al Presupuesto de Gastos del ' + inst + ' para la vigencia fiscal ' + vig + ', la suma de ' + numALetras(totalEg) + ' ($ ' + fmt(totalEg) + '), en las siguientes cuentas:' }
+      ]));
+      const rows = [tRow('CÓDIGO', 'RUBRO', 'VALOR', true)];
+      ac.filas_eg.forEach(f => rows.push(tRow(f.cod, f.nombre||f.cod, '$ ' + fmt(f.valor), false)));
+      rows.push(tRow('', 'TOTAL', '$ ' + fmt(totalEg), true, 'F0F0F0'));
+      children.push(new Table({
+        width: { size: 9360, type: WidthType.DXA },
+        columnWidths: [1500, 5500, 2360],
+        rows
+      }));
+      children.push(new Paragraph({ spacing: { after: 200 }, children: [] }));
+      artNum++;
+    }
+  }
+
+  if(ac.tipo === 'traslado'){
+    // Contracrédito
+    const totalCco = ac.total_cco || 0;
+    children.push(pJust([
+      { text: 'ARTÍCULO ' + _numRomano(artNum) + '. CONTRACRÉDITO: ', bold: true },
+      { text: 'Redúzcase del Presupuesto de Gastos del ' + inst + ' para la vigencia fiscal ' + vig + ', la suma de ' + numALetras(totalCco) + ' ($ ' + fmt(totalCco) + '), de los siguientes rubros:' }
+    ]));
+    const rowsCco = [tRow('CÓDIGO', 'RUBRO', 'VALOR', true, 'F5B7B1')];
+    (ac.filas_cco||[]).forEach(f => rowsCco.push(tRow(f.cod, f.nombre||f.cod, '$ ' + fmt(f.valor), false)));
+    rowsCco.push(tRow('', 'TOTAL', '$ ' + fmt(totalCco), true, 'FADBD8'));
+    children.push(new Table({
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: [1500, 5500, 2360],
+      rows: rowsCco
+    }));
+    children.push(new Paragraph({ spacing: { after: 200 }, children: [] }));
+    artNum++;
+
+    // Crédito
+    const totalCre = ac.total_cre || 0;
+    children.push(pJust([
+      { text: 'ARTÍCULO ' + _numRomano(artNum) + '. CRÉDITO: ', bold: true },
+      { text: 'Adiciónese al Presupuesto de Gastos del ' + inst + ' para la vigencia fiscal ' + vig + ', la suma de ' + numALetras(totalCre) + ' ($ ' + fmt(totalCre) + '), en los siguientes rubros:' }
+    ]));
+    const rowsCre = [tRow('CÓDIGO', 'RUBRO', 'VALOR', true, 'D6EAF8')];
+    (ac.filas_cre||[]).forEach(f => rowsCre.push(tRow(f.cod, f.nombre||f.cod, '$ ' + fmt(f.valor), false)));
+    rowsCre.push(tRow('', 'TOTAL', '$ ' + fmt(totalCre), true, 'EBF5FB'));
+    children.push(new Table({
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: [1500, 5500, 2360],
+      rows: rowsCre
+    }));
+    children.push(new Paragraph({ spacing: { after: 200 }, children: [] }));
+    artNum++;
+  }
+
+  // ── COMUNÍQUESE Y CÚMPLASE ──
+  children.push(pCenter('COMUNÍQUESE Y CÚMPLASE', { bold: true, size: 24, after: 200 }));
+  children.push(pJust('Dado en ' + muni + ' a los ' + dia + ' días del mes de ' + meses[mesN] + ' ' + anio + '. Firman los integrantes del Consejo Directivo:'));
+  children.push(new Paragraph({ spacing: { after: 400 }, children: [] }));
+
+  // ── Firmas del Consejo Directivo ──
+  const miembrosCD = [
+    { cargo: 'Rector(a)', nombre: rector, cc: ccRector },
+    { cargo: 'Repte de los Docentes', nombre: '', cc: '' },
+    { cargo: 'Repte de los Docentes', nombre: '', cc: '' },
+    { cargo: 'Repte de los Padres de Familia', nombre: '', cc: '' },
+    { cargo: 'Repte de los Padres de Familia', nombre: '', cc: '' },
+    { cargo: 'Repte de los Estudiantes', nombre: '', cc: '' },
+    { cargo: 'Repte de los Exalumnos', nombre: '', cc: '' },
+    { cargo: 'Repte del Sector Productivo', nombre: '', cc: '' }
+  ];
+
+  // Firmas en pares (2 por fila) usando tabla sin bordes
+  for(let i = 0; i < miembrosCD.length; i += 2){
+    const m1 = miembrosCD[i];
+    const m2 = miembrosCD[i+1];
+
+    const firmaCell = (m) => {
+      if(!m) return new TableCell({
+        borders: noBorders, width:{size:4680,type:WidthType.DXA},
+        children: [new Paragraph({children:[]})]
+      });
+      return new TableCell({
+        borders: noBorders,
+        width: { size: 4680, type: WidthType.DXA },
+        margins: { top: 80, bottom: 80, left: 120, right: 120 },
+        children: [
+          new Paragraph({ spacing:{after:0}, children:[] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing:{after:20},
+            children: [new TextRun({text:'_______________________________', size:20, font:'Arial'})] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing:{after:20},
+            children: [new TextRun({text: m.nombre||'', bold:true, size:20, font:'Arial'})] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing:{after:20},
+            children: [new TextRun({text:'C.C. No. '+(m.cc||'_______________'), size:18, font:'Arial'})] }),
+          new Paragraph({ alignment: AlignmentType.CENTER, spacing:{after:60},
+            children: [new TextRun({text: m.cargo, italics:true, size:18, font:'Arial'})] })
+        ]
+      });
+    };
+
+    children.push(new Table({
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: [4680, 4680],
+      rows: [new TableRow({ children: [firmaCell(m1), firmaCell(m2)] })]
+    }));
+  }
+
+  // ═══ CREAR DOCUMENTO ═══
+  const doc = new Document({
+    styles: {
+      default: {
+        document: { run: { font: 'Arial', size: 22 } }
+      }
+    },
+    sections: [{
+      properties: {
+        page: {
+          size: { width: 12240, height: 15840 },
+          margin: { top: 1440, right: 1296, bottom: 1440, left: 1584 }
+        }
+      },
+      children
+    }]
+  });
+
+  // ═══ DESCARGAR ═══
+  try {
+    const buffer = await Packer.toBlob(doc);
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(buffer);
+    link.download = 'Acuerdo_' + (ac.numero||'').replace(/[^a-zA-Z0-9-]/g,'_') + '_' + inst.substring(0,30).replace(/[^a-zA-Z0-9]/g,'_') + '.docx';
+    link.click();
+    URL.revokeObjectURL(link.href);
+    toast('Acuerdo exportado a Word (.docx)', 'success');
+  } catch(err){
+    console.error('Error exportando a Word:', err);
+    toast('Error al exportar: ' + err.message, 'danger');
+  }
+}

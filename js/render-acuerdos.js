@@ -46,6 +46,7 @@ R.acuerdos = function(){
         <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="eliminarAcuerdoPres('${ac.id}')" title="Eliminar"><i class="bi bi-trash"></i></button>
         <button class="btn btn-sm btn-outline-success py-0 px-1" onclick="generarDocAcuerdoPres('${ac.id}')" title="Generar Documento"><i class="bi bi-file-earmark-text"></i></button>
         <button class="btn btn-sm btn-outline-dark py-0 px-1" onclick="imprimirDocAcuerdoPres('${ac.id}')" title="Imprimir"><i class="bi bi-printer"></i></button>
+        <button class="btn btn-sm btn-outline-info py-0 px-1" onclick="exportarAcuerdoWord('${ac.id}')" title="Exportar a Word"><i class="bi bi-file-earmark-word"></i></button>
       </td></tr>`;
   });
 
