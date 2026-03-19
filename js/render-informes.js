@@ -813,6 +813,9 @@ function genContratos(d, trim){
     const tipoCta = c.contratista_tipocuenta || cf.contratista_tipocuenta || per.tipo_cuenta || '';
     const cuenta = c.contratista_numcuenta || c.cuenta_pago || cf.contratista_numcuenta || per.cuenta_banco || per.cuenta_bancaria || per.numcuenta || '';
     const op = c.num_op || cf.num_op || '';
+    const retencion = Number(c.retencion_valor) || 0;
+    const reteica = Number(c.reteica) || 0;
+    const totalRet = retencion + reteica;
     const neto = Number(c.neto_pagar) || Number(c.valor) || 0;
     const fuente = c.fuente || cf.fuente || '';
     const ue = c.unidad_ejecutora || cfg.unidad_ejecutora || '';
@@ -829,13 +832,15 @@ function genContratos(d, trim){
     <td class="ctr">${vig}</td>
     <td style="text-align:left">${c.concepto||''}</td>
     <td class="num">${fmt(c.valor)}</td>
+    <td class="num">${fmt(totalRet)}</td>
     <td class="num">${fmt(neto)}</td>
     <td>${c.cod_rubro}</td><td style="text-align:left;font-size:9px">${_nombreRubro(d,c.cod_rubro)}</td>
     <td style="text-align:left;font-size:9px">${fuente ? fuente + ' ' + _nombreFuente(fuente) : '—'}</td>
     <td>${ue||'—'}</td>
-  </tr>`;}).join('') : '<tr><td colspan="18" class="ctr">Sin registros</td></tr>';
+  </tr>`;}).join('') : '<tr><td colspan="19" class="ctr">Sin registros</td></tr>';
+  const totRet = cs.reduce((s,c)=>s+(Number(c.retencion_valor)||0)+(Number(c.reteica)||0),0);
   rows += `<tr class="gtot"><td colspan="12" style="text-align:right">TOTAL</td>
-    <td class="num">${fmt(tot)}</td><td class="num">${fmt(totNeto)}</td><td colspan="4"></td></tr>`;
+    <td class="num">${fmt(tot)}</td><td class="num">${fmt(totRet)}</td><td class="num">${fmt(totNeto)}</td><td colspan="4"></td></tr>`;
 
   // Encabezado del banco institucional
   const bancoInst = cfg.banco_1 ? `BANCO: 1 &nbsp;&nbsp; NOMBRE BANCO: ${cfg.banco_1} ${cfg.tipo_cuenta_1||''} ${cfg.cuenta_1||''}` : '';
@@ -849,7 +854,7 @@ function genContratos(d, trim){
     <th>#R.P.</th><th>#D.P.</th><th>#O.P.</th>
     <th>Vig.</th>
     <th style="text-align:left">Detalle</th>
-    <th>Vr. Obligac.</th><th>Pago Neto</th>
+    <th>Vr. Obligac.</th><th>Retención</th><th>Pago Neto</th>
     <th>Rubro</th><th style="text-align:left">Concepto Rubro</th>
     <th>Fuente</th><th>Unidad Ejecutora</th>
   </tr></thead><tbody>${rows}</tbody></table>`;
