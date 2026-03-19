@@ -279,12 +279,20 @@ table.is-firma-tabla td {
       <th>Cargo</th>
       <td>{{ cargo_sup }}</td>
     </tr>
+    {% if banco_contratista or cuenta_banco %}
+    <tr>
+      <th>Banco</th>
+      <td>{{ banco_contratista }}</td>
+      <th>{{ tipo_cuenta }} N.°</th>
+      <td>{{ cuenta_banco }}</td>
+    </tr>
+    {% endif %}
     {% if pago_numero %}
     <tr>
       <th>Pago</th>
       <td>{{ pago_nota }}</td>
       <th>Fecha del informe</th>
-      <td>{{ fecha_elaboracion_larga if fecha_elaboracion_larga else fecha_fin_larga }}</td>
+      <td>{{ fecha_elaboracion_larga }}</td>
     </tr>
     <tr>
       <th>Período supervisado</th>

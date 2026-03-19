@@ -966,6 +966,8 @@ function _inyectarFirmas(html, ctx){
   }
 
   // ── Firma del Contratista ──
+  // Solo inyectar si el documento tiene una sección de firma del contratista
+  // (buscar "CONTRATISTA" como label de firma cerca del nombre)
   if(ctx.firma_contratista){
     const cName = (ctx.nombre_contratista||'').trim();
     if(cName){
@@ -984,9 +986,14 @@ function _inyectarFirmas(html, ctx){
         let m;
         while((m = re.exec(html)) !== null){
           if(m.index > html.length * 0.4 && m.index > ultimaPosicion){
-            // Verificar que NO está en la sección del rector
-            const contexto = html.substring(Math.max(0, m.index - 200), m.index);
-            if(!contexto.includes('Rector') && !contexto.includes('Ordenador') && !contexto.includes('Firma Rector')){
+            // Verificar que está en zona de firma del contratista:
+            // 1) NO cerca de "Rector"/"Ordenador"
+            // 2) SÍ cerca de "CONTRATISTA" como label (dentro de 500 chars después)
+            const ctxBefore = html.substring(Math.max(0, m.index - 200), m.index);
+            const ctxAfter  = html.substring(m.index, Math.min(html.length, m.index + 500));
+            const esZonaRector = ctxBefore.includes('Rector') || ctxBefore.includes('Ordenador') || ctxBefore.includes('Firma Rector');
+            const esZonaContratista = ctxAfter.includes('CONTRATISTA') || ctxAfter.includes('Contratista') || ctxBefore.includes('firma-') || ctxBefore.includes('CONTRATISTA');
+            if(!esZonaRector && esZonaContratista){
               ultimaPosicion = m.index;
             }
           }
