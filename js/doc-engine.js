@@ -1541,9 +1541,28 @@ ${body}
 <style>
   @page { size: Letter; margin: 1.5cm 1.5cm 0.8cm 2cm; }
   body { margin: 0; padding: 0; color: #000; }
+  /* Firmas: sin bordes ni líneas */
+  [class*="firma-linea"], [class*="firma-bloque"], [class*="firma-wrap"],
+  [class*="firma-section"], [class*="firma-grid"] {
+    border: none !important; border-top: none !important; border-bottom: none !important;
+  }
+  [class*="firma-linea"] *, [class*="firma-bloque"] *, [class*="firma-wrap"] *,
+  [class*="firma-section"] *, [class*="firma-grid"] * {
+    border: none !important; border-top: none !important; border-bottom: none !important;
+  }
+  [class*="firma-tabla"], [class*="firma-tabla"] td, [class*="firma-tabla"] th,
+  [class*="firma-tabla"] tr, [class*="firma-tabla"] table {
+    border: none !important;
+  }
   @media print {
     .no-print { display: none !important; }
     hr.no-print { display: none !important; }
+    table:not([class*="firma"]) { width: 100% !important; table-layout: auto !important; }
+    table:not([class*="firma"]) td, table:not([class*="firma"]) th {
+      word-wrap: break-word !important; overflow-wrap: break-word !important;
+    }
+    tr { page-break-inside: avoid !important; }
+    [class*="firma"] { page-break-inside: avoid !important; }
   }
 </style></head>
 <body>
