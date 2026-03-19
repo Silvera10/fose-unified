@@ -922,61 +922,81 @@ function _buildHabeasConstancia(ctx){
    Inyecta firma del rector y contratista UNA SOLA VEZ
 ══════════════════════════════════════════════════════════ */
 function _inyectarFirmas(html, ctx){
-  const MARCA_R = '<!--FR_OK-->';
-  const MARCA_C = '<!--FC_OK-->';
-
   // ── Firma del Rector ──
+  // Estrategia: buscar la ÚLTIMA aparición del nombre del rector que esté
+  // en una sección de firma (parte final del documento), e inyectar UNA sola vez.
   if(ctx.firma_rector_img){
-    const firmaR = `${MARCA_R}<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:220px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
     const rName = (ctx.rector||'').trim();
     if(rName){
+      const firmaImgR = `<img src="${ctx.firma_rector_img}" style="max-height:60px;max-width:220px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
       const rEsc = rName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      const rUpper = rName.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 
-      // Patrón A: dentro de div firma-linea/firma-bloque
-      if(!html.includes(MARCA_R)){
-        const reA = new RegExp(`(<div[^>]*(?:firma-linea|firma-bloque)[^>]*>[\\s\\S]{0,300}?)((?:<p[^>]*>\\s*(?:<strong>\\s*)?)?${rEsc})`, 'i');
-        html = html.replace(reA, (m, before, namepart) => before + firmaR + namepart);
-      }
-      // Patrón B: <p><strong>NOMBRE</strong></p>
-      if(!html.includes(MARCA_R)){
-        const reB = new RegExp(`(<p>\\s*<strong>\\s*${rEsc}\\s*</strong>\\s*</p>)`, 'i');
-        html = html.replace(reB, (m) => firmaR + m);
-      }
-      // Patrón C: <p class="firma-nombre">NOMBRE</p>
-      if(!html.includes(MARCA_R)){
-        const reC = new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*${rEsc}\\s*</p>)`, 'i');
-        html = html.replace(reC, (m) => firmaR + m);
+      // Buscar TODAS las posiciones donde aparece el nombre (normal o uppercase)
+      // dentro de tags de firma (<p> con strong o con clase firma-nombre)
+      // y solo inyectar en la ÚLTIMA (que es la sección de firma al final del doc)
+      const patronesFirma = [
+        new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*(?:<strong>\\s*)?)(${rEsc}|${rUpper})`, 'g'),
+        new RegExp(`(<p>\\s*<strong>\\s*)(${rEsc}|${rUpper})(\\s*</strong>\\s*</p>)`, 'g')
+      ];
+
+      let ultimaPosicion = -1;
+      let ultimoMatch = null;
+      let ultimoPatronIdx = -1;
+
+      patronesFirma.forEach((re, idx) => {
+        let m;
+        while((m = re.exec(html)) !== null){
+          // Solo considerar si está en la segunda mitad del documento (zona de firmas)
+          if(m.index > html.length * 0.4 && m.index > ultimaPosicion){
+            ultimaPosicion = m.index;
+            ultimoMatch = m;
+            ultimoPatronIdx = idx;
+          }
+        }
+      });
+
+      if(ultimoMatch && ultimaPosicion >= 0){
+        // Insertar la firma justo ANTES de este match
+        html = html.substring(0, ultimaPosicion) + firmaImgR + html.substring(ultimaPosicion);
       }
     }
   }
 
   // ── Firma del Contratista ──
   if(ctx.firma_contratista){
-    const firmaC = `${MARCA_C}<img src="${ctx.firma_contratista}" style="max-height:60px;max-width:220px;display:block;margin:0 auto 2px" alt="Firma Contratista">`;
     const cName = (ctx.nombre_contratista||'').trim();
     if(cName){
+      const firmaImgC = `<img src="${ctx.firma_contratista}" style="max-height:60px;max-width:220px;display:block;margin:0 auto 2px" alt="Firma Contratista">`;
       const cEsc = cName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      const cUpper = cName.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 
-      // Patrón A: div firma que contenga nombre del contratista (no del rector)
-      if(!html.includes(MARCA_C)){
-        const reA = new RegExp(`(<div[^>]*(?:firma-linea|firma-bloque)[^>]*>[\\s\\S]{0,300}?)((?:<p[^>]*>\\s*(?:<strong>\\s*)?)?${cEsc})`, 'gi');
-        let found = false;
-        html = html.replace(reA, (m, before, namepart) => {
-          if(found || m.includes(MARCA_C) || m.includes(MARCA_R) || m.includes('Rector') || m.includes('Ordenador')) return m;
-          found = true;
-          return before + firmaC + namepart;
-        });
-      }
-      // Patrón B: <p><strong>NOMBRE_CONTRATISTA</strong></p>
-      if(!html.includes(MARCA_C)){
-        const reB = new RegExp(`(<p>\\s*<strong>\\s*${cEsc}\\s*</strong>\\s*</p>)`, 'i');
-        html = html.replace(reB, (m) => firmaC + m);
+      const patronesFirma = [
+        new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*(?:<strong>\\s*)?)(${cEsc}|${cUpper})`, 'g'),
+        new RegExp(`(<p>\\s*<strong>\\s*)(${cEsc}|${cUpper})(\\s*</strong>\\s*</p>)`, 'g')
+      ];
+
+      let ultimaPosicion = -1;
+
+      patronesFirma.forEach(re => {
+        let m;
+        while((m = re.exec(html)) !== null){
+          if(m.index > html.length * 0.4 && m.index > ultimaPosicion){
+            // Verificar que NO está en la sección del rector
+            const contexto = html.substring(Math.max(0, m.index - 200), m.index);
+            if(!contexto.includes('Rector') && !contexto.includes('Ordenador') && !contexto.includes('Firma Rector')){
+              ultimaPosicion = m.index;
+            }
+          }
+        }
+      });
+
+      if(ultimaPosicion >= 0){
+        html = html.substring(0, ultimaPosicion) + firmaImgC + html.substring(ultimaPosicion);
       }
     }
   }
 
-  // Limpiar marcadores
-  html = html.replace(/<!--FR_OK-->/g, '').replace(/<!--FC_OK-->/g, '');
   return html;
 }
 
