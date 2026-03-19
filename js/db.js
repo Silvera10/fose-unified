@@ -241,6 +241,7 @@ const DB = {
       pagos_dian: [],      // pagos a DIAN / impuestos (egresos no contractuales)
       acuerdos: [],        // acuerdos presupuestales
       _adiciones_banco: [],// adiciones desde extracto bancario
+      cuentas_por_pagar: [], // pagos de vigencias anteriores (no afectan presupuesto)
       /* ── SIFSE — Reporte al Ministerio de Educación ── */
       sifse_catalogo: {
         fuentes: [

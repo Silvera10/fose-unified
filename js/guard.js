@@ -165,6 +165,7 @@ function _validarDatos(d){
   if(!d.pagos_dian)        d.pagos_dian = [];
   if(!d.acuerdos)          d.acuerdos = [];
   if(!d._adiciones_banco)  d._adiciones_banco = [];
+  if(!d.cuentas_por_pagar) d.cuentas_por_pagar = [];
   // SIFSE — Reporte al Ministerio de Educación
   if(!d.sifse_catalogo)  d.sifse_catalogo = {fuentes:[], gastos:[]};
   if(!d.sifse_map_eg)    d.sifse_map_eg = {};

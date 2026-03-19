@@ -37,6 +37,7 @@ function _renderPage(pageId){
     case 'contratos':  if (typeof R !== 'undefined' && R.contratos) R.contratos(); break;
     case 'personas':   if (typeof R !== 'undefined' && R.personas) R.personas(); break;
     case 'pagos-dian': if (typeof R !== 'undefined' && R.pagosDian) R.pagosDian(); break;
+    case 'cuentas-pagar': if (typeof R !== 'undefined' && R.cuentasPagar) R.cuentasPagar(); break;
     case 'acuerdos':   if (typeof R !== 'undefined' && R.acuerdos) R.acuerdos(); break;
     case 'informes':   if (typeof R !== 'undefined' && R.informe) R.informe(); break;
     case 'sifse':      if (typeof R !== 'undefined' && R.sifse) R.sifse(); break;
