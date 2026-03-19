@@ -166,7 +166,7 @@ function imprimirCxP(id){
 
   const c = d.config || {};
   const firmaImg = c.firma_rector;
-  const firmaTag = firmaImg ? `<img src="${firmaImg}" style="max-height:80px;max-width:220px;display:block;margin:0 auto 4px" alt="Firma">` : '';
+  const firmaTag = firmaImg ? `<img src="${firmaImg}" style="max-height:120px;max-width:300px;display:block;margin:0 auto 4px" alt="Firma">` : '';
 
   const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
     <title>Comprobante de Egreso — ${p.num_egreso}</title>

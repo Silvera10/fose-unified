@@ -928,7 +928,7 @@ function _inyectarFirmas(html, ctx){
   if(ctx.firma_rector_img){
     const rName = (ctx.rector||'').trim();
     if(rName){
-      const firmaImgR = `<img src="${ctx.firma_rector_img}" style="max-height:80px;max-width:250px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
+      const firmaImgR = `<img src="${ctx.firma_rector_img}" style="max-height:120px;max-width:300px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
       const rEsc = rName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
       const rUpper = rName.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 
@@ -937,7 +937,9 @@ function _inyectarFirmas(html, ctx){
       // y solo inyectar en la ÚLTIMA (que es la sección de firma al final del doc)
       const patronesFirma = [
         new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*(?:<strong>\\s*)?)(${rEsc}|${rUpper})`, 'g'),
-        new RegExp(`(<p>\\s*<strong>\\s*)(${rEsc}|${rUpper})(\\s*</strong>\\s*</p>)`, 'g')
+        new RegExp(`(<p>\\s*<strong>\\s*)(${rEsc}|${rUpper})(\\s*</strong>\\s*</p>)`, 'g'),
+        // Patrón más amplio: buscar el nombre del rector en cualquier <p> o <strong> en zona de firma
+        new RegExp(`(<(?:p|strong)[^>]*>\\s*)(${rUpper})`, 'g')
       ];
 
       let ultimaPosicion = -1;
@@ -967,7 +969,7 @@ function _inyectarFirmas(html, ctx){
   if(ctx.firma_contratista){
     const cName = (ctx.nombre_contratista||'').trim();
     if(cName){
-      const firmaImgC = `<img src="${ctx.firma_contratista}" style="max-height:80px;max-width:250px;display:block;margin:0 auto 2px" alt="Firma Contratista">`;
+      const firmaImgC = `<img src="${ctx.firma_contratista}" style="max-height:120px;max-width:300px;display:block;margin:0 auto 2px" alt="Firma Contratista">`;
       const cEsc = cName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
       const cUpper = cName.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 
@@ -1285,7 +1287,7 @@ async function generarDocumentoDian(pagoId){
     const _cfg = d.config || {};
     const firmaImg = _cfg.firma_rector;
     if(firmaImg){
-      const firmaTag = `<img src="${firmaImg}" style="max-height:75px;max-width:250px;display:block;margin:0 auto 3px" alt="Firma Rector">`;
+      const firmaTag = `<img src="${firmaImg}" style="max-height:120px;max-width:300px;display:block;margin:0 auto 3px" alt="Firma Rector">`;
       const rName = (_cfg.rector||'').trim();
       const rNameUp = rName.toUpperCase();
       const _kw = ['Rector', 'Ordenador', rName, rNameUp].filter(Boolean).map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
