@@ -1094,33 +1094,39 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
 
     // 5c. Inyectar CSS global: firma sin línea + ajuste automático de impresión
     html = html.replace('</head>', `<style>
-      /* Firma sin líneas */
-      [class*="firma-linea"],[class*="firma-bloque"],[class*="firma-wrap"],
-      [class*="firma-linea"] *,[class*="firma-bloque"] *,[class*="firma-wrap"] *,
-      [class*="firma-section"] *,[class*="firma-grid"] * {
-        border:none !important; border-top:none !important; border-bottom:none !important;
+      /* ═══ FIRMAS: sin bordes ni líneas ═══ */
+      [class*="firma-linea"], [class*="firma-bloque"], [class*="firma-wrap"],
+      [class*="firma-section"], [class*="firma-grid"] {
+        border: none !important; border-top: none !important; border-bottom: none !important;
+      }
+      [class*="firma-linea"] *, [class*="firma-bloque"] *, [class*="firma-wrap"] *,
+      [class*="firma-section"] *, [class*="firma-grid"] * {
+        border: none !important; border-top: none !important; border-bottom: none !important;
+      }
+      /* Tablas de firma: sin bordes nunca */
+      [class*="firma-tabla"], [class*="firma-tabla"] td, [class*="firma-tabla"] th,
+      [class*="firma-tabla"] tr, [class*="firma-tabla"] table {
+        border: none !important; border-collapse: collapse !important;
       }
       /* ═══ AJUSTE AUTOMÁTICO DE IMPRESIÓN ═══ */
       @media print {
         @page { size: Letter; margin: 1.5cm 1.5cm 0.8cm 2cm; }
         body { font-size: 10pt !important; margin: 0 !important; padding: 0 !important; }
-        table { width: 100% !important; table-layout: auto !important; font-size: 9pt !important; }
-        td, th { padding: 3px 4px !important; word-wrap: break-word !important; overflow-wrap: break-word !important; }
+        /* Tablas de datos (excluir tablas de firma) */
+        table:not([class*="firma"]) { width: 100% !important; table-layout: auto !important; font-size: 9pt !important; }
+        table:not([class*="firma"]) td, table:not([class*="firma"]) th {
+          padding: 3px 4px !important; word-wrap: break-word !important; overflow-wrap: break-word !important;
+        }
         tr { page-break-inside: avoid !important; }
         img { max-width: 100% !important; height: auto !important; }
         h1,h2,h3 { margin: 6px 0 !important; }
         p { margin: 3px 0 !important; line-height: 1.4 !important; }
         .header-inst { margin-bottom: 8px !important; }
-        /* Firmas: no cortar + reducir espacio */
-        [class*="firma"] { page-break-inside: avoid !important; margin-top: 15px !important; }
+        /* Firmas: no cortar */
+        [class*="firma"] { page-break-inside: avoid !important; }
         [class*="firma-linea"], [class*="firma-bloque"] { margin-top: 10px !important; padding-top: 0 !important; }
-        /* Tablas no desbordan */
-        .tabla-datos, .ep-table, .ev-table, .cdp-tabla,
-        [class*="-tabla"], [class*="-table"] {
-          font-size: 9pt !important; width: 100% !important;
-        }
       }
-      /* Reducir espacio de firmas también en pantalla */
+      /* Reducir espacio de firmas */
       [class*="firma-section"], [class*="firma-grid"], [class*="firma-tabla"] {
         margin-top: 20px !important;
       }
