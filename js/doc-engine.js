@@ -1548,8 +1548,13 @@ ${body}
 <style>
   @page { size: Letter; margin: 1.5cm 1.5cm 0.8cm 2cm; }
   body { margin: 0; padding: 0; color: #000; }
-  /* Contenedores: sin bordes propios */
-  article.doc-seccion { border: none !important; box-shadow: none !important; padding: 0; max-width: none; }
+  /* Contenedores: sin bordes */
+  article.doc-seccion,
+  [id^="doc-"] {
+    border: none !important; box-shadow: none !important;
+    padding: 0 !important; max-width: none !important;
+    margin: 0 !important; outline: none !important;
+  }
   /* Firmas: sin bordes nunca */
   [class*="firma-linea"], [class*="firma-bloque"], [class*="firma-wrap"],
   [class*="firma-section"], [class*="firma-grid"],
@@ -1559,9 +1564,16 @@ ${body}
   [class*="firma-tabla"] tr {
     border: none !important;
   }
+  /* hr separador solo visible en pantalla, no en impresión */
+  hr { display: none; }
+  @media screen { hr.no-print { display: block; } }
   @media print {
     .no-print { display: none !important; }
     hr { display: none !important; }
+    article.doc-seccion, [id^="doc-"] {
+      border: none !important; box-shadow: none !important;
+      padding: 0 !important; outline: none !important;
+    }
     table:not([class*="firma"]) { width: 100% !important; table-layout: auto !important; }
     table:not([class*="firma"]) td, table:not([class*="firma"]) th {
       word-wrap: break-word !important; overflow-wrap: break-word !important;
