@@ -1515,18 +1515,25 @@ async function imprimirGrupoDocumentos(contratoId, grupo){
 
     // Re-scope estilos: agregar #doc-N antes de cada selector
     const scopedCSS = estilos.map(css => {
-      // No re-scope @page ni @media print (son globales)
+      // Eliminar @media screen (tiene body con border que no queremos)
+      css = css.replace(/@media\s+screen\s*\{[^{}]*(\{[^{}]*\}[^{}]*)*\}/g, '');
+      // No re-scope @page ni @media (son globales)
       return css.replace(/([^{}@]+)\{/g, (m, selectors) => {
-        if(selectors.includes('@')) return m; // @media, @page — dejar como está
+        if(selectors.includes('@')) return m;
         const scoped = selectors.split(',').map(s => {
           s = s.trim();
           if(!s || s.startsWith('@')) return s;
+          // body/html: solo heredar font/color, no borders/margins
           if(s === 'body' || s === 'html') return '#' + scopeId;
           return '#' + scopeId + ' ' + s;
         }).join(', ');
         return scoped + ' {';
       });
-    }).join('\n');
+    }).join('\n')
+    // Eliminar border/padding/margin/max-width del scope ID (vienen de body)
+    .replace(new RegExp('#' + scopeId + '\\s*\\{[^}]*\\}', 'g'), m => {
+      return m.replace(/border[^;]*;/g, '').replace(/padding[^;]*;/g, '').replace(/margin[^;]*;/g, '').replace(/max-width[^;]*;/g, '').replace(/background[^;]*;/g, '');
+    });
 
     return `<style>${scopedCSS}</style>
 <article id="${scopeId}" class="doc-seccion" ${idx > 0 ? 'style="page-break-before:always"' : ''}>
@@ -1541,22 +1548,20 @@ ${body}
 <style>
   @page { size: Letter; margin: 1.5cm 1.5cm 0.8cm 2cm; }
   body { margin: 0; padding: 0; color: #000; }
-  /* Firmas: sin bordes ni líneas */
+  /* Contenedores: sin bordes propios */
+  article.doc-seccion { border: none !important; box-shadow: none !important; padding: 0; max-width: none; }
+  /* Firmas: sin bordes nunca */
   [class*="firma-linea"], [class*="firma-bloque"], [class*="firma-wrap"],
-  [class*="firma-section"], [class*="firma-grid"] {
-    border: none !important; border-top: none !important; border-bottom: none !important;
-  }
+  [class*="firma-section"], [class*="firma-grid"],
   [class*="firma-linea"] *, [class*="firma-bloque"] *, [class*="firma-wrap"] *,
-  [class*="firma-section"] *, [class*="firma-grid"] * {
-    border: none !important; border-top: none !important; border-bottom: none !important;
-  }
+  [class*="firma-section"] *, [class*="firma-grid"] *,
   [class*="firma-tabla"], [class*="firma-tabla"] td, [class*="firma-tabla"] th,
-  [class*="firma-tabla"] tr, [class*="firma-tabla"] table {
+  [class*="firma-tabla"] tr {
     border: none !important;
   }
   @media print {
     .no-print { display: none !important; }
-    hr.no-print { display: none !important; }
+    hr { display: none !important; }
     table:not([class*="firma"]) { width: 100% !important; table-layout: auto !important; }
     table:not([class*="firma"]) td, table:not([class*="firma"]) th {
       word-wrap: break-word !important; overflow-wrap: break-word !important;
