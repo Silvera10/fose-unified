@@ -178,12 +178,15 @@ function guardarAcuerdoPres(){
   const tipo = $('acp-tipo').value;
   const numero = $('acp-numero').value.trim();
   const fecha = $('acp-fecha').value;
-  const concepto = $('acp-concepto').value.trim();
   const trim = Number($('acp-trim').value)||1;
   const considerandos = $('acp-considerandos').value.trim();
 
-  if(!numero || !fecha || !concepto){
-    $('acp-aviso').innerHTML = '<div class="alert alert-danger py-1 px-2 small">Complete N° Acuerdo, Fecha y Concepto.</div>';
+  // Auto-generar concepto según tipo (campo oculto desde la interfaz)
+  const tipoLabels = {adicion:'Adición presupuestal',reduccion:'Reducción presupuestal',traslado:'Traslado presupuestal'};
+  const concepto = $('acp-concepto').value.trim() || (tipoLabels[tipo]||tipo) + ' — Acuerdo ' + numero;
+
+  if(!numero || !fecha){
+    $('acp-aviso').innerHTML = '<div class="alert alert-danger py-1 px-2 small">Complete N° Acuerdo y Fecha.</div>';
     return;
   }
 
