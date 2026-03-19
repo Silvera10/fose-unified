@@ -997,6 +997,12 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
       ctx.pago_saldo = ctx.valor_contrato - acumulado;
     }
 
+    // 4b. Fecha de elaboración = fecha fin del contrato (siempre)
+    if(!ctx.fecha_elaboracion_larga){
+      ctx.fecha_elaboracion = contrato.fecha_fin || '';
+      ctx.fecha_elaboracion_larga = _fechaLarga(contrato.fecha_fin);
+    }
+
     // 5. Procesar bloques y variables
     html = _processBlocks(html, ctx);
 
@@ -1319,6 +1325,238 @@ const DOC_CATALOG = [
 ];
 
 /* ══════════════════════════════════════════════════════════
+   IMPRESIÓN AGRUPADA: Fase Pre Contractual + Expediente Completo
+══════════════════════════════════════════════════════════ */
+
+// Genera HTML de un documento SIN abrir ventana (retorna string)
+async function _generarDocHTML(templateName, contratoId, pagoIdx){
+  const d = DB.load();
+  const contrato = (d.contratos_full||[]).find(x => x.id === contratoId);
+  if(!contrato) throw new Error('Contrato no encontrado');
+
+  let html = await fetchTemplate(templateName);
+  html = await resolveInheritance(html);
+  html = html.replace(/\{\{\s*url_for\([^)]*escudo_colombia[^)]*\)\s*\}\}/g, _escudoBase64 || 'img/escudo_colombia.png');
+  html = html.replace(/\{\{\s*url_for\([^)]*\)\s*\}\}/g, '');
+
+  const ctx = buildDocContext(contrato, d, templateName);
+
+  if(pagoIdx !== undefined && pagoIdx !== null) pagoIdx = Number(pagoIdx);
+  if(typeof pagoIdx === 'number' && !isNaN(pagoIdx) && contrato.pagos && contrato.pagos[pagoIdx]){
+    const pago = contrato.pagos[pagoIdx];
+    const pagos = contrato.pagos;
+    ctx.num_egreso = pago.num_egreso || '';
+    ctx.num_factura = pago.num_factura || '';
+    ctx.num_op = pago.num_op || '';
+    ctx.banco_pago = pago.banco_pago || '';
+    ctx.cuenta_pago = pago.cuenta_pago || '';
+    ctx.valor_total = Number(pago.valor) || 0;
+    ctx.valor_letras = typeof numALetras === 'function' ? numALetras(ctx.valor_total) : '';
+    ctx.retencion = Number(pago.retencion_valor) || 0;
+    ctx.neto = ctx.valor_total - ctx.retencion;
+    ctx.neto_letras = typeof numALetras === 'function' ? numALetras(ctx.neto) : '';
+    ctx.total_deducciones = ctx.retencion;
+    ctx.pago_numero = pagoIdx + 1;
+    ctx.pago_total = pagos.length;
+    ctx.pago_nota = pago.nota || ('Pago ' + (pagoIdx + 1) + ' de ' + pagos.length);
+    ctx.fecha_pago = pago.fecha_pago || '';
+    ctx.fecha_pago_larga = _fechaLarga(pago.fecha_pago);
+    ctx.fecha_egreso = pago.fecha_pago || '';
+    ctx.fecha_egreso_larga = _fechaLarga(pago.fecha_pago);
+    const fechaInicioC = contrato.fecha_inicio || '';
+    const fechaFinC = contrato.fecha_fin || '';
+    const prevPago = pagoIdx > 0 ? pagos[pagoIdx - 1] : null;
+    if(pagos.length <= 1){
+      ctx.pago_periodo_desde = fechaInicioC;
+      ctx.pago_periodo_hasta = fechaFinC;
+    } else {
+      ctx.pago_periodo_desde = prevPago ? prevPago.fecha_pago || fechaInicioC : fechaInicioC;
+      ctx.pago_periodo_hasta = pago.fecha_pago || fechaFinC;
+    }
+    ctx.pago_periodo_desde_larga = _fechaLarga(ctx.pago_periodo_desde);
+    ctx.pago_periodo_hasta_larga = _fechaLarga(ctx.pago_periodo_hasta);
+    ctx.fecha_elaboracion = contrato.fecha_fin || '';
+    ctx.fecha_elaboracion_larga = _fechaLarga(contrato.fecha_fin);
+    let acumulado = 0;
+    for(let i = 0; i <= pagoIdx; i++) acumulado += Number(pagos[i].valor) || 0;
+    ctx.pago_acumulado = acumulado;
+    ctx.valor_contrato = Number(contrato.valor) || 0;
+    ctx.pago_saldo = ctx.valor_contrato - acumulado;
+  }
+  if(!ctx.fecha_elaboracion_larga){
+    ctx.fecha_elaboracion = contrato.fecha_fin || '';
+    ctx.fecha_elaboracion_larga = _fechaLarga(contrato.fecha_fin);
+  }
+
+  html = _processBlocks(html, ctx);
+
+  // Inyectar firmas (rector)
+  if(ctx.firma_rector_img){
+    const firmaTag = `<img src="${ctx.firma_rector_img}" style="max-height:75px;max-width:250px;display:block;margin:0 auto 3px" alt="Firma Rector">`;
+    const rName = (ctx.rector||'').trim();
+    const rNameUp = rName.toUpperCase();
+    const _keywords = ['Rector', 'Supervisor', 'Ordenador', 'CONTRATANTE', 'Cordialmente'];
+    if(rName) _keywords.push(rName, rNameUp);
+    const _kwPattern = _keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+    html = html.replace(new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kwPattern}))`, 'gi'),
+      (m, div, after) => m.includes('Firma Rector') ? m : div + firmaTag + after);
+    if(rName){
+      const rEsc = rName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      html = html.replace(new RegExp(`(<p><strong>\\s*${rEsc}\\s*</strong></p>)`, 'gi'),
+        (m) => m.includes('Firma Rector') ? m : firmaTag + m);
+      html = html.replace(new RegExp(`(<p[^>]*firma-nombre[^>]*>\\s*${rEsc}\\s*</p>)`, 'gi'),
+        (m) => m.includes('Firma Rector') ? m : firmaTag + m);
+    }
+  }
+  // Firma contratista
+  if(ctx.firma_contratista){
+    const firmaCtaTag = `<img src="${ctx.firma_contratista}" style="max-height:75px;max-width:250px;display:block;margin:0 auto 3px" alt="Firma Contratista">`;
+    const cName = (ctx.nombre_contratista||'').trim();
+    if(cName){
+      const _kwCta = ['CONTRATISTA', 'Beneficiario', 'Contratista', cName, cName.toUpperCase()]
+        .map(k => k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+      html = html.replace(new RegExp(`(<div[^>]*(?:\\w+-firma-linea|\\w+-firma-bloque)[^>]*>)([\\s\\S]{0,500}?(?:${_kwCta}))`, 'gi'),
+        (m, div, after) => (m.includes('Firma Contratista') || m.includes('Rector') || m.includes('Ordenador')) ? m : div + firmaCtaTag + after);
+    }
+  }
+
+  // Limpiar Jinja2 residuales
+  html = html.replace(/\{%[\s\S]*?%\}/g, '');
+  html = html.replace(/\{\{[\s\S]*?\}\}/g, '');
+
+  // Extraer solo el contenido del body
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  return bodyMatch ? bodyMatch[1] : html;
+}
+
+// Definición de los dos grupos de documentos
+const DOC_GRUPO_PRECONTRACTUAL = [
+  'cdp.html',
+  'estudio_previo.html',
+  'estudio_previo_garantia.html',
+  'invitacion.html',
+  'invitacion2.html',
+  'invitacion3.html',
+  'invitacion_garantia.html'
+];
+
+const DOC_GRUPO_EXPEDIENTE = [
+  'contrato.html',
+  'certificacion_plan_compras.html',
+  'solicitud_cdp.html',
+  'cdp.html',
+  'rp.html',
+  'estudio_previo.html',
+  'invitacion.html',
+  'invitacion2.html',
+  'invitacion3.html',
+  'evaluacion.html',
+  'carta_propuesta.html',
+  'aceptacion.html',
+  'habeas_data.html',
+  'acta_inicio.html',
+  'informe_contratista.html',
+  'informe_supervisor.html',
+  'acta_recibido.html',
+  'orden_pago.html',
+  'egreso.html',
+  'acta_liquidacion.html'
+];
+
+async function imprimirGrupoDocumentos(contratoId, grupo){
+  const templates = grupo === 'pre' ? DOC_GRUPO_PRECONTRACTUAL : DOC_GRUPO_EXPEDIENTE;
+  const label = grupo === 'pre' ? 'Fase Pre Contractual' : 'Expediente Completo';
+
+  const d = DB.load();
+  const contrato = (d.contratos_full||[]).find(x => x.id === contratoId);
+  if(!contrato){ toast('Contrato no encontrado','danger'); return; }
+  const pagos = contrato.pagos || [];
+
+  // Mostrar progreso
+  toast(`Generando ${label}... 0/${templates.length}`, 'info');
+
+  const secciones = [];
+  let count = 0;
+
+  for(const tpl of templates){
+    try {
+      // Documentos con pago: generar uno por cada pago realizado
+      const esPagoDoc = ['orden_pago.html','egreso.html','informe_contratista.html','informe_supervisor.html'].includes(tpl);
+      if(esPagoDoc && pagos.length > 0){
+        const pagosRealizados = pagos.filter(p => p.fecha_pago);
+        if(pagosRealizados.length > 0){
+          for(const p of pagosRealizados){
+            const idx = pagos.indexOf(p);
+            const bodyHTML = await _generarDocHTML(tpl, contratoId, idx);
+            secciones.push(bodyHTML);
+          }
+        } else {
+          const bodyHTML = await _generarDocHTML(tpl, contratoId);
+          secciones.push(bodyHTML);
+        }
+      } else {
+        const bodyHTML = await _generarDocHTML(tpl, contratoId);
+        secciones.push(bodyHTML);
+      }
+    } catch(e){
+      console.warn('Error generando', tpl, e.message);
+    }
+    count++;
+    if(count % 3 === 0) toast(`Generando ${label}... ${count}/${templates.length}`, 'info');
+  }
+
+  if(secciones.length === 0){
+    toast('No se pudieron generar los documentos', 'danger');
+    return;
+  }
+
+  // Combinar todos en un solo HTML con saltos de página
+  const combinedBody = secciones.map((sec, i) =>
+    `<div class="doc-seccion" style="${i > 0 ? 'page-break-before:always' : ''}">${sec}</div>`
+  ).join('\n<hr class="no-print" style="border:3px dashed #ccc;margin:30px 0">\n');
+
+  const finalHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>${label} — Contrato ${contrato.numero||'S/N'}</title>
+<style>
+  @page { size: Letter; margin: 1.5cm 1.5cm 0.8cm 2cm; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #000; margin: 0; padding: 0; }
+  @media print {
+    body { margin: 0 !important; padding: 0 !important; }
+    .no-print { display: none !important; }
+    .doc-seccion { page-break-inside: avoid; }
+    table { width: 100% !important; table-layout: auto !important; font-size: 9pt !important; }
+    td, th { padding: 3px 4px !important; word-wrap: break-word !important; }
+    tr { page-break-inside: avoid !important; }
+    img { max-width: 100% !important; height: auto !important; }
+    [class*="firma"] { page-break-inside: avoid !important; }
+    hr { display: none !important; }
+  }
+  /* Firma sin líneas */
+  [class*="firma-linea"],[class*="firma-bloque"],[class*="firma-wrap"],
+  [class*="firma-linea"] *,[class*="firma-bloque"] *,[class*="firma-wrap"] * {
+    border:none !important; border-top:none !important; border-bottom:none !important;
+  }
+</style></head>
+<body>
+<div class="no-print" style="background:#2c3e50;color:#fff;padding:8px 16px;text-align:right;font-family:Arial;font-size:12px;position:fixed;top:0;left:0;right:0;z-index:100">
+  <span style="float:left;font-size:13px;font-weight:bold">📄 ${label} — ${secciones.length} documentos</span>
+  <button onclick="window.print()" style="background:#27ae60;color:#fff;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px;margin-right:8px"><b>🖨️ Imprimir Todo</b></button>
+  <button onclick="window.close()" style="background:#e74c3c;color:#fff;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px">Cerrar</button>
+</div>
+<div style="margin-top:50px">
+${combinedBody}
+</div>
+<script>window.addEventListener('beforeprint',function(){document.title=' '});</script>
+</body></html>`;
+
+  const w = window.open('', '_blank');
+  if(!w){ toast('Permita ventanas emergentes','danger'); return; }
+  w.document.write(finalHTML);
+  w.document.close();
+  toast(`${label}: ${secciones.length} documentos generados ✓`);
+}
+
+/* ══════════════════════════════════════════════════════════
    RENDERIZAR PANEL DE DOCUMENTOS para un contrato
 ══════════════════════════════════════════════════════════ */
 function renderDocPanel(contratoId){
@@ -1378,7 +1616,18 @@ function renderDocPanel(contratoId){
     return btns;
   }
 
-  let html = '<p class="text-muted mb-3" style="font-size:11px"><i class="bi bi-info-circle me-1"></i>Haga clic en cada documento para generarlo. Use Ctrl+P para imprimir o guardar como PDF.</p>';
+  let html = '<p class="text-muted mb-2" style="font-size:11px"><i class="bi bi-info-circle me-1"></i>Haga clic en cada documento para generarlo. Use Ctrl+P para imprimir o guardar como PDF.</p>';
+
+  // Botones de impresión agrupada
+  html += `<div class="d-flex flex-wrap gap-2 mb-3">
+    <button class="btn btn-success btn-sm fw-bold" onclick="imprimirGrupoDocumentos('${contratoId}','pre')" title="Imprimir CDP, Estudio Previo, Invitaciones">
+      <i class="bi bi-printer me-1"></i>🖨️ Fase Pre Contractual
+    </button>
+    <button class="btn btn-primary btn-sm fw-bold" onclick="imprimirGrupoDocumentos('${contratoId}','exp')" title="Imprimir todos los documentos del expediente contractual">
+      <i class="bi bi-printer me-1"></i>🖨️ Expediente Completo
+    </button>
+  </div>`;
+
   etapas.forEach(et => {
     const docs = DOC_CATALOG.filter(d => d.etapa === et.key);
     const btns = docs.map(doc => {
