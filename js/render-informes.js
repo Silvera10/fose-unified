@@ -875,7 +875,11 @@ function genDocumentosExpedidos(d, trim){
 
   /* ══ SECCIÓN 1 — CDPs EXPEDIDOS ══ */
   let contratos = (d.contratos_full||[]).filter(c => c.cdp);
-  if(esTrim) contratos = contratos.filter(c => trimDeFecha(_fx(c.fecha_cdp)) === trim);
+  if(esTrim) contratos = contratos.filter(c => {
+    // Para contratos de vigencia anterior, usar fecha RP (vigencia actual)
+    const fechaRef = c.ref_contrato_anterior ? (c.fecha_rp || c.fecha_cdp) : c.fecha_cdp;
+    return trimDeFecha(_fx(fechaRef)) === trim;
+  });
   contratos = contratos.sort((a,b) => (_fx(a.fecha_cdp)||'').localeCompare(_fx(b.fecha_cdp)||''));
 
   let totCDP = 0;
@@ -942,9 +946,46 @@ function genDocumentosExpedidos(d, trim){
       <th style="${_thStyle}">Rubro</th><th style="${_thStyle};text-align:left">Concepto Rubro</th><th style="${_thStyle};text-align:left">Objeto</th><th style="${_thStyle}">Valor</th></tr>
   </thead><tbody>${rowsRP}</tbody></table>`;
 
-  /* ══ SECCIÓN 3 — EGRESOS DE CONTRATOS ══ */
-  let contratosEg = (d.contratos_full||[]).filter(c => c.num_egreso);
-  if(esTrim) contratosEg = contratosEg.filter(c => trimDeFecha(_fx(c.fecha_egreso)) === trim);
+  /* ══ SECCIÓN 3 — EGRESOS DE CONTRATOS (incluye pagos parciales) ══ */
+  const _egresosContratos = [];
+  (d.contratos_full||[]).forEach(c => {
+    const pagos = c.pagos || [];
+    const pagosConEgreso = pagos.filter(p => p.num_egreso && p.fecha_pago);
+    if(pagosConEgreso.length > 0){
+      // Contratos con pagos parciales
+      pagosConEgreso.forEach(p => {
+        _egresosContratos.push({
+          num_egreso: p.num_egreso,
+          fecha_egreso: p.fecha_pago,
+          cdp: c.cdp || '',
+          rp: c.rp || '',
+          numero: c.ref_contrato_anterior || c.numero || '',
+          contratista_nombre: c.contratista_nombre || '',
+          rubro: c.rubro || '',
+          valor: Number(p.valor) || 0,
+          retencion_valor: Number(p.retencion_valor) || 0,
+          neto_pagar: Number(p.neto_pagar) || Number(p.valor) - Number(p.retencion_valor) || 0
+        });
+      });
+    } else if(c.num_egreso){
+      // Contratos legacy (pago único)
+      _egresosContratos.push({
+        num_egreso: c.num_egreso,
+        fecha_egreso: c.fecha_egreso || c.fecha_pago || '',
+        cdp: c.cdp || '',
+        rp: c.rp || '',
+        numero: c.ref_contrato_anterior || c.numero || '',
+        contratista_nombre: c.contratista_nombre || '',
+        rubro: c.rubro || '',
+        valor: Number(c.valor) || 0,
+        retencion_valor: Number(c.retencion_valor) || 0,
+        neto_pagar: Number(c.neto_pagar) || 0
+      });
+    }
+  });
+  let contratosEg = esTrim
+    ? _egresosContratos.filter(e => trimDeFecha(_fx(e.fecha_egreso)) === trim)
+    : _egresosContratos;
   contratosEg = contratosEg.sort((a,b) => (_fx(a.fecha_egreso)||'').localeCompare(_fx(b.fecha_egreso)||''));
 
   let totEgCto = 0;
