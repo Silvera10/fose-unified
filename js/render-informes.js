@@ -801,12 +801,17 @@ function genContratos(d, trim){
   }
 
   const tl = {1:'T1 – Ene/Mar',2:'T2 – Abr/Jun',3:'T3 – Jul/Sep',4:'T4 – Oct/Dic'};
+  // Directorio de personas para buscar banco como fallback
+  const personas = d.personas || [];
+
   let rows = cs.length ? cs.map((c,i)=>{
     const cf = _fullData(c);
+    // Buscar en directorio de personas por cédula como fallback
+    const per = personas.find(p => p.numdoc === c.numdoc || p.numdoc === (cf.contratista_numdoc||'')) || {};
     // Banco y cuenta del contratista/proveedor (no de la institución)
-    const banco = c.contratista_banco || c.banco_pago || cf.contratista_banco || '';
-    const tipoCta = c.contratista_tipocuenta || cf.contratista_tipocuenta || '';
-    const cuenta = c.contratista_numcuenta || c.cuenta_pago || cf.contratista_numcuenta || '';
+    const banco = c.contratista_banco || c.banco_pago || cf.contratista_banco || per.banco || per.nombre_banco || '';
+    const tipoCta = c.contratista_tipocuenta || cf.contratista_tipocuenta || per.tipo_cuenta || '';
+    const cuenta = c.contratista_numcuenta || c.cuenta_pago || cf.contratista_numcuenta || per.cuenta_banco || per.cuenta_bancaria || per.numcuenta || '';
     const op = c.num_op || cf.num_op || '';
     const neto = Number(c.neto_pagar) || Number(c.valor) || 0;
     const fuente = c.fuente || cf.fuente || '';
