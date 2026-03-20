@@ -1733,8 +1733,8 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
     <div class="inst-nit">{{ inst_municipio }}, Dpto. de {{ inst_departamento or 'Bolívar' }}</div>
     <div><span class="doc-titulo">{% block doc_titulo %}Documento{% endblock %}</span></div>
   </div>
-  <div class="doc-code">{{ doc_code }}</div>
-</div>
+  </div>
+<!-- DOC_CODE -->
 
 {% block doc_content %}{% endblock %}
 
