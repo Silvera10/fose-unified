@@ -1807,68 +1807,62 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
 }
 
 async function _descargarComoPDF(htmlDoc, fileName){
-  // Pre-procesar HTML para compatibilidad con html2canvas
+  // Limpiar HTML
   htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
   htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
 
-  // Reemplazar flexbox del header por tabla (html2canvas no renderiza bien flexbox)
+  // Convertir flexbox header a table layout (html2canvas no soporta flexbox bien)
   htmlDoc = htmlDoc.replace(
-    /<div class="header-inst"[^>]*>([\s\S]*?)<\/div>\s*(?=<!--\s*DOC_CODE|<div)/,
-    function(match, inner){
-      // Extraer escudo
-      const imgMatch = inner.match(/<img[^>]*>/i);
-      const img = imgMatch ? imgMatch[0] : '';
-      // Extraer texto del header
-      const textoMatch = inner.match(/<div class="header-texto">([\s\S]*?)<\/div>\s*$/);
-      const texto = textoMatch ? textoMatch[1] : inner;
-      return `<div class="header-inst" style="display:table;width:100%;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:15px">
-        <div style="display:table-cell;width:80px;vertical-align:middle">${img}</div>
-        <div style="display:table-cell;text-align:center;vertical-align:middle">${texto}</div>
-      </div>`;
-    }
+    /display:\s*flex/g, 'display:table'
+  );
+  htmlDoc = htmlDoc.replace(
+    /class="header-escudo"/g,
+    'class="header-escudo" style="display:table-cell;width:80px;vertical-align:middle"'
+  );
+  htmlDoc = htmlDoc.replace(
+    /class="header-texto"/g,
+    'class="header-texto" style="display:table-cell;vertical-align:middle"'
   );
 
-  // Forzar fondo blanco y estilos para captura limpia
+  // Inyectar estilos para PDF
   htmlDoc = htmlDoc.replace('</head>',
     `<style>
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      body { background: #fff !important; color: #000 !important; margin: 0; padding: 15px 20px; }
-      .header-inst { display: table !important; }
-      @media screen { body { max-width: none !important; border: none !important; margin: 0 !important; padding: 15px 20px !important; } }
+      body { background:#fff!important; color:#000!important; max-width:none!important; border:none!important; margin:0!important; padding:10px 15px!important; }
+      .header-inst { display:table!important; width:100%; }
+      img { max-width:100%; }
     </style></head>`
   );
 
-  // Crear contenedor temporal oculto
-  const container = document.createElement('div');
-  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:216mm;background:#fff;';
-  container.innerHTML = htmlDoc.replace(/^[\s\S]*<body[^>]*>/i, '').replace(/<\/body>[\s\S]*$/i, '');
+  // Crear iframe temporal visible (html2canvas requiere elementos visibles)
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;top:0;left:0;width:216mm;height:280mm;opacity:0;z-index:-1;border:none;';
+  document.body.appendChild(iframe);
 
-  // Inyectar estilos del documento en el contenedor
-  const styleMatch = htmlDoc.match(/<style>([\s\S]*?)<\/style>/g);
-  if(styleMatch){
-    const styleEl = document.createElement('style');
-    styleEl.textContent = styleMatch.map(s => s.replace(/<\/?style>/gi,'')).join('\n');
-    container.prepend(styleEl);
-  }
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(htmlDoc);
+  iframeDoc.close();
 
-  document.body.appendChild(container);
+  // Esperar a que cargue el contenido del iframe
+  await new Promise(r => {
+    if(iframeDoc.readyState === 'complete') r();
+    else iframe.onload = r;
+  });
+  // Esperar extra para imágenes
+  await new Promise(r => setTimeout(r, 500));
 
-  // Esperar a que imágenes carguen
-  const imgs = container.querySelectorAll('img');
-  await Promise.all(Array.from(imgs).map(img =>
-    img.complete ? Promise.resolve() : new Promise(r => { img.onload = r; img.onerror = r; })
-  ));
+  const body = iframeDoc.body;
 
   await html2pdf().set({
-    margin: [10, 10, 8, 12],
+    margin: [8, 8, 6, 10],
     filename: fileName,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 816 },
     jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-  }).from(container).save();
+    pagebreak: { mode: ['css', 'legacy'] }
+  }).from(body).save();
 
-  document.body.removeChild(container);
+  document.body.removeChild(iframe);
 }
 
 /* ══════════════════════════════════════════════════════════
