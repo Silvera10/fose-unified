@@ -1673,6 +1673,7 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
       color: #555; background: #f0f0f0; padding: 3px 10px; border: 1.5px solid #999;
       border-radius: 3px; letter-spacing: 0.5px; font-family: 'Courier New', monospace;
       -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .doc-code:empty { display: none; }
     .header-escudo { flex: 0 0 auto; }
     .header-escudo img { width: 70px; height: auto;
       -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -1732,7 +1733,7 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
     <div class="inst-nit">{{ inst_municipio }}, Dpto. de {{ inst_departamento or 'Bolívar' }}</div>
     <div><span class="doc-titulo">{% block doc_titulo %}Documento{% endblock %}</span></div>
   </div>
-  {% if doc_code %}<div class="doc-code">{{ doc_code }}</div>{% endif %}
+  <div class="doc-code">{{ doc_code }}</div>
 </div>
 
 {% block doc_content %}{% endblock %}
