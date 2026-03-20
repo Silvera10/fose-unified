@@ -804,6 +804,31 @@ function buildDocContext(contrato, d, templateName){
   ctx.habeas_firma_html        = _buildHabeasFirma(ctx);
   ctx.habeas_constancia_html   = _buildHabeasConstancia(ctx);
 
+  // Código de expediente por tipo de documento
+  const _docCodes = {
+    'certificacion_plan_compras':'PRE-01', 'cert_plan_compras':'PRE-01',
+    'estudio_previo':'PRE-02', 'estudio_previo_garantia':'PRE-02',
+    'solicitud_cdp':'PRE-03',
+    'cdp':'PRE-04',
+    'invitacion':'PRE-05', 'invitacion2':'PRE-05', 'invitacion3':'PRE-05', 'invitacion_garantia':'PRE-05',
+    'carta_propuesta':'PRE-07',
+    'evaluacion':'PRE-08', 'evaluacion_garantia':'PRE-08',
+    'aceptacion':'PRE-09',
+    'contrato':'CON-01', 'contrato2':'CON-01',
+    'rp':'CON-02',
+    'acta_inicio':'CON-03',
+    'orden_compra':'EJE-01',
+    'informe_contratista':'EJE-03',
+    'informe_supervisor':'EJE-04',
+    'acta_recibido':'EJE-05',
+    'orden_pago':'PAG-01',
+    'egreso':'PAG-02',
+    'acta_liquidacion':'PAG-03',
+    'habeas_data':'DOC-09', 'carta_juramentada':'DOC-10'
+  };
+  const _tplKey = (templateName||'').replace(/\.html$/,'').replace(/^docs\//,'');
+  ctx.doc_code = _docCodes[_tplKey] || '';
+
   return ctx;
 }
 
