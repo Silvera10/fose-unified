@@ -1696,18 +1696,13 @@ const _DOC_FILENAMES = {
 };
 
 async function descargarExpedientePDFs(contratoId){
-  if(typeof html2pdf === 'undefined'){
-    toast('Librería html2pdf no disponible. Recargue la página.','danger');
-    return;
-  }
-
   const d = DB.load();
   const contrato = (d.contratos_full||[]).find(x => x.id === contratoId);
   if(!contrato){ toast('Contrato no encontrado','danger'); return; }
   const pagos = contrato.pagos || [];
   const numContrato = contrato.numero || contratoId;
 
-  toast('Generando PDFs... por favor espere, esto puede tomar un momento','info');
+  toast('Descargando documentos... por favor espere','info');
 
   const templates = DOC_GRUPO_EXPEDIENTE;
   let descargados = 0;
@@ -1722,76 +1717,41 @@ async function descargarExpedientePDFs(contratoId){
           const idx = pagos.indexOf(p);
           const htmlDoc = await _generarDocHTML(tpl, contratoId, idx);
           const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
-          const fileName = `${baseName}_Pago${idx+1}_${numContrato}.pdf`;
-          await _descargarComoPDF(htmlDoc, fileName);
+          const fileName = `${baseName}_Pago${idx+1}_${numContrato}.html`;
+          _descargarComoHTML(htmlDoc, fileName);
           descargados++;
-          await new Promise(r => setTimeout(r, 800));
+          await new Promise(r => setTimeout(r, 300));
         }
       } else {
         const htmlDoc = await _generarDocHTML(tpl, contratoId);
         const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
-        const fileName = `${baseName}_${numContrato}.pdf`;
-        await _descargarComoPDF(htmlDoc, fileName);
+        const fileName = `${baseName}_${numContrato}.html`;
+        _descargarComoHTML(htmlDoc, fileName);
         descargados++;
-        await new Promise(r => setTimeout(r, 800));
+        await new Promise(r => setTimeout(r, 300));
       }
     } catch(e){
       console.warn('Error descargando', tpl, e.message);
     }
   }
 
-  toast(`${descargados} PDFs descargados a su carpeta de Descargas`,'success');
+  toast(`${descargados} documentos descargados a su carpeta de Descargas`,'success');
 }
 
-async function _descargarComoPDF(htmlDoc, fileName){
-  // Limpiar estilos de pantalla: quitar @media screen, forzar fondo blanco
-  htmlDoc = htmlDoc.replace(/@media\s+screen\s*\{[^{}]*(\{[^{}]*\}[^{}]*)*\}/g, '');
-  // Inyectar CSS para forzar fondo blanco y formato limpio
-  const pdfCSS = `<style>
-    body { background: #fff !important; color: #000 !important; margin: 0 !important;
-      padding: 15px 20px !important; max-width: none !important; border: none !important;
-      box-shadow: none !important; font-size: 10pt !important; }
-    .header-inst { display: flex !important; align-items: center !important; gap: 12px !important;
-      border-bottom: 3px double #000 !important; padding-bottom: 8px !important; margin-bottom: 15px !important; }
-    .header-escudo img { width: 70px !important; height: auto !important; }
-    .header-texto { flex: 1 !important; text-align: center !important; }
-    .no-print, .print-btn { display: none !important; }
-    table { width: 100% !important; border-collapse: collapse !important; }
-    td, th { padding: 3px 6px !important; }
-    [style*="margin-top:50px"] { margin-top: 0 !important; }
-  </style>`;
-  htmlDoc = htmlDoc.replace('</head>', pdfCSS + '</head>');
-
-  // Crear iframe oculto para renderizar
-  const iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:816px;height:1056px;border:none';
-  document.body.appendChild(iframe);
-
-  const iDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iDoc.open();
-  iDoc.write(htmlDoc);
-  iDoc.close();
-
-  // Esperar a que cargue
-  await new Promise(r => setTimeout(r, 600));
-
-  // Remover botones no-print del contenido
-  const noPrints = iDoc.querySelectorAll('.no-print, .print-btn, [style*="margin-top:50px"]');
-  noPrints.forEach(el => { if(el.style) el.style.marginTop = '0'; if(el.classList.contains('no-print') || el.classList.contains('print-btn')) el.remove(); });
-
-  const body = iDoc.body;
-  body.style.background = '#fff';
-
-  await html2pdf().set({
-    margin: [10, 10, 8, 15],
-    filename: fileName,
-    image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 1.5, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
-    jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-  }).from(body).save();
-
-  document.body.removeChild(iframe);
+function _descargarComoHTML(htmlDoc, fileName){
+  // Limpiar: quitar botón imprimir y margin-top del wrapper
+  htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
+  htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
+  // Crear blob y descargar
+  const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 /* ══════════════════════════════════════════════════════════
