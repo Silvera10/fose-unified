@@ -17,8 +17,13 @@
       /* No cortar filas ni secciones */
       tr { page-break-inside: avoid; }
       .seccion { page-break-inside: avoid; }
-      /* Firmas siempre en la misma página + reducir espacio */
-      [class*="-firma"] {  margin-top: 15px !important; }
+      /* Firmas: reducir espacio para que no se vayan a otra página */
+      [class*="-firma"], [class*="firma-"], .firma-block, .firma-linea {
+        margin-top: 10px !important;
+      }
+      [class*="-firma-linea"], .firma-linea {
+        margin-top: 20px !important;
+      }
       /* Imágenes no desbordan */
       img { max-width: 100% !important; height: auto !important; }
       /* Reducir espaciado para aprovechar espacio */

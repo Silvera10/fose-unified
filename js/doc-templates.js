@@ -1660,6 +1660,12 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
       td, th { padding: 3px 4px !important; word-wrap: break-word; overflow-wrap: break-word; }
       tr { page-break-inside: avoid; }
       .seccion { page-break-inside: avoid; }
+      [class*="-firma"], [class*="firma-"], .firma-block, .firma-linea {
+        margin-top: 10px !important;
+      }
+      [class*="-firma-linea"], .firma-linea {
+        margin-top: 20px !important;
+      }
       [class*="-firma"] { page-break-inside: avoid; }
       img { max-width: 100% !important; height: auto !important; }
       h1, h2, h3 { margin: 6px 0 !important; }
