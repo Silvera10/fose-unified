@@ -1462,6 +1462,12 @@ async function _generarDocHTML(templateName, contratoId, pagoIdx){
   // Inyectar firmas usando la función compartida
   html = _inyectarFirmas(html, ctx);
 
+  // Inyectar código de expediente
+  if(ctx.doc_code){
+    const badge = `<div style="text-align:right;margin:-10px 0 8px 0;font-size:8pt;font-weight:bold;color:#666;font-family:monospace;letter-spacing:0.5px">${ctx.doc_code}</div>`;
+    html = html.replace('<!-- DOC_CODE -->', badge);
+  }
+
   // Limpiar Jinja2 residuales
   html = html.replace(/\{%[\s\S]*?%\}/g, '');
   html = html.replace(/\{\{[\s\S]*?\}\}/g, '');
