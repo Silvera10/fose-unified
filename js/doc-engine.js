@@ -1132,13 +1132,24 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
     // 5b. Inyectar firmas (rector y contratista) — UNA SOLA VEZ cada una
     html = _inyectarFirmas(html, ctx);
 
-    // 5b2. Inyectar código de expediente (esquina superior derecha, línea propia)
+    // 5b2. Inyectar código de expediente (debajo del encabezado, alineado a la derecha)
     if(ctx.doc_code){
-      const badge = `<div style="text-align:right;margin:0 0 4px 0;line-height:1"><span style="font-size:8pt;font-weight:bold;color:#666;padding:1px 6px;border:1px solid #aaa;border-radius:2px;letter-spacing:0.5px;font-family:monospace">${ctx.doc_code}</span></div>`;
-      if(html.includes('<div class="header-inst"')){
-        html = html.replace('<div class="header-inst"', badge + '\n<div class="header-inst"');
-      } else {
-        html = html.replace(/<body[^>]*>/, '$&\n' + badge);
+      const badge = `<div style="text-align:right;margin:-8px 0 8px 0;font-size:8pt;font-weight:bold;color:#666;font-family:monospace;letter-spacing:0.5px">${ctx.doc_code}</div>`;
+      // Insertar justo después del cierre del header-inst
+      const headerEnd = html.indexOf('</div>', html.indexOf('class="header-inst"'));
+      if(headerEnd > -1){
+        // Buscar el cierre correcto del div header-inst (3er </div> después del inicio)
+        let pos = html.indexOf('class="header-inst"');
+        let depth = 0;
+        let i = html.indexOf('>', pos) + 1;
+        while(i < html.length){
+          if(html.substring(i, i+4) === '<div') depth++;
+          if(html.substring(i, i+6) === '</div>'){
+            if(depth === 0){ html = html.substring(0, i+6) + '\n' + badge + html.substring(i+6); break; }
+            depth--;
+          }
+          i++;
+        }
       }
     }
 
