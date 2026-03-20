@@ -1695,16 +1695,83 @@ const _DOC_FILENAMES = {
   'acta_liquidacion.html': 'PAG-03_Acta_de_Liquidacion'
 };
 
-async function descargarExpedientePDFs(contratoId){
+/* ── Modal selector de documentos para descarga ── */
+function mostrarSelectorDescarga(contratoId){
+  const etapas = [
+    { key:'pre', label:'Fase Precontractual' },
+    { key:'sel', label:'Oferta y Evaluación' },
+    { key:'con', label:'Documentos Contractuales' },
+    { key:'eje', label:'Ejecución y Seguimiento' },
+    { key:'pag', label:'Pago y Liquidación' }
+  ];
+
+  // Solo mostrar documentos que están en DOC_GRUPO_EXPEDIENTE
+  const disponibles = DOC_CATALOG.filter(d => DOC_GRUPO_EXPEDIENTE.includes(d.file));
+
+  let body = `<div class="mb-2">
+    <button class="btn btn-sm btn-outline-primary me-1" onclick="document.querySelectorAll('#dlg-desc-checks input').forEach(c=>c.checked=true)">Todos</button>
+    <button class="btn btn-sm btn-outline-secondary" onclick="document.querySelectorAll('#dlg-desc-checks input').forEach(c=>c.checked=false)">Ninguno</button>
+  </div><div id="dlg-desc-checks">`;
+
+  etapas.forEach(et => {
+    const docs = disponibles.filter(d => d.etapa === et.key);
+    if(!docs.length) return;
+    body += `<div class="mb-2"><strong class="small text-muted">${et.label}</strong>`;
+    docs.forEach(d => {
+      const code = _DOC_FILENAMES[d.file] ? _DOC_FILENAMES[d.file].split('_')[0] : '';
+      body += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${d.file}" id="dl-${d.id}" checked>
+        <label class="form-check-label small" for="dl-${d.id}">${code ? '<code>'+code+'</code> ' : ''}${d.name}</label></div>`;
+    });
+    body += `</div>`;
+  });
+  body += `</div>`;
+
+  // Usar modal de Bootstrap existente o crear uno dinámico
+  let modal = document.getElementById('modalDescarga');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'modalDescarga';
+    modal.className = 'modal fade';
+    modal.tabIndex = -1;
+    modal.innerHTML = `<div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header py-2">
+          <h6 class="modal-title fw-bold">Seleccionar documentos para descargar</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modalDescarga-body"></div>
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnDescargarSel">
+            <i class="bi bi-download me-1"></i>Descargar seleccionados
+          </button>
+        </div>
+      </div>
+    </div>`;
+    document.body.appendChild(modal);
+  }
+
+  document.getElementById('modalDescarga-body').innerHTML = body;
+  document.getElementById('btnDescargarSel').onclick = () => {
+    const checks = document.querySelectorAll('#dlg-desc-checks input:checked');
+    const selected = Array.from(checks).map(c => c.value);
+    if(!selected.length){ toast('Seleccione al menos un documento','warning'); return; }
+    bootstrap.Modal.getInstance(modal).hide();
+    descargarExpedientePDFs(contratoId, selected);
+  };
+
+  new bootstrap.Modal(modal).show();
+}
+
+async function descargarExpedientePDFs(contratoId, selectedTemplates){
   const d = DB.load();
   const contrato = (d.contratos_full||[]).find(x => x.id === contratoId);
   if(!contrato){ toast('Contrato no encontrado','danger'); return; }
   const pagos = contrato.pagos || [];
   const numContrato = contrato.numero || contratoId;
 
+  const templates = selectedTemplates || DOC_GRUPO_EXPEDIENTE;
   toast('Descargando documentos... por favor espere','info');
-
-  const templates = DOC_GRUPO_EXPEDIENTE;
   let descargados = 0;
 
   for(const tpl of templates){
@@ -1824,8 +1891,8 @@ function renderDocPanel(contratoId){
     <button class="btn btn-primary btn-sm fw-bold" onclick="imprimirGrupoDocumentos('${contratoId}','exp')" title="Imprimir todos los documentos del expediente contractual">
       <i class="bi bi-printer me-1"></i>🖨️ Expediente Completo
     </button>
-    <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="descargarExpedientePDFs('${contratoId}')" title="Descargar cada documento como PDF individual para subir a Expedientes">
-      <i class="bi bi-download me-1"></i>📁 Descargar PDFs
+    <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="mostrarSelectorDescarga('${contratoId}')" title="Seleccionar documentos para descargar">
+      <i class="bi bi-download me-1"></i>📁 Descargar Docs
     </button>
   </div>`;
 
