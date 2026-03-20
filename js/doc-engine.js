@@ -1663,6 +1663,119 @@ ${combinedBody}
 }
 
 /* ══════════════════════════════════════════════════════════
+   DESCARGAR EXPEDIENTE COMO PDFs INDIVIDUALES
+   Cada documento se descarga como PDF separado a Descargas
+══════════════════════════════════════════════════════════ */
+const _DOC_FILENAMES = {
+  'certificacion_plan_compras.html': 'PRE-01_Certificacion_Plan_Compras',
+  'estudio_previo.html': 'PRE-02_Estudio_Previo',
+  'estudio_previo_garantia.html': 'PRE-02_Estudio_Previo_Ley_Garantias',
+  'solicitud_cdp.html': 'PRE-03_Solicitud_CDP',
+  'cdp.html': 'PRE-04_CDP',
+  'invitacion.html': 'PRE-05_Invitacion_a_Ofertar',
+  'invitacion2.html': 'PRE-05_Invitacion_a_Ofertar_2',
+  'invitacion3.html': 'PRE-05_Invitacion_a_Ofertar_3',
+  'invitacion_garantia.html': 'PRE-05_Invitacion_Ley_Garantias',
+  'carta_propuesta.html': 'PRE-07_Carta_de_Propuesta',
+  'evaluacion.html': 'PRE-08_Evaluacion_de_Ofertas',
+  'evaluacion_garantia.html': 'PRE-08_Evaluacion_Ley_Garantias',
+  'aceptacion.html': 'PRE-09_Aceptacion_de_Oferta',
+  'contrato.html': 'CON-01_Contrato',
+  'contrato2.html': 'CON-01_Contrato_Prestacion_Servicios',
+  'rp.html': 'CON-02_Registro_Presupuestal',
+  'acta_inicio.html': 'CON-03_Acta_de_Inicio',
+  'habeas_data.html': 'DOC-09_Habeas_Data',
+  'carta_juramentada.html': 'DOC-10_Carta_Juramentada',
+  'orden_compra.html': 'EJE-01_Orden_de_Compra',
+  'informe_contratista.html': 'EJE-03_Informe_Contratista',
+  'informe_supervisor.html': 'EJE-04_Informe_Supervisor',
+  'acta_recibido.html': 'EJE-05_Acta_Recibido',
+  'orden_pago.html': 'PAG-01_Orden_de_Pago',
+  'egreso.html': 'PAG-02_Comprobante_de_Egreso',
+  'acta_liquidacion.html': 'PAG-03_Acta_de_Liquidacion'
+};
+
+async function descargarExpedientePDFs(contratoId){
+  if(typeof html2pdf === 'undefined'){
+    toast('Librería html2pdf no disponible. Recargue la página.','danger');
+    return;
+  }
+
+  const d = DB.load();
+  const contrato = (d.contratos_full||[]).find(x => x.id === contratoId);
+  if(!contrato){ toast('Contrato no encontrado','danger'); return; }
+  const pagos = contrato.pagos || [];
+  const numContrato = contrato.numero || contratoId;
+
+  toast('Generando PDFs... por favor espere, esto puede tomar un momento','info');
+
+  const templates = DOC_GRUPO_EXPEDIENTE;
+  let descargados = 0;
+
+  for(const tpl of templates){
+    try {
+      const esPagoDoc = ['orden_pago.html','egreso.html','informe_contratista.html','informe_supervisor.html'].includes(tpl);
+      const pagosRealizados = pagos.filter(p => p.fecha_pago);
+
+      if(esPagoDoc && pagosRealizados.length > 0){
+        for(const p of pagosRealizados){
+          const idx = pagos.indexOf(p);
+          const htmlDoc = await _generarDocHTML(tpl, contratoId, idx);
+          const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
+          const fileName = `${baseName}_Pago${idx+1}_${numContrato}.pdf`;
+          await _descargarComoPDF(htmlDoc, fileName);
+          descargados++;
+          await new Promise(r => setTimeout(r, 800));
+        }
+      } else {
+        const htmlDoc = await _generarDocHTML(tpl, contratoId);
+        const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
+        const fileName = `${baseName}_${numContrato}.pdf`;
+        await _descargarComoPDF(htmlDoc, fileName);
+        descargados++;
+        await new Promise(r => setTimeout(r, 800));
+      }
+    } catch(e){
+      console.warn('Error descargando', tpl, e.message);
+    }
+  }
+
+  toast(`${descargados} PDFs descargados a su carpeta de Descargas`,'success');
+}
+
+async function _descargarComoPDF(htmlDoc, fileName){
+  // Crear iframe oculto para renderizar
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:816px;height:1056px;border:none';
+  document.body.appendChild(iframe);
+
+  const iDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iDoc.open();
+  iDoc.write(htmlDoc);
+  iDoc.close();
+
+  // Esperar a que cargue
+  await new Promise(r => setTimeout(r, 500));
+
+  // Remover botones no-print del contenido
+  const noPrints = iDoc.querySelectorAll('.no-print, .print-btn');
+  noPrints.forEach(el => el.remove());
+
+  const body = iDoc.body;
+
+  await html2pdf().set({
+    margin: [10, 10, 8, 15],
+    filename: fileName,
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 1.5, useCORS: true, letterRendering: true },
+    jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  }).from(body).save();
+
+  document.body.removeChild(iframe);
+}
+
+/* ══════════════════════════════════════════════════════════
    RENDERIZAR PANEL DE DOCUMENTOS para un contrato
 ══════════════════════════════════════════════════════════ */
 function renderDocPanel(contratoId){
@@ -1731,6 +1844,9 @@ function renderDocPanel(contratoId){
     </button>
     <button class="btn btn-primary btn-sm fw-bold" onclick="imprimirGrupoDocumentos('${contratoId}','exp')" title="Imprimir todos los documentos del expediente contractual">
       <i class="bi bi-printer me-1"></i>🖨️ Expediente Completo
+    </button>
+    <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="descargarExpedientePDFs('${contratoId}')" title="Descargar cada documento como PDF individual para subir a Expedientes">
+      <i class="bi bi-download me-1"></i>📁 Descargar PDFs
     </button>
   </div>`;
 
