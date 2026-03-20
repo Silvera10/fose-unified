@@ -1764,6 +1764,9 @@ function mostrarSelectorDescarga(contratoId){
 }
 
 async function descargarExpedientePDFs(contratoId, selectedTemplates){
+  if(typeof html2pdf === 'undefined'){
+    toast('Librería html2pdf no disponible. Recargue la página.','danger'); return;
+  }
   const d = DB.load();
   const contrato = (d.contratos_full||[]).find(x => x.id === contratoId);
   if(!contrato){ toast('Contrato no encontrado','danger'); return; }
@@ -1771,7 +1774,7 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
   const numContrato = contrato.numero || contratoId;
 
   const templates = selectedTemplates || DOC_GRUPO_EXPEDIENTE;
-  toast('Descargando documentos... por favor espere','info');
+  toast('Generando PDFs... esto puede tardar unos segundos','info');
   let descargados = 0;
 
   for(const tpl of templates){
@@ -1784,41 +1787,88 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
           const idx = pagos.indexOf(p);
           const htmlDoc = await _generarDocHTML(tpl, contratoId, idx);
           const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
-          const fileName = `${baseName}_Pago${idx+1}_${numContrato}.html`;
-          _descargarComoHTML(htmlDoc, fileName);
+          const fileName = `${baseName}_Pago${idx+1}_${numContrato}.pdf`;
+          await _descargarComoPDF(htmlDoc, fileName);
           descargados++;
-          await new Promise(r => setTimeout(r, 300));
         }
       } else {
         const htmlDoc = await _generarDocHTML(tpl, contratoId);
         const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
-        const fileName = `${baseName}_${numContrato}.html`;
-        _descargarComoHTML(htmlDoc, fileName);
+        const fileName = `${baseName}_${numContrato}.pdf`;
+        await _descargarComoPDF(htmlDoc, fileName);
         descargados++;
-        await new Promise(r => setTimeout(r, 300));
       }
     } catch(e){
       console.warn('Error descargando', tpl, e.message);
     }
   }
 
-  toast(`${descargados} documentos descargados a su carpeta de Descargas`,'success');
+  toast(`${descargados} PDFs descargados a su carpeta de Descargas`,'success');
 }
 
-function _descargarComoHTML(htmlDoc, fileName){
-  // Limpiar: quitar botón imprimir y margin-top del wrapper
+async function _descargarComoPDF(htmlDoc, fileName){
+  // Pre-procesar HTML para compatibilidad con html2canvas
   htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
   htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
-  // Crear blob y descargar
-  const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+
+  // Reemplazar flexbox del header por tabla (html2canvas no renderiza bien flexbox)
+  htmlDoc = htmlDoc.replace(
+    /<div class="header-inst"[^>]*>([\s\S]*?)<\/div>\s*(?=<!--\s*DOC_CODE|<div)/,
+    function(match, inner){
+      // Extraer escudo
+      const imgMatch = inner.match(/<img[^>]*>/i);
+      const img = imgMatch ? imgMatch[0] : '';
+      // Extraer texto del header
+      const textoMatch = inner.match(/<div class="header-texto">([\s\S]*?)<\/div>\s*$/);
+      const texto = textoMatch ? textoMatch[1] : inner;
+      return `<div class="header-inst" style="display:table;width:100%;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:15px">
+        <div style="display:table-cell;width:80px;vertical-align:middle">${img}</div>
+        <div style="display:table-cell;text-align:center;vertical-align:middle">${texto}</div>
+      </div>`;
+    }
+  );
+
+  // Forzar fondo blanco y estilos para captura limpia
+  htmlDoc = htmlDoc.replace('</head>',
+    `<style>
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: #fff !important; color: #000 !important; margin: 0; padding: 15px 20px; }
+      .header-inst { display: table !important; }
+      @media screen { body { max-width: none !important; border: none !important; margin: 0 !important; padding: 15px 20px !important; } }
+    </style></head>`
+  );
+
+  // Crear contenedor temporal oculto
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:216mm;background:#fff;';
+  container.innerHTML = htmlDoc.replace(/^[\s\S]*<body[^>]*>/i, '').replace(/<\/body>[\s\S]*$/i, '');
+
+  // Inyectar estilos del documento en el contenedor
+  const styleMatch = htmlDoc.match(/<style>([\s\S]*?)<\/style>/g);
+  if(styleMatch){
+    const styleEl = document.createElement('style');
+    styleEl.textContent = styleMatch.map(s => s.replace(/<\/?style>/gi,'')).join('\n');
+    container.prepend(styleEl);
+  }
+
+  document.body.appendChild(container);
+
+  // Esperar a que imágenes carguen
+  const imgs = container.querySelectorAll('img');
+  await Promise.all(Array.from(imgs).map(img =>
+    img.complete ? Promise.resolve() : new Promise(r => { img.onload = r; img.onerror = r; })
+  ));
+
+  await html2pdf().set({
+    margin: [10, 10, 8, 12],
+    filename: fileName,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+    jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  }).from(container).save();
+
+  document.body.removeChild(container);
 }
 
 /* ══════════════════════════════════════════════════════════
