@@ -3040,7 +3040,7 @@ DOC_TEMPLATES["docs/contrato.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -3049,7 +3049,7 @@ DOC_TEMPLATES["docs/contrato.html"] = `{% extends "docs/base_doc.html" %}
   font-size: 10.5pt;
   font-weight: bold;
   color: #333;
-  margin: -8px 0 14px;
+  margin: -8px 0 10px;
   letter-spacing: 0.5px;
 }
 
@@ -3057,15 +3057,13 @@ DOC_TEMPLATES["docs/contrato.html"] = `{% extends "docs/base_doc.html" %}
 .ct-intro {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.65;
-  margin: 0 0 14px;
+  line-height: 1.55;
+  margin: 0 0 10px;
 }
 
 /* ── Cláusulas ────────────────────────────────────── */
 .ct-clausula {
-  margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  margin: 6px 0 8px;
 }
 .ct-clausula-titulo {
   font-size: 10pt;
@@ -3082,19 +3080,19 @@ DOC_TEMPLATES["docs/contrato.html"] = `{% extends "docs/base_doc.html" %}
 .ct-clausula p {
   font-size: 9.5pt;
   text-align: justify;
-  margin: 5px 0;
-  line-height: 1.6;
+  margin: 3px 0;
+  line-height: 1.45;
 }
 .ct-clausula ol,
 .ct-clausula ul {
   font-size: 9.5pt;
   padding-left: 22px;
-  margin: 5px 0 8px;
-  line-height: 1.6;
+  margin: 3px 0 5px;
+  line-height: 1.45;
 }
 .ct-clausula ol li,
 .ct-clausula ul li {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   text-align: justify;
 }
 
@@ -3139,7 +3137,7 @@ table.ct-unspsc tbody td.ct-unspsc-nombre {
 
 /* ── Firmas ───────────────────────────────────────── */
 .ct-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -3158,7 +3156,7 @@ table.ct-firma-tabla td {
 .ct-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 25px;
 }
 .ct-firma-nombre {
   font-size: 9.5pt;
@@ -3512,7 +3510,7 @@ DOC_TEMPLATES["docs/contrato2.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -3521,7 +3519,7 @@ DOC_TEMPLATES["docs/contrato2.html"] = `{% extends "docs/base_doc.html" %}
   font-size: 10.5pt;
   font-weight: bold;
   color: #333;
-  margin: -8px 0 14px;
+  margin: -8px 0 10px;
   letter-spacing: 0.5px;
 }
 
@@ -3529,15 +3527,13 @@ DOC_TEMPLATES["docs/contrato2.html"] = `{% extends "docs/base_doc.html" %}
 .ct-intro {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.65;
-  margin: 0 0 14px;
+  line-height: 1.55;
+  margin: 0 0 10px;
 }
 
 /* ── Cláusulas ────────────────────────────────────── */
 .ct-clausula {
-  margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  margin: 6px 0 8px;
 }
 .ct-clausula-titulo {
   font-size: 10pt;
@@ -3554,19 +3550,19 @@ DOC_TEMPLATES["docs/contrato2.html"] = `{% extends "docs/base_doc.html" %}
 .ct-clausula p {
   font-size: 9.5pt;
   text-align: justify;
-  margin: 5px 0;
-  line-height: 1.6;
+  margin: 3px 0;
+  line-height: 1.45;
 }
 .ct-clausula ol,
 .ct-clausula ul {
   font-size: 9.5pt;
   padding-left: 22px;
-  margin: 5px 0 8px;
-  line-height: 1.6;
+  margin: 3px 0 5px;
+  line-height: 1.45;
 }
 .ct-clausula ol li,
 .ct-clausula ul li {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   text-align: justify;
 }
 
@@ -3611,7 +3607,7 @@ table.ct-unspsc tbody td.ct-unspsc-nombre {
 
 /* ── Firmas ───────────────────────────────────────── */
 .ct-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -3630,7 +3626,7 @@ table.ct-firma-tabla td {
 .ct-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 25px;
 }
 .ct-firma-nombre {
   font-size: 9.5pt;
