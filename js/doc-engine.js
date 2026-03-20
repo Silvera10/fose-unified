@@ -1764,9 +1764,6 @@ function mostrarSelectorDescarga(contratoId){
 }
 
 async function descargarExpedientePDFs(contratoId, selectedTemplates){
-  if(typeof html2pdf === 'undefined'){
-    toast('Librería html2pdf no disponible. Recargue la página.','danger'); return;
-  }
   const d = DB.load();
   const contrato = (d.contratos_full||[]).find(x => x.id === contratoId);
   if(!contrato){ toast('Contrato no encontrado','danger'); return; }
@@ -1774,7 +1771,7 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
   const numContrato = contrato.numero || contratoId;
 
   const templates = selectedTemplates || DOC_GRUPO_EXPEDIENTE;
-  toast('Generando PDFs... esto puede tardar unos segundos','info');
+  toast('Descargando documentos... por favor espere','info');
   let descargados = 0;
 
   for(const tpl of templates){
@@ -1787,82 +1784,41 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
           const idx = pagos.indexOf(p);
           const htmlDoc = await _generarDocHTML(tpl, contratoId, idx);
           const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
-          const fileName = `${baseName}_Pago${idx+1}_${numContrato}.pdf`;
-          await _descargarComoPDF(htmlDoc, fileName);
+          const fileName = `${baseName}_Pago${idx+1}_${numContrato}.html`;
+          _descargarComoHTML(htmlDoc, fileName);
           descargados++;
+          await new Promise(r => setTimeout(r, 300));
         }
       } else {
         const htmlDoc = await _generarDocHTML(tpl, contratoId);
         const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
-        const fileName = `${baseName}_${numContrato}.pdf`;
-        await _descargarComoPDF(htmlDoc, fileName);
+        const fileName = `${baseName}_${numContrato}.html`;
+        _descargarComoHTML(htmlDoc, fileName);
         descargados++;
+        await new Promise(r => setTimeout(r, 300));
       }
     } catch(e){
       console.warn('Error descargando', tpl, e.message);
     }
   }
 
-  toast(`${descargados} PDFs descargados a su carpeta de Descargas`,'success');
+  toast(`${descargados} documentos descargados. Ábralos en Chrome y use Ctrl+P → Guardar como PDF (Márgenes: Ninguno) para convertirlos.`,'success');
 }
 
-async function _descargarComoPDF(htmlDoc, fileName){
-  // Limpiar HTML
+function _descargarComoHTML(htmlDoc, fileName){
+  // Limpiar: quitar botón imprimir y margin-top del wrapper
   htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
   htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
-
-  // Convertir flexbox header a table layout (html2canvas no soporta flexbox bien)
-  htmlDoc = htmlDoc.replace(
-    /display:\s*flex/g, 'display:table'
-  );
-  htmlDoc = htmlDoc.replace(
-    /class="header-escudo"/g,
-    'class="header-escudo" style="display:table-cell;width:80px;vertical-align:middle"'
-  );
-  htmlDoc = htmlDoc.replace(
-    /class="header-texto"/g,
-    'class="header-texto" style="display:table-cell;vertical-align:middle"'
-  );
-
-  // Inyectar estilos para PDF
-  htmlDoc = htmlDoc.replace('</head>',
-    `<style>
-      body { background:#fff!important; color:#000!important; max-width:none!important; border:none!important; margin:0!important; padding:10px 15px!important; }
-      .header-inst { display:table!important; width:100%; }
-      img { max-width:100%; }
-    </style></head>`
-  );
-
-  // Crear iframe temporal visible (html2canvas requiere elementos visibles)
-  const iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;top:0;left:0;width:216mm;height:280mm;opacity:0;z-index:-1;border:none;';
-  document.body.appendChild(iframe);
-
-  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframeDoc.open();
-  iframeDoc.write(htmlDoc);
-  iframeDoc.close();
-
-  // Esperar a que cargue el contenido del iframe
-  await new Promise(r => {
-    if(iframeDoc.readyState === 'complete') r();
-    else iframe.onload = r;
-  });
-  // Esperar extra para imágenes
-  await new Promise(r => setTimeout(r, 500));
-
-  const body = iframeDoc.body;
-
-  await html2pdf().set({
-    margin: [8, 8, 6, 10],
-    filename: fileName,
-    image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false, windowWidth: 816 },
-    jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-    pagebreak: { mode: ['css', 'legacy'] }
-  }).from(body).save();
-
-  document.body.removeChild(iframe);
+  // Crear blob y descargar
+  const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 /* ══════════════════════════════════════════════════════════
