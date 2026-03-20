@@ -1744,6 +1744,24 @@ async function descargarExpedientePDFs(contratoId){
 }
 
 async function _descargarComoPDF(htmlDoc, fileName){
+  // Limpiar estilos de pantalla: quitar @media screen, forzar fondo blanco
+  htmlDoc = htmlDoc.replace(/@media\s+screen\s*\{[^{}]*(\{[^{}]*\}[^{}]*)*\}/g, '');
+  // Inyectar CSS para forzar fondo blanco y formato limpio
+  const pdfCSS = `<style>
+    body { background: #fff !important; color: #000 !important; margin: 0 !important;
+      padding: 15px 20px !important; max-width: none !important; border: none !important;
+      box-shadow: none !important; font-size: 10pt !important; }
+    .header-inst { display: flex !important; align-items: center !important; gap: 12px !important;
+      border-bottom: 3px double #000 !important; padding-bottom: 8px !important; margin-bottom: 15px !important; }
+    .header-escudo img { width: 70px !important; height: auto !important; }
+    .header-texto { flex: 1 !important; text-align: center !important; }
+    .no-print, .print-btn { display: none !important; }
+    table { width: 100% !important; border-collapse: collapse !important; }
+    td, th { padding: 3px 6px !important; }
+    [style*="margin-top:50px"] { margin-top: 0 !important; }
+  </style>`;
+  htmlDoc = htmlDoc.replace('</head>', pdfCSS + '</head>');
+
   // Crear iframe oculto para renderizar
   const iframe = document.createElement('iframe');
   iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:816px;height:1056px;border:none';
@@ -1755,19 +1773,20 @@ async function _descargarComoPDF(htmlDoc, fileName){
   iDoc.close();
 
   // Esperar a que cargue
-  await new Promise(r => setTimeout(r, 500));
+  await new Promise(r => setTimeout(r, 600));
 
   // Remover botones no-print del contenido
-  const noPrints = iDoc.querySelectorAll('.no-print, .print-btn');
-  noPrints.forEach(el => el.remove());
+  const noPrints = iDoc.querySelectorAll('.no-print, .print-btn, [style*="margin-top:50px"]');
+  noPrints.forEach(el => { if(el.style) el.style.marginTop = '0'; if(el.classList.contains('no-print') || el.classList.contains('print-btn')) el.remove(); });
 
   const body = iDoc.body;
+  body.style.background = '#fff';
 
   await html2pdf().set({
     margin: [10, 10, 8, 15],
     filename: fileName,
     image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 1.5, useCORS: true, letterRendering: true },
+    html2canvas: { scale: 1.5, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
     jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
   }).from(body).save();
