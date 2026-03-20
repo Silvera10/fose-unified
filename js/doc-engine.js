@@ -1132,6 +1132,14 @@ async function generarDocumento(templateName, contratoId, pagoIdx){
     // 5b. Inyectar firmas (rector y contratista) — UNA SOLA VEZ cada una
     html = _inyectarFirmas(html, ctx);
 
+    // 5b2. Inyectar código de expediente en el encabezado
+    if(ctx.doc_code){
+      const badge = `<div style="position:absolute;top:0;right:0;font-size:10pt;font-weight:bold;color:#555;background:#f0f0f0;padding:3px 10px;border:1.5px solid #999;border-radius:3px;letter-spacing:0.5px;font-family:monospace;-webkit-print-color-adjust:exact;print-color-adjust:exact">${ctx.doc_code}</div>`;
+      html = html.replace('class="header-inst"', 'class="header-inst" style="position:relative"');
+      // Insertar badge después del doc-titulo span
+      html = html.replace(/(class="doc-titulo"[^>]*>[^<]*<\/span><\/div>)/, '$1\n  ' + badge);
+    }
+
     // 5c. Inyectar CSS global: firma sin línea + ajuste automático de impresión
     html = html.replace('</head>', `<style>
       /* ═══ FIRMAS: sin bordes ni líneas ═══ */
