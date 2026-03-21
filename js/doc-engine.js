@@ -1806,14 +1806,13 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
     return;
   }
 
-  toast(`Generando ${cola.length} PDFs... por favor espere`,'info');
+  toast(`Descargando ${cola.length} documentos... por favor espere`,'info');
 
   for(let i = 0; i < cola.length; i++){
-    toast(`Generando PDF ${i+1} de ${cola.length}: ${cola[i].name}...`,'info');
     await _generarPDFauto(cola[i].html, cola[i].name);
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 400));
   }
-  toast(`${cola.length} PDFs descargados exitosamente.`,'success');
+  toast(`${cola.length} documentos descargados. Abra cada uno en Chrome y use Ctrl+P → Guardar como PDF (Márgenes: Ninguno).`,'success');
 }
 
 async function _generarPDFauto(htmlDoc, fileName){
@@ -1821,62 +1820,16 @@ async function _generarPDFauto(htmlDoc, fileName){
   htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
   htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
 
-  // Crear contenedor temporal invisible
-  const container = document.createElement('div');
-  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:816px;background:white;';
-
-  // Extraer solo el body content y los estilos
-  let bodyContent = '';
-  const bodyMatch = htmlDoc.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  if(bodyMatch) bodyContent = bodyMatch[1];
-  else bodyContent = htmlDoc;
-
-  // Extraer estilos
-  let estilos = '';
-  const styleMatches = htmlDoc.match(/<style[^>]*>[\s\S]*?<\/style>/gi);
-  if(styleMatches) estilos = styleMatches.join('\n');
-
-  // Forzar fondo blanco y eliminar estilos de pantalla que causan problemas
-  estilos = estilos.replace(/background\s*:\s*linear-gradient[^;]+;/gi, 'background:white;');
-  estilos = estilos.replace(/background-color\s*:\s*#[0-9a-f]+\s*;/gi, 'background-color:white;');
-  estilos += `<style>
-    *{background-color:transparent !important}
-    body,html,.doc-wrapper{background:white !important}
-    .header-inst{display:block !important;text-align:center !important}
-    .header-inst img{display:block !important;margin:0 auto 8px !important}
-    .header-inst .inst-datos{display:block !important;text-align:center !important}
-    .doc-code{display:block !important}
-    table{page-break-inside:auto}
-    tr{page-break-inside:avoid}
-  </style>`;
-
-  container.innerHTML = estilos + bodyContent;
-  document.body.appendChild(container);
-
-  try {
-    await html2pdf().set({
-      margin: [10, 12, 8, 16],
-      filename: fileName + '.pdf',
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        letterRendering: true
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'letter',
-        orientation: 'portrait'
-      },
-      pagebreak: { mode: ['avoid-all','css','legacy'] }
-    }).from(container).save();
-  } catch(e){
-    console.warn('Error generando PDF:', e.message);
-  } finally {
-    document.body.removeChild(container);
-  }
+  // Descargar como HTML (renombrado a .pdf.html para fácil conversión)
+  const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 /* ══════════════════════════════════════════════════════════
