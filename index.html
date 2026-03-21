@@ -807,7 +807,7 @@
                 <input class="form-control form-control-sm" id="mc-numero" oninput="_auditarCampo('mc-numero','hint-numero','numero');_autoRP()" onblur="_validarDatosBasicos()">
                 <small id="hint-numero" style="font-size:9px"></small></div>
               <div class="col-md-3"><label class="form-label small mb-0" style="color:#6c757d">Cto. Anterior (Ref.)</label>
-                <input class="form-control form-control-sm" id="mc-ref-anterior" placeholder="Ej: CTO2025-003" style="font-size:11px" oninput="(function(v){var cdp=$('mc-pp-cdp'),rp=$('mc-pp-rp');if(v){cdp.readOnly=false;cdp.style.background='#fff';rp.readOnly=false;rp.style.background='#fff'}else{cdp.readOnly=true;cdp.style.background='#f0f7f0';rp.readOnly=true;rp.style.background='#f0f7f0'}})(this.value.trim())">
+                <input class="form-control form-control-sm" id="mc-ref-anterior" placeholder="Ej: CTO2025-003" style="font-size:11px" oninput="(function(v){var cdp=$('mc-pp-cdp'),rp=$('mc-pp-rp'),fs=$('div-fecha-suscripcion');if(v){cdp.readOnly=false;cdp.style.background='#fff';rp.readOnly=false;rp.style.background='#fff';if(fs)fs.classList.remove('d-none')}else{cdp.readOnly=true;cdp.style.background='#f0f7f0';rp.readOnly=true;rp.style.background='#f0f7f0';if(fs)fs.classList.add('d-none');$('mc-fecha-suscripcion').value=''}})(this.value.trim())">
                 <small style="font-size:8px;color:#999">Si es continuación de vigencia anterior</small></div>
               <div class="col-md-3"><label class="form-label small fw-bold mb-0">Tipo *</label>
                 <select class="form-select form-select-sm" id="mc-tipo">
@@ -981,6 +981,11 @@
             <!-- Fechas y Plazo del Contrato -->
             <div class="small fw-bold mb-2" style="color:#fff;background:linear-gradient(135deg,#2980b9,#3498db);padding:6px 12px;border-radius:5px">
               <i class="bi bi-calendar-range me-1"></i>Fechas y Plazo del Contrato</div>
+            <div id="div-fecha-suscripcion" class="row g-2 mb-2 d-none">
+              <div class="col-md-4"><label class="form-label small mb-0 fw-bold" style="color:#e67e22">Fecha Suscripción (Vig. Anterior)</label>
+                <input type="date" class="form-control form-control-sm" id="mc-fecha-suscripcion" style="border-color:#e67e22">
+                <small style="font-size:8px;color:#e67e22">Fecha real de firma del contrato original</small></div>
+            </div>
             <div class="row g-2 mb-3">
               <div class="col-md-3"><label class="form-label small mb-0">Fecha Inicio</label>
                 <input type="date" class="form-control form-control-sm" id="mc-fecha-inicio" onchange="validarFechaHabil(this);_autoFechasContrato(true);_validarDatosBasicos()"></div>

@@ -1160,6 +1160,11 @@ function abrirModalContrato(id=null){
     if(c.ref_contrato_anterior){
       $('mc-pp-cdp').readOnly = false; $('mc-pp-cdp').style.background = '#fff';
       $('mc-pp-rp').readOnly = false; $('mc-pp-rp').style.background = '#fff';
+      $('div-fecha-suscripcion').classList.remove('d-none');
+      $('mc-fecha-suscripcion').value = c.fecha_suscripcion||'';
+    } else {
+      $('div-fecha-suscripcion').classList.add('d-none');
+      $('mc-fecha-suscripcion').value = '';
     }
     $('mc-modalidad').value = c.modalidad||''; $('mc-estado').value = c.estado||'En ejecucion';
     $('mc-objeto').value = (c.objeto||'').replace(/^\(Pendiente\)/,''); $('mc-obligaciones').value = c.obligaciones||'';
@@ -2420,6 +2425,7 @@ function guardarContrato(){
     id: $('mc-id').value || uid(),
     numero: numero, tipo:$('mc-tipo').value, modalidad:$('mc-modalidad').value,
     ref_contrato_anterior: $('mc-ref-anterior')?.value?.trim()||'',
+    fecha_suscripcion: $('mc-ref-anterior')?.value?.trim() ? _fixAnio($('mc-fecha-suscripcion').value) : '',
     estado:estadoFinal, objeto: objeto, obligaciones:$('mc-obligaciones').value.trim(),
     valor, fecha_inicio:_fixAnio($('mc-fecha-inicio').value), fecha_fin:_fixAnio($('mc-fecha-fin').value),
     plazo:Number($('mc-plazo').value)||0,

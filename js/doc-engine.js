@@ -685,7 +685,8 @@ function buildDocContext(contrato, d, templateName){
     fecha_presentacion_oferta: c.fecha_presentacion_oferta || '',
     fecha_aprobacion_plan_compras: cfg.fecha_paa || c.fecha_aprobacion_plan_compras || '',
     fecha_modificacion_plan_compras: cfg.fecha_mod_paa || c.fecha_modificacion_plan_compras || '',
-    fecha_contrato: c.fecha_contrato || c.fecha_inicio || '',
+    fecha_suscripcion: c.fecha_suscripcion || '',
+    fecha_contrato: c.fecha_suscripcion || c.fecha_contrato || c.fecha_inicio || '',
     // Fechas adicionales del flujo contractual
     fecha_carta_propuesta: c.fecha_carta_propuesta || '',
     fecha_aceptacion: c.fecha_aceptacion || '',
