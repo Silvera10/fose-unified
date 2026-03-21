@@ -700,6 +700,7 @@ function buildDocContext(contrato, d, templateName){
     fecha_cdp_larga: _fechaLarga(c.fecha_cdp),
     fecha_rp_larga: _fechaLarga(c.fecha_rp),
     fecha_inicio_larga: _fechaLarga(c.fecha_inicio),
+    fecha_suscripcion_larga: _fechaLarga(c.fecha_suscripcion || c.fecha_inicio),
     fecha_fin_larga: _fechaLarga(c.fecha_fin),
     fecha_egreso_larga: _fechaLarga(c.fecha_egreso),
     fecha_estudio_previo_larga: _fechaLarga(c.fecha_estudio_previo),

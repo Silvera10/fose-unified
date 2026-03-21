@@ -483,7 +483,7 @@ table.ai-firma-tabla td {
 <!-- ── ENCABEZADO ─────────────────────────────────────────────── -->
 <p class="ai-intro">
   En el municipio de <strong>{{ inst_municipio }}</strong>,
-  {{ inst_departamento }}, siendo el día <strong>{{ fecha_inicio_larga }}</strong>,
+  {{ inst_departamento }}, siendo el día <strong>{{ fecha_suscripcion_larga }}</strong>,
   en las instalaciones de
   {{ inst_art }}
   <strong>{{ inst_nombre }}</strong>, NIT <strong>{{ format_id(inst_nit) }}</strong>,
@@ -3376,7 +3376,7 @@ table.ct-firma-tabla td {
 <!-- ── Lugar y fecha ──────────────────────────────────────────── -->
 <p class="ct-lugar">
   En señal de conformidad y aceptación con el contenido del presente contrato,
-  las partes lo suscriben en {{ inst_municipio }}, el {{ fecha_inicio_larga }}.
+  las partes lo suscriben en {{ inst_municipio }}, el {{ fecha_suscripcion_larga }}.
 </p>
 
 <!-- ── FIRMAS ─────────────────────────────────────────────────── -->
@@ -3828,7 +3828,7 @@ table.ct-firma-tabla td {
 <!-- ── Lugar y fecha ──────────────────────────────────────────── -->
 <p class="ct-lugar">
   En señal de conformidad y aceptación con el contenido del presente contrato,
-  las partes lo suscriben en {{ inst_municipio }}, el {{ fecha_inicio_larga }}.
+  las partes lo suscriben en {{ inst_municipio }}, el {{ fecha_suscripcion_larga }}.
 </p>
 
 <!-- ── FIRMAS ─────────────────────────────────────────────────── -->
