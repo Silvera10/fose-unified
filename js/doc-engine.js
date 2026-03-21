@@ -828,6 +828,7 @@ function buildDocContext(contrato, d, templateName){
   };
   const _tplKey = (templateName||'').replace(/\.html$/,'').replace(/^docs\//,'');
   ctx.doc_code = _docCodes[_tplKey] || '';
+  ctx._tplKey = _tplKey;
 
   return ctx;
 }
@@ -947,10 +948,13 @@ function _buildHabeasConstancia(ctx){
    Inyecta firma del rector y contratista UNA SOLA VEZ
 ══════════════════════════════════════════════════════════ */
 function _inyectarFirmas(html, ctx){
+  // Documentos que firma SOLO el contratista (no el rector)
+  const _soloContratista = ['carta_juramentada','habeas_data','carta_propuesta','informe_contratista'];
+
   // ── Firma del Rector ──
   // Estrategia: buscar la ÚLTIMA aparición del nombre del rector que esté
   // en una sección de firma (parte final del documento), e inyectar UNA sola vez.
-  if(ctx.firma_rector_img){
+  if(ctx.firma_rector_img && !_soloContratista.includes(ctx._tplKey)){
     const rName = (ctx.rector||'').trim();
     if(rName){
       const firmaImgR = `<img src="${ctx.firma_rector_img}" style="max-height:80px;max-width:250px;display:block;margin:0 auto 2px" alt="Firma Rector">`;
