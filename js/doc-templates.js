@@ -130,8 +130,6 @@ table.ao-tabla td {
 }
 .ao-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ao-firma-tabla {
   width: 50%;
@@ -455,8 +453,6 @@ table.ai-tabla .ai-grupo {
 /* ── Firmas  (3 columnas) ─────────────────────────── */
 .ai-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ai-firma-tabla {
   width: 100%;
@@ -884,8 +880,6 @@ table.al-data tfoot td {
 /* ── Firma ────────────────────────────────────────── */
 .al-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.al-firma-tabla {
   width: 100%;
@@ -921,8 +915,6 @@ table.al-firma-tabla.al-firma-tres td {
 /* ── Firma supervisor (fila inferior centrada) ────── */
 .al-firma-sup {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.al-firma-sup-tabla {
   width: 60%;
@@ -1411,8 +1403,6 @@ table.ar-verif tbody tr:nth-child(even) td {
 /* ── Firmas (2 columnas) ──────────────────────────── */
 .ar-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ar-firma-tabla {
   width: 100%;
@@ -1666,7 +1656,6 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
       [class*="-firma-linea"], .firma-linea {
         margin-top: 20px !important;
       }
-      [class*="-firma"] { page-break-inside: avoid; }
       img { max-width: 100% !important; height: auto !important; }
       h1, h2, h3 { margin: 6px 0 !important; }
       p { margin: 4px 0 !important; }
@@ -1892,8 +1881,6 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
 /* ── Firma ────────────────────────────────────────── */
 .cj-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.cj-firma-tabla {
   width: 50%;
@@ -2263,7 +2250,6 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
   /* Firma */
   .cp-firma-section {
     margin-top: 10px;
-    page-break-inside: avoid;
   }
   .cp-firma-block {
     display: inline-block;
@@ -2285,7 +2271,6 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     table.cp-items    { page-break-inside: avoid; }
     table.cp-data     { page-break-inside: avoid; }
     table.cp-info     { page-break-inside: avoid; }
-    .cp-firma-section { page-break-inside: avoid; }
     .cp-destinatario  { page-break-inside: avoid; }
   }
 </style>
@@ -2630,7 +2615,6 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
   /* Firmas dos columnas */
   .cdp-firma-section {
     margin-top: 15px;
-    page-break-inside: avoid;
   }
   .cdp-firma-grid {
     display: flex;
@@ -2657,7 +2641,6 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     table.cdp-table    { page-break-inside: avoid; }
     table.cdp-saldos   { page-break-inside: avoid; }
     table.cdp-info     { page-break-inside: avoid; }
-    .cdp-firma-section { page-break-inside: avoid; }
     .cdp-valor-box     { page-break-inside: avoid; }
     .cdp-concepto-bloque { page-break-inside: avoid; }
   }
@@ -3138,8 +3121,6 @@ table.ct-unspsc tbody td.ct-unspsc-nombre {
 /* ── Firmas ───────────────────────────────────────── */
 .ct-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ct-firma-tabla {
   width: 100%;
@@ -3608,8 +3589,6 @@ table.ct-unspsc tbody td.ct-unspsc-nombre {
 /* ── Firmas ───────────────────────────────────────── */
 .ct-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ct-firma-tabla {
   width: 100%;
@@ -4122,8 +4101,6 @@ table.ce-data tfoot td {
 /* ── Firma ────────────────────────────────────────── */
 .ce-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ce-firma-tabla {
   width: 100%;
@@ -4527,7 +4504,6 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
   /* Bloque de firmas */
   .ep-firma-section {
     margin-top: 15px;
-    page-break-inside: avoid;
   }
   .ep-firma-section h3 {
     font-size: 10pt;
@@ -4569,7 +4545,6 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
     .ep-section       { page-break-inside: avoid; }
     table.ep-table    { page-break-inside: avoid; }
     table.ep-info     { page-break-inside: avoid; }
-    .ep-firma-section { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -4945,7 +4920,6 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
   /* Bloque de firmas */
   .ep-firma-section {
     margin-top: 15px;
-    page-break-inside: avoid;
   }
   .ep-firma-section h3 {
     font-size: 10pt;
@@ -4975,7 +4949,6 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
     .ep-section       { page-break-inside: avoid; }
     table.ep-table    { page-break-inside: avoid; }
     table.ep-info     { page-break-inside: avoid; }
-    .ep-firma-section { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -5536,8 +5509,6 @@ td.ev-fecha {
 /* ── Firmas (tabla para compatibilidad print) ─────── */
 .ev-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ev-firma-tabla {
   width: 82%;
@@ -5923,8 +5894,6 @@ td.ev-fecha {
 /* ── Firmas (tabla para compatibilidad print) ─────── */
 .ev-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ev-firma-tabla {
   width: 82%;
@@ -6272,8 +6241,6 @@ table.hd-tabla td {
 /* ── Firma ────────────────────────────────────────── */
 .hd-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.hd-firma-tabla {
   width: 50%;
@@ -6686,8 +6653,6 @@ table.ic-avance tbody tr:last-child td {
 /* ── Firma ────────────────────────────────────────── */
 .ic-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ic-firma-tabla {
   width: 50%;
@@ -7178,8 +7143,6 @@ table.is-data tfoot td {
 /* ── Firma ────────────────────────────────────────── */
 .is-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.is-firma-tabla {
   width: 50%;
@@ -7543,8 +7506,8 @@ DOC_TEMPLATES["docs/invitacion.html"] = `{% extends "docs/base_doc.html" %}
   .inv-seccion { background:#eee; font-weight:bold; padding:3px 8px; margin:14px 0 6px 0; border-left:4px solid #333; font-size:10pt; }
   .inv-parrafo { text-align:justify; margin:6px 0; font-size:10.5pt; }
   .inv-num { text-align:center; }
-  .inv-firma { text-align:center; margin-top:50px; }
-  .inv-firma-linea { border-top:none; width:260px; margin:55px auto 4px auto; padding-top:4px; }
+  .inv-firma { text-align:center; margin-top:15px; }
+  .inv-firma-linea { border-top:none; width:260px; margin:10px auto 4px auto; padding-top:4px; }
   ul.inv-list { margin:6px 0 6px 24px; }
   ul.inv-list li { margin:2px 0; font-size:10.5pt; }
 </style>
@@ -7940,7 +7903,6 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
 
   .inv2-firma-section {
     margin-top: 15px;
-    page-break-inside: avoid;
   }
   .inv2-firma-block {
     display: inline-block;
@@ -7958,7 +7920,6 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
     .inv2-section       { page-break-inside: avoid; }
     table.inv2-table    { page-break-inside: avoid; }
     table.inv2-info     { page-break-inside: avoid; }
-    .inv2-firma-section { page-break-inside: avoid; }
     .inv2-destinatario  { page-break-inside: avoid; }
   }
 </style>
@@ -8383,7 +8344,6 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
 
   .inv3-firma-section {
     margin-top: 15px;
-    page-break-inside: avoid;
   }
   .inv3-firma-block {
     display: inline-block;
@@ -8401,7 +8361,6 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
     .inv3-section       { page-break-inside: avoid; }
     table.inv3-table    { page-break-inside: avoid; }
     table.inv3-info     { page-break-inside: avoid; }
-    .inv3-firma-section { page-break-inside: avoid; }
     .inv3-destinatario  { page-break-inside: avoid; }
   }
 </style>
@@ -8859,7 +8818,6 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
 
   .invg-firma-section {
     margin-top: 15px;
-    page-break-inside: avoid;
   }
   .invg-firma-block {
     display: inline-block;
@@ -8877,7 +8835,6 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     .invg-section        { page-break-inside: avoid; }
     table.invg-table     { page-break-inside: avoid; }
     table.invg-info      { page-break-inside: avoid; }
-    .invg-firma-section  { page-break-inside: avoid; }
     .invg-garantia-box   { page-break-inside: avoid; }
     .invg-destinatario   { page-break-inside: avoid; }
   }
@@ -9377,8 +9334,6 @@ table.oc-tabla td {
 /* ── Firmas ───────────────────────────────────────── */
 .oc-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.oc-firma-tabla {
   width: 100%;
@@ -9790,8 +9745,6 @@ table.op-imputacion th {
 /* ── Firma ────────────────────────────────────────── */
 .op-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.op-firma-tabla {
   width: 100%;
@@ -10087,7 +10040,7 @@ table.op-firma-tabla td {
 
 <!-- ── FIRMA ──────────────────────────────────────────────────── -->
 <div class="op-firma-section">
-  <div class="op-firma-linea" style="width:60%; margin:65px auto 0">
+  <div class="op-firma-linea" style="width:60%; margin:10px auto 0">
     <p class="op-firma-nombre">{{ rector }}</p>
     <p class="op-firma-cargo">C.C. N.° {{ format_id(cc_rector) }}</p>
     <p class="op-firma-cargo">Rector(a) — Ordenador del Gasto</p>
@@ -10215,7 +10168,6 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
   /* Firmas dos columnas */
   .rp-firma-section {
     margin-top: 15px;
-    page-break-inside: avoid;
   }
   .rp-firma-grid {
     display: flex;
@@ -10241,7 +10193,6 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
     .rp-section        { page-break-inside: avoid; }
     table.rp-table     { page-break-inside: avoid; }
     table.rp-info      { page-break-inside: avoid; }
-    .rp-firma-section  { page-break-inside: avoid; }
     .rp-valor-box      { page-break-inside: avoid; }
   }
 </style>
@@ -10487,7 +10438,6 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
   /* Firma */
   .sc-firma-section {
     margin-top: 15px;
-    page-break-inside: avoid;
   }
   .sc-firma-linea {
     border-top: none;
@@ -10502,7 +10452,6 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
 
   @media print {
     .sc-bloque        { page-break-inside: avoid; }
-    .sc-firma-section { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -10701,8 +10650,6 @@ table.ed-contable td {
 }
 .ed-firma-section {
   margin-top: 15px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ed-firma-tabla {
   width: 100%;
@@ -10720,7 +10667,7 @@ table.ed-firma-tabla td {
 .ed-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin: 58px 30px 0;
+  margin: 10px 30px 0;
 }
 .ed-firma-nombre {
   font-size: 9.5pt;
