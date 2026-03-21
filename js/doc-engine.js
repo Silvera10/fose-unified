@@ -1806,31 +1806,73 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
     return;
   }
 
-  toast(`Se abrirán ${cola.length} documentos. En cada uno: Ctrl+P → Guardar como PDF → Márgenes: Ninguno`,'info');
+  if(typeof html2pdf === 'undefined'){
+    toast('Cargando librería PDF... intente de nuevo en 5 segundos','warning');
+    return;
+  }
 
   for(let i = 0; i < cola.length; i++){
-    await _abrirParaPDF(cola[i].html, cola[i].name, i+1, cola.length);
+    toast(`Generando PDF ${i+1} de ${cola.length}: ${cola[i].name}...`,'info');
+    await _generarPDFconIframe(cola[i].html, cola[i].name);
   }
-  toast('Todos los documentos procesados.','success');
+  toast(`${cola.length} PDFs descargados.`,'success');
 }
 
-function _abrirParaPDF(htmlDoc, docName, num, total){
-  return new Promise(resolve => {
+function _generarPDFconIframe(htmlDoc, fileName){
+  return new Promise((resolve) => {
+    // Limpiar botón imprimir y margin-top
     htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
     htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
 
-    const w = window.open('', '_blank');
-    if(!w){ toast(`Permita ventanas emergentes para continuar`,'danger'); resolve(); return; }
+    // Crear iframe visible (html2canvas necesita elemento visible)
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:0;left:0;width:816px;height:1056px;opacity:0.01;z-index:-1;border:none;';
+    document.body.appendChild(iframe);
 
-    w.document.open();
-    w.document.write(htmlDoc);
-    w.document.close();
-    w.document.title = `${num}/${total} — ${docName} — Ctrl+P para guardar como PDF`;
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(htmlDoc);
+    iframeDoc.close();
 
-    // Esperar a que el usuario cierre la ventana para abrir la siguiente
-    const check = setInterval(() => {
-      if(w.closed){ clearInterval(check); setTimeout(resolve, 300); }
-    }, 500);
+    // Esperar a que cargue el contenido del iframe
+    iframe.onload = () => {
+      setTimeout(() => {
+        const body = iframeDoc.body;
+        if(!body || !body.innerHTML.trim()){
+          console.warn('Iframe body vacío para', fileName);
+          document.body.removeChild(iframe);
+          resolve();
+          return;
+        }
+
+        html2pdf().set({
+          margin: [8, 10, 6, 14],
+          filename: fileName + '.pdf',
+          image: { type: 'jpeg', quality: 0.92 },
+          html2canvas: {
+            scale: 1.5,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+            windowWidth: 816,
+            windowHeight: 1056
+          },
+          jsPDF: {
+            unit: 'mm',
+            format: 'letter',
+            orientation: 'portrait'
+          },
+          pagebreak: { mode: ['css','legacy'] }
+        }).from(body).save().then(() => {
+          document.body.removeChild(iframe);
+          setTimeout(resolve, 800);
+        }).catch(e => {
+          console.warn('Error PDF:', fileName, e);
+          document.body.removeChild(iframe);
+          resolve();
+        });
+      }, 1000); // Dar tiempo a que carguen imágenes
+    };
   });
 }
 
