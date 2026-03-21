@@ -7019,7 +7019,7 @@ DOC_TEMPLATES["docs/informe_supervisor.html"] = `{% extends "docs/base_doc.html"
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -7028,15 +7028,13 @@ DOC_TEMPLATES["docs/informe_supervisor.html"] = `{% extends "docs/base_doc.html"
   font-size: 10.5pt;
   font-weight: bold;
   color: #333;
-  margin: -8px 0 14px;
+  margin: -8px 0 10px;
   letter-spacing: 0.5px;
 }
 
 /* ── Secciones ────────────────────────────────────── */
 .is-section {
-  margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  margin: 6px 0 8px;
 }
 .is-section-titulo {
   font-size: 10pt;
@@ -7179,7 +7177,7 @@ table.is-data tfoot td {
 
 /* ── Firma ────────────────────────────────────────── */
 .is-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -7197,8 +7195,8 @@ table.is-firma-tabla td {
 }
 .is-firma-linea {
   border-top: none;
-  padding-top: 6px;
-  margin-top: 58px;
+  padding-top: 4px;
+  margin-top: 10px;
 }
 .is-firma-nombre {
   font-size: 9.5pt;
