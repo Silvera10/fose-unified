@@ -1797,46 +1797,82 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
 
   if(!cola.length){ toast('No se generaron documentos','warning'); return; }
 
-  // Imprimir uno por uno: abre ventana, imprime, espera a que cierre
-  toast(`Se abrirán ${cola.length} documentos uno por uno. En cada uno seleccione "Guardar como PDF" con Márgenes: Ninguno.`,'info');
+  if(typeof html2pdf === 'undefined'){
+    toast('Cargando librería PDF... intente de nuevo en unos segundos','warning');
+    return;
+  }
+
+  toast(`Generando ${cola.length} PDFs... por favor espere`,'info');
 
   for(let i = 0; i < cola.length; i++){
-    await _imprimirDocPDF(cola[i].html, cola[i].name, i+1, cola.length);
+    toast(`Generando PDF ${i+1} de ${cola.length}: ${cola[i].name}...`,'info');
+    await _generarPDFauto(cola[i].html, cola[i].name);
+    await new Promise(r => setTimeout(r, 600));
   }
-  toast('Todos los documentos procesados.','success');
+  toast(`${cola.length} PDFs descargados exitosamente.`,'success');
 }
 
-function _imprimirDocPDF(htmlDoc, docName, num, total){
-  return new Promise(resolve => {
-    // Limpiar botón imprimir y margin-top
-    htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
-    htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
+async function _generarPDFauto(htmlDoc, fileName){
+  // Limpiar botón imprimir y margin-top
+  htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
+  htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
 
-    // Agregar título con nombre del documento para fácil identificación
-    htmlDoc = htmlDoc.replace('</head>',
-      `<title>${docName}</title><style>@media print{body{margin:0}}</style></head>`);
+  // Crear contenedor temporal invisible
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:816px;background:white;';
 
-    const w = window.open('', '_blank');
-    if(!w){ toast(`Documento ${num}/${total}: Permita ventanas emergentes`,'danger'); resolve(); return; }
+  // Extraer solo el body content y los estilos
+  let bodyContent = '';
+  const bodyMatch = htmlDoc.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  if(bodyMatch) bodyContent = bodyMatch[1];
+  else bodyContent = htmlDoc;
 
-    w.document.open();
-    w.document.write(htmlDoc);
-    w.document.close();
-    w.document.title = docName;
+  // Extraer estilos
+  let estilos = '';
+  const styleMatches = htmlDoc.match(/<style[^>]*>[\s\S]*?<\/style>/gi);
+  if(styleMatches) estilos = styleMatches.join('\n');
 
-    // Esperar que cargue, luego imprimir
-    w.onload = () => {
-      setTimeout(() => {
-        w.print();
-        // Cuando cierre el diálogo de impresión, continuar con el siguiente
-        w.onafterprint = () => { w.close(); setTimeout(resolve, 500); };
-        // Fallback: si el usuario cierra la ventana sin imprimir
-        const check = setInterval(() => {
-          if(w.closed){ clearInterval(check); resolve(); }
-        }, 1000);
-      }, 500);
-    };
-  });
+  // Forzar fondo blanco y eliminar estilos de pantalla que causan problemas
+  estilos = estilos.replace(/background\s*:\s*linear-gradient[^;]+;/gi, 'background:white;');
+  estilos = estilos.replace(/background-color\s*:\s*#[0-9a-f]+\s*;/gi, 'background-color:white;');
+  estilos += `<style>
+    *{background-color:transparent !important}
+    body,html,.doc-wrapper{background:white !important}
+    .header-inst{display:block !important;text-align:center !important}
+    .header-inst img{display:block !important;margin:0 auto 8px !important}
+    .header-inst .inst-datos{display:block !important;text-align:center !important}
+    .doc-code{display:block !important}
+    table{page-break-inside:auto}
+    tr{page-break-inside:avoid}
+  </style>`;
+
+  container.innerHTML = estilos + bodyContent;
+  document.body.appendChild(container);
+
+  try {
+    await html2pdf().set({
+      margin: [10, 12, 8, 16],
+      filename: fileName + '.pdf',
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        letterRendering: true
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'letter',
+        orientation: 'portrait'
+      },
+      pagebreak: { mode: ['avoid-all','css','legacy'] }
+    }).from(container).save();
+  } catch(e){
+    console.warn('Error generando PDF:', e.message);
+  } finally {
+    document.body.removeChild(container);
+  }
 }
 
 /* ══════════════════════════════════════════════════════════
