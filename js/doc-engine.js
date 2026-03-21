@@ -1815,64 +1815,66 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
     toast(`Generando PDF ${i+1} de ${cola.length}: ${cola[i].name}...`,'info');
     await _generarPDFconIframe(cola[i].html, cola[i].name);
   }
+  const ov = document.getElementById('pdf-overlay');
+  if(ov) ov.remove();
   toast(`${cola.length} PDFs descargados.`,'success');
 }
 
 function _generarPDFconIframe(htmlDoc, fileName){
   return new Promise((resolve) => {
-    // Limpiar botón imprimir y margin-top
     htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
     htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
 
-    // Crear iframe visible (html2canvas necesita elemento visible)
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'position:fixed;top:0;left:0;width:816px;height:1056px;opacity:0.01;z-index:-1;border:none;';
-    document.body.appendChild(iframe);
+    // Overlay para cubrir el contenido mientras se genera el PDF
+    let overlay = document.getElementById('pdf-overlay');
+    if(!overlay){
+      overlay = document.createElement('div');
+      overlay.id = 'pdf-overlay';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.95);z-index:99999;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:bold;color:#333;';
+      overlay.textContent = 'Generando PDF...';
+      document.body.appendChild(overlay);
+    }
+    overlay.textContent = 'Generando PDF: ' + fileName + '...';
 
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    iframeDoc.open();
-    iframeDoc.write(htmlDoc);
-    iframeDoc.close();
+    // Extraer body y estilos del HTML completo
+    let bodyContent = htmlDoc;
+    const bodyMatch = htmlDoc.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    if(bodyMatch) bodyContent = bodyMatch[1];
 
-    // Esperar a que cargue el contenido del iframe
-    iframe.onload = () => {
-      setTimeout(() => {
-        const body = iframeDoc.body;
-        if(!body || !body.innerHTML.trim()){
-          console.warn('Iframe body vacío para', fileName);
-          document.body.removeChild(iframe);
-          resolve();
-          return;
-        }
+    let estilos = '';
+    const styleMatches = htmlDoc.match(/<style[^>]*>[\s\S]*?<\/style>/gi);
+    if(styleMatches) estilos = styleMatches.join('\n');
 
-        html2pdf().set({
-          margin: [8, 10, 6, 14],
-          filename: fileName + '.pdf',
-          image: { type: 'jpeg', quality: 0.92 },
-          html2canvas: {
-            scale: 1.5,
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            logging: false,
-            windowWidth: 816,
-            windowHeight: 1056
-          },
-          jsPDF: {
-            unit: 'mm',
-            format: 'letter',
-            orientation: 'portrait'
-          },
-          pagebreak: { mode: ['css','legacy'] }
-        }).from(body).save().then(() => {
-          document.body.removeChild(iframe);
-          setTimeout(resolve, 800);
-        }).catch(e => {
-          console.warn('Error PDF:', fileName, e);
-          document.body.removeChild(iframe);
-          resolve();
-        });
-      }, 1000); // Dar tiempo a que carguen imágenes
-    };
+    // Crear div visible en el DOM (html2canvas lo necesita)
+    const container = document.createElement('div');
+    container.id = 'pdf-render-container';
+    container.style.cssText = 'position:absolute;top:0;left:0;width:816px;background:white;z-index:99998;';
+    container.innerHTML = estilos + bodyContent;
+    document.body.appendChild(container);
+
+    // Dar tiempo a que renderice y carguen imágenes
+    setTimeout(() => {
+      html2pdf().set({
+        margin: [8, 10, 6, 14],
+        filename: fileName + '.pdf',
+        image: { type: 'jpeg', quality: 0.92 },
+        html2canvas: {
+          scale: 1.5,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          logging: false
+        },
+        jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
+        pagebreak: { mode: ['css','legacy'] }
+      }).from(container).save().then(() => {
+        document.body.removeChild(container);
+        setTimeout(resolve, 800);
+      }).catch(e => {
+        console.warn('Error PDF:', fileName, e);
+        document.body.removeChild(container);
+        resolve();
+      });
+    }, 1500);
   });
 }
 
