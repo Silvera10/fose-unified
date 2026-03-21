@@ -1801,80 +1801,41 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
 
   if(!cola.length){ toast('No se generaron documentos','warning'); return; }
 
-  if(typeof html2pdf === 'undefined'){
-    toast('Cargando librería PDF... intente de nuevo en unos segundos','warning');
-    return;
-  }
-
-  if(typeof html2pdf === 'undefined'){
-    toast('Cargando librería PDF... intente de nuevo en 5 segundos','warning');
-    return;
-  }
+  toast(`Se abrirán ${cola.length} documentos. En cada uno guarde como PDF (Ctrl+P → Guardar como PDF → Márgenes: Ninguno). Cierre la ventana para abrir el siguiente.`,'info');
 
   for(let i = 0; i < cola.length; i++){
-    toast(`Generando PDF ${i+1} de ${cola.length}: ${cola[i].name}...`,'info');
-    await _generarPDFconIframe(cola[i].html, cola[i].name);
+    await _abrirYImprimir(cola[i].html, cola[i].name, i+1, cola.length);
   }
-  const ov = document.getElementById('pdf-overlay');
-  if(ov) ov.remove();
-  toast(`${cola.length} PDFs descargados.`,'success');
+  toast('Todos los documentos procesados.','success');
 }
 
-function _generarPDFconIframe(htmlDoc, fileName){
-  return new Promise((resolve) => {
+function _abrirYImprimir(htmlDoc, docName, num, total){
+  return new Promise(resolve => {
     htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
     htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
 
-    // Overlay para cubrir el contenido mientras se genera el PDF
-    let overlay = document.getElementById('pdf-overlay');
-    if(!overlay){
-      overlay = document.createElement('div');
-      overlay.id = 'pdf-overlay';
-      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.95);z-index:99999;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:bold;color:#333;';
-      overlay.textContent = 'Generando PDF...';
-      document.body.appendChild(overlay);
-    }
-    overlay.textContent = 'Generando PDF: ' + fileName + '...';
+    const w = window.open('', '_blank');
+    if(!w){ toast('Permita ventanas emergentes','danger'); resolve(); return; }
 
-    // Extraer body y estilos del HTML completo
-    let bodyContent = htmlDoc;
-    const bodyMatch = htmlDoc.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    if(bodyMatch) bodyContent = bodyMatch[1];
+    w.document.open();
+    w.document.write(htmlDoc);
+    w.document.close();
+    w.document.title = `(${num}/${total}) ${docName}`;
 
-    let estilos = '';
-    const styleMatches = htmlDoc.match(/<style[^>]*>[\s\S]*?<\/style>/gi);
-    if(styleMatches) estilos = styleMatches.join('\n');
+    // Cuando cargue, abrir diálogo de impresión automáticamente
+    const tryPrint = () => {
+      setTimeout(() => {
+        try { w.print(); } catch(e){}
+      }, 800);
+    };
 
-    // Crear div visible en el DOM (html2canvas lo necesita)
-    const container = document.createElement('div');
-    container.id = 'pdf-render-container';
-    container.style.cssText = 'position:absolute;top:0;left:0;width:816px;background:white;z-index:99998;';
-    container.innerHTML = estilos + bodyContent;
-    document.body.appendChild(container);
+    if(w.document.readyState === 'complete') tryPrint();
+    else w.onload = tryPrint;
 
-    // Dar tiempo a que renderice y carguen imágenes
-    setTimeout(() => {
-      html2pdf().set({
-        margin: [8, 10, 6, 14],
-        filename: fileName + '.pdf',
-        image: { type: 'jpeg', quality: 0.92 },
-        html2canvas: {
-          scale: 1.5,
-          useCORS: true,
-          backgroundColor: '#ffffff',
-          logging: false
-        },
-        jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' },
-        pagebreak: { mode: ['css','legacy'] }
-      }).from(container).save().then(() => {
-        document.body.removeChild(container);
-        setTimeout(resolve, 800);
-      }).catch(e => {
-        console.warn('Error PDF:', fileName, e);
-        document.body.removeChild(container);
-        resolve();
-      });
-    }, 1500);
+    // Cuando cierre la ventana, continuar con el siguiente
+    const check = setInterval(() => {
+      if(w.closed){ clearInterval(check); setTimeout(resolve, 300); }
+    }, 500);
   });
 }
 
