@@ -1771,54 +1771,72 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
   const numContrato = contrato.numero || contratoId;
 
   const templates = selectedTemplates || DOC_GRUPO_EXPEDIENTE;
-  toast('Descargando documentos... por favor espere','info');
-  let descargados = 0;
 
+  // Construir cola de documentos a imprimir
+  const cola = [];
   for(const tpl of templates){
     try {
       const esPagoDoc = ['orden_pago.html','egreso.html','informe_contratista.html','informe_supervisor.html'].includes(tpl);
       const pagosRealizados = pagos.filter(p => p.fecha_pago);
-
       if(esPagoDoc && pagosRealizados.length > 0){
         for(const p of pagosRealizados){
           const idx = pagos.indexOf(p);
           const htmlDoc = await _generarDocHTML(tpl, contratoId, idx);
           const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
-          const fileName = `${baseName}_Pago${idx+1}_${numContrato}.html`;
-          _descargarComoHTML(htmlDoc, fileName);
-          descargados++;
-          await new Promise(r => setTimeout(r, 300));
+          cola.push({ html: htmlDoc, name: `${baseName}_Pago${idx+1}_${numContrato}` });
         }
       } else {
         const htmlDoc = await _generarDocHTML(tpl, contratoId);
         const baseName = _DOC_FILENAMES[tpl] || tpl.replace('.html','');
-        const fileName = `${baseName}_${numContrato}.html`;
-        _descargarComoHTML(htmlDoc, fileName);
-        descargados++;
-        await new Promise(r => setTimeout(r, 300));
+        cola.push({ html: htmlDoc, name: `${baseName}_${numContrato}` });
       }
     } catch(e){
-      console.warn('Error descargando', tpl, e.message);
+      console.warn('Error generando', tpl, e.message);
     }
   }
 
-  toast(`${descargados} documentos descargados. Ábralos en Chrome y use Ctrl+P → Guardar como PDF (Márgenes: Ninguno) para convertirlos.`,'success');
+  if(!cola.length){ toast('No se generaron documentos','warning'); return; }
+
+  // Imprimir uno por uno: abre ventana, imprime, espera a que cierre
+  toast(`Se abrirán ${cola.length} documentos uno por uno. En cada uno seleccione "Guardar como PDF" con Márgenes: Ninguno.`,'info');
+
+  for(let i = 0; i < cola.length; i++){
+    await _imprimirDocPDF(cola[i].html, cola[i].name, i+1, cola.length);
+  }
+  toast('Todos los documentos procesados.','success');
 }
 
-function _descargarComoHTML(htmlDoc, fileName){
-  // Limpiar: quitar botón imprimir y margin-top del wrapper
-  htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
-  htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
-  // Crear blob y descargar
-  const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+function _imprimirDocPDF(htmlDoc, docName, num, total){
+  return new Promise(resolve => {
+    // Limpiar botón imprimir y margin-top
+    htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
+    htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
+
+    // Agregar título con nombre del documento para fácil identificación
+    htmlDoc = htmlDoc.replace('</head>',
+      `<title>${docName}</title><style>@media print{body{margin:0}}</style></head>`);
+
+    const w = window.open('', '_blank');
+    if(!w){ toast(`Documento ${num}/${total}: Permita ventanas emergentes`,'danger'); resolve(); return; }
+
+    w.document.open();
+    w.document.write(htmlDoc);
+    w.document.close();
+    w.document.title = docName;
+
+    // Esperar que cargue, luego imprimir
+    w.onload = () => {
+      setTimeout(() => {
+        w.print();
+        // Cuando cierre el diálogo de impresión, continuar con el siguiente
+        w.onafterprint = () => { w.close(); setTimeout(resolve, 500); };
+        // Fallback: si el usuario cierra la ventana sin imprimir
+        const check = setInterval(() => {
+          if(w.closed){ clearInterval(check); resolve(); }
+        }, 1000);
+      }, 500);
+    };
+  });
 }
 
 /* ══════════════════════════════════════════════════════════
