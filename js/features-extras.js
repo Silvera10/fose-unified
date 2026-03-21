@@ -512,7 +512,7 @@ function duplicarVigencia(nuevaVigencia){
     // Copiar rubros de egresos (sin valores)
     newD.rubros = (d.rubros||[]).map(r => ({
       cod:r.cod, guia:r.guia||'', con:r.con, tipo:r.tipo||'fun', esGrupo:r.esGrupo||false, ini:0,
-      cuenta_contable:r.cuenta_contable||'', sifse_fuente:r.sifse_fuente||'', sifse_item:r.sifse_item||''
+      cuenta_contable:r.cuenta_contable||'', nombre_cuenta:r.nombre_cuenta||'', sifse_fuente:r.sifse_fuente||'', sifse_item:r.sifse_item||''
     }));
     newD.rubros_ing = (d.rubros_ing||[]).map(r => ({
       cod:r.cod, guia:r.guia||'', con:r.con, esGrupo:r.esGrupo||false, ini:0,

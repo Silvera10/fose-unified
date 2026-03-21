@@ -318,7 +318,7 @@ async function guardarInstitucion(){
       const origen = await DB._get('instituciones', origenId);
       if(origen){
         d.rubros = (origen.rubros||[]).map(r => ({cod:r.cod,guia:r.guia||'',con:r.con,tipo:r.tipo||'fun',esGrupo:r.esGrupo||false,ini:0,
-          cuenta_contable:r.cuenta_contable||'',sifse_fuente:r.sifse_fuente||'',sifse_item:r.sifse_item||''}));
+          cuenta_contable:r.cuenta_contable||'',nombre_cuenta:r.nombre_cuenta||'',sifse_fuente:r.sifse_fuente||'',sifse_item:r.sifse_item||''}));
         d.rubros_ing = (origen.rubros_ing||[]).map(r => ({cod:r.cod,guia:r.guia||'',con:r.con,esGrupo:r.esGrupo||false,ini:0,
           en_banco:r.en_banco||false,sifse_fuente:r.sifse_fuente||''}));
         // Copiar mapeo SIFSE si existe
@@ -380,7 +380,8 @@ async function copiarRubrosDesdeOtra(){
     // Copiar rubros de egresos (con valores en 0)
     d.rubros = (origenData.rubros||[]).map(r => ({
       cod:r.cod, guia:r.guia||'', con:r.con, tipo:r.tipo||'fun', esGrupo:r.esGrupo||false, ini:0,
-      cuenta_contable:r.cuenta_contable||'', sifse_fuente:r.sifse_fuente||'', sifse_item:r.sifse_item||''
+      cuenta_contable:r.cuenta_contable||'', nombre_cuenta:r.nombre_cuenta||'',
+      sifse_fuente:r.sifse_fuente||'', sifse_item:r.sifse_item||''
     }));
     // Copiar rubros de ingresos (con valores en 0)
     d.rubros_ing = (origenData.rubros_ing||[]).map(r => ({
