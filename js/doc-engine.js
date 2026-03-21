@@ -1801,42 +1801,22 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
 
   if(!cola.length){ toast('No se generaron documentos','warning'); return; }
 
-  toast(`Se abrirán ${cola.length} documentos. En cada uno guarde como PDF (Ctrl+P → Guardar como PDF → Márgenes: Ninguno). Cierre la ventana para abrir el siguiente.`,'info');
-
+  // Abrir todos los documentos como pestañas nuevas
   for(let i = 0; i < cola.length; i++){
-    await _abrirYImprimir(cola[i].html, cola[i].name, i+1, cola.length);
-  }
-  toast('Todos los documentos procesados.','success');
-}
-
-function _abrirYImprimir(htmlDoc, docName, num, total){
-  return new Promise(resolve => {
+    let htmlDoc = cola[i].html;
     htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
     htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
 
-    const w = window.open('', '_blank');
-    if(!w){ toast('Permita ventanas emergentes','danger'); resolve(); return; }
+    const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, '_blank');
+    if(!w){ toast('Permita ventanas emergentes en su navegador','danger'); return; }
+    // Liberar URL después de un rato
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+    await new Promise(r => setTimeout(r, 500));
+  }
 
-    w.document.open();
-    w.document.write(htmlDoc);
-    w.document.close();
-    w.document.title = `(${num}/${total}) ${docName}`;
-
-    // Cuando cargue, abrir diálogo de impresión automáticamente
-    const tryPrint = () => {
-      setTimeout(() => {
-        try { w.print(); } catch(e){}
-      }, 800);
-    };
-
-    if(w.document.readyState === 'complete') tryPrint();
-    else w.onload = tryPrint;
-
-    // Cuando cierre la ventana, continuar con el siguiente
-    const check = setInterval(() => {
-      if(w.closed){ clearInterval(check); setTimeout(resolve, 300); }
-    }, 500);
-  });
+  toast(`${cola.length} documentos abiertos en pestañas. En cada pestaña: Ctrl+P → Guardar como PDF → Márgenes: Ninguno.`,'success');
 }
 
 /* ══════════════════════════════════════════════════════════
