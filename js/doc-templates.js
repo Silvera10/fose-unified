@@ -62,8 +62,6 @@ DOC_TEMPLATES["docs/aceptacion.html"] = `{% extends "docs/base_doc.html" %}
 /* ── Secciones ────────────────────────────────────── */
 .ao-section {
   margin: 12px 0;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ao-section-titulo {
   font-size: 10pt;
@@ -84,8 +82,6 @@ table.ao-tabla {
   border-collapse: collapse;
   margin: 6px 0 8px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ao-tabla th {
   background: #eee;
@@ -380,8 +376,6 @@ DOC_TEMPLATES["docs/acta_inicio.html"] = `{% extends "docs/base_doc.html" %}
 /* ── Secciones ────────────────────────────────────── */
 .ai-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ai-section-titulo {
   font-size: 10pt;
@@ -408,8 +402,6 @@ table.ai-tabla {
   border-collapse: collapse;
   margin: 0 0 8px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ai-tabla th {
   background: #eee;
@@ -746,15 +738,11 @@ DOC_TEMPLATES["docs/acta_liquidacion.html"] = `{% extends "docs/base_doc.html" %
   text-align: justify;
   line-height: 1.45;
   margin: 0 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 
 /* ── Secciones ────────────────────────────────────── */
 .al-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .al-section-titulo {
   font-size: 10pt;
@@ -791,8 +779,6 @@ table.al-tabla {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.al-tabla th {
   background: #eee;
@@ -832,8 +818,6 @@ table.al-data {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.al-data thead th {
   background: #eee;
@@ -873,8 +857,6 @@ table.al-data tfoot td {
   text-align: justify;
   line-height: 1.45;
   margin: 10px 0 0;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 
 /* ── Firma ────────────────────────────────────────── */
@@ -1237,8 +1219,6 @@ DOC_TEMPLATES["docs/acta_recibido.html"] = `{% extends "docs/base_doc.html" %}
 /* ── Secciones ────────────────────────────────────── */
 .ar-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ar-section-titulo {
   font-size: 10pt;
@@ -1265,8 +1245,6 @@ table.ar-tabla {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ar-tabla th {
   background: #eee;
@@ -1334,8 +1312,6 @@ table.ar-verif {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ar-verif thead th {
   background: #eee;
@@ -1385,8 +1361,6 @@ table.ar-verif tbody tr:nth-child(even) td {
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -1790,8 +1764,6 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
 /* ── Secciones ────────────────────────────────────── */
 .cj-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .cj-section-titulo {
   font-size: 10pt;
@@ -1825,8 +1797,6 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
 /* ── Ítem de declaración ──────────────────────────── */
 .cj-item {
   margin: 8px 0 10px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .cj-item-titulo {
   font-size: 9.5pt;
@@ -1858,8 +1828,6 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
   padding: 10px 14px;
   margin: 14px 0 6px;
   background: #fff;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -2086,8 +2054,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 0 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.cp-info th {
     background: #f5f5f5;
     font-weight: bold;
@@ -2116,8 +2083,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     border-left: 3px solid #333;
     font-size: 10pt;
     line-height: 1.45;
-    page-break-inside: avoid;
-  }
+    }
   .cp-destinatario p          { margin: 1px 0; }
   .cp-destinatario p.cp-dest-label { color: #555; font-size: 9.5pt; margin-bottom: 2px; }
   .cp-destinatario p.cp-dest-nombre { font-size: 10.5pt; font-weight: bold; text-transform: uppercase; }
@@ -2157,8 +2123,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
   /* Secciones numeradas */
   .cp-section {
     margin: 12px 0;
-    page-break-inside: avoid;
-  }
+    }
   .cp-section-titulo {
     font-size: 10pt;
     font-weight: bold;
@@ -2191,8 +2156,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 8px 0 10px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.cp-data th {
     background: #f5f5f5;
     font-weight: bold;
@@ -2213,8 +2177,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 8px 0 6px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.cp-items thead th {
     background: #eee;
     color: #000;
@@ -2267,11 +2230,6 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
   }
 
   @media print {
-    .cp-section       { page-break-inside: avoid; }
-    table.cp-items    { page-break-inside: avoid; }
-    table.cp-data     { page-break-inside: avoid; }
-    table.cp-info     { page-break-inside: avoid; }
-    .cp-destinatario  { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -2453,8 +2411,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 0 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.cdp-info th {
     background: #f5f5f5;
     font-weight: bold;
@@ -2472,8 +2429,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
   /* Secciones */
   .cdp-section {
     margin: 12px 0;
-    page-break-inside: avoid;
-  }
+    }
   .cdp-section-titulo {
     font-size: 10pt;
     font-weight: bold;
@@ -2499,8 +2455,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     border-top: none;
     padding: 8px 10px;
     margin-bottom: 12px;
-    page-break-inside: avoid;
-  }
+    }
 
   /* Tabla detalle presupuestal */
   table.cdp-table {
@@ -2508,8 +2463,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 6px 0 10px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.cdp-table thead th {
     background: #eee;
     color: #000;
@@ -2539,8 +2493,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 4px 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.cdp-saldos .cdp-saldos-title {
     background: #eee;
     color: #000;
@@ -2602,8 +2555,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     font-size: 11pt;
     font-weight: bold;
     color: #333;
-    page-break-inside: avoid;
-  }
+    }
   .cdp-valor-box .letras {
     font-size: 9.5pt;
     font-weight: normal;
@@ -2637,12 +2589,6 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
   }
 
   @media print {
-    .cdp-section       { page-break-inside: avoid; }
-    table.cdp-table    { page-break-inside: avoid; }
-    table.cdp-saldos   { page-break-inside: avoid; }
-    table.cdp-info     { page-break-inside: avoid; }
-    .cdp-valor-box     { page-break-inside: avoid; }
-    .cdp-concepto-bloque { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -2814,7 +2760,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
 
 {% block extra_css %}
 <style>
-  @page { size: Letter; margin: 1.5cm 1.5cm 1.5cm 2cm; }
+  @page { size: letter portrait; margin: 12mm 14mm 10mm 18mm; }
 
   /* ── Caja con borde y fondo gris claro ── */
   .cpc-caja {
@@ -2824,8 +2770,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
     margin-bottom: 7px;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    page-break-inside: avoid;
-    break-inside: avoid;
+      break-inside: avoid;
   }
 
   /* ── Banda de título oscuro ── */
@@ -2878,8 +2823,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
   /* ── Tabla UNSPSC ── */
   .cpc-tabla-wrap {
     margin-bottom: 7px;
-    page-break-inside: avoid;
-    break-inside: avoid;
+      break-inside: avoid;
   }
   .cpc-tabla {
     width: 100%;
@@ -2909,8 +2853,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
   /* ── Firma ── */
   .cpc-firma-wrap {
     margin-top: 15px;
-    page-break-inside: avoid;
-    break-inside: avoid;
+      break-inside: avoid;
   }
   .cpc-firma-etiq {
     font-size: 10pt;
@@ -3085,8 +3028,6 @@ table.ct-unspsc {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ct-unspsc thead th {
   background: #555;
@@ -3553,8 +3494,6 @@ table.ct-unspsc {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ct-unspsc thead th {
   background: #555;
@@ -3963,8 +3902,6 @@ DOC_TEMPLATES["docs/egreso.html"] = `{% extends "docs/base_doc.html" %}
 /* ── Secciones ────────────────────────────────────── */
 .ce-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ce-section-titulo {
   font-size: 10pt;
@@ -4001,8 +3938,6 @@ table.ce-tabla {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ce-tabla th {
   background: #eee;
@@ -4030,8 +3965,6 @@ table.ce-data {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ce-data thead th {
   background: #eee;
@@ -4074,8 +4007,6 @@ table.ce-data tfoot td {
   background: #fff;
   font-size: 9.5pt;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -4091,8 +4022,6 @@ table.ce-data tfoot td {
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -4420,8 +4349,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 0 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.ep-info th {
     background: #f5f5f5;
     font-weight: bold;
@@ -4440,8 +4368,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
   /* Sección genérica */
   .ep-section {
     margin: 10px 0;
-    page-break-inside: avoid;
-  }
+    }
   .ep-section h3 {
     font-size: 10pt;
     font-weight: bold;
@@ -4475,8 +4402,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 8px 0 10px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.ep-table thead th {
     background: #eee;
     color: #000;
@@ -4542,9 +4468,6 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
 
   /* Print: evitar cortes en tablas y firmas */
   @media print {
-    .ep-section       { page-break-inside: avoid; }
-    table.ep-table    { page-break-inside: avoid; }
-    table.ep-info     { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -4841,8 +4764,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
     border-collapse: collapse;
     margin: 0 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.ep-info th {
     background: #f5f5f5;
     font-weight: bold;
@@ -4860,8 +4782,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
 
   .ep-section {
     margin: 10px 0;
-    page-break-inside: avoid;
-  }
+    }
   .ep-section h3 {
     font-size: 10pt;
     font-weight: bold;
@@ -4892,8 +4813,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
     border-collapse: collapse;
     margin: 8px 0 10px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.ep-table thead th {
     background: #eee;
     color: #000;
@@ -4946,9 +4866,6 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
   .ep-firma-block p { font-size: 10pt; margin: 2px 0; }
 
   @media print {
-    .ep-section       { page-break-inside: avoid; }
-    table.ep-table    { page-break-inside: avoid; }
-    table.ep-info     { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -5329,8 +5246,6 @@ table.ev-info {
   border-collapse: collapse;
   margin: 0 0 14px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ev-info th {
   background: #f0f0f0;
@@ -5355,8 +5270,6 @@ table.ev-info td {
 /* ── Secciones numeradas ──────────────────────────── */
 .ev-section {
   margin: 12px 0 16px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ev-section-titulo {
   font-size: 10pt;
@@ -5393,8 +5306,6 @@ table.ev-table {
   border-collapse: collapse;
   margin: 6px 0 8px;
   font-size: 9pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ev-table thead th {
   background: #eee;
@@ -5481,8 +5392,6 @@ td.ev-fecha {
   margin: 8px 0 4px;
   font-size: 9.5pt;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -5500,8 +5409,6 @@ td.ev-fecha {
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -5714,8 +5621,6 @@ table.ev-info {
   border-collapse: collapse;
   margin: 0 0 14px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ev-info th {
   background: #f0f0f0;
@@ -5740,8 +5645,6 @@ table.ev-info td {
 /* ── Secciones numeradas ──────────────────────────── */
 .ev-section {
   margin: 12px 0 16px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ev-section-titulo {
   font-size: 10pt;
@@ -5778,8 +5681,6 @@ table.ev-table {
   border-collapse: collapse;
   margin: 6px 0 8px;
   font-size: 9pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ev-table thead th {
   background: #eee;
@@ -5866,8 +5767,6 @@ td.ev-fecha {
   margin: 8px 0 4px;
   font-size: 9.5pt;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -5885,8 +5784,6 @@ td.ev-fecha {
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -6158,8 +6055,6 @@ DOC_TEMPLATES["docs/habeas_data.html"] = `{% extends "docs/base_doc.html" %}
 /* ── Secciones ────────────────────────────────────── */
 .hd-section {
   margin: 12px 0 14px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .hd-section-titulo {
   font-size: 10pt;
@@ -6198,8 +6093,6 @@ table.hd-tabla {
   border-collapse: collapse;
   margin: 6px 0 10px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.hd-tabla th {
   background: #eee;
@@ -6231,8 +6124,6 @@ table.hd-tabla td {
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -6526,8 +6417,6 @@ DOC_TEMPLATES["docs/informe_contratista.html"] = `{% extends "docs/base_doc.html
 /* ── Secciones ────────────────────────────────────── */
 .ic-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ic-section-titulo {
   font-size: 10pt;
@@ -6564,8 +6453,6 @@ table.ic-tabla {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ic-tabla th {
   background: #eee;
@@ -6625,8 +6512,6 @@ table.ic-avance {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ic-avance thead th {
   background: #eee;
@@ -7036,8 +6921,6 @@ table.is-tabla {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.is-tabla th {
   background: #eee;
@@ -7065,8 +6948,6 @@ table.is-data {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.is-data thead th {
   background: #eee;
@@ -7133,8 +7014,6 @@ table.is-data tfoot td {
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -7814,8 +7693,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 0 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.inv2-info th {
     background: #f5f5f5;
     font-weight: bold;
@@ -7837,8 +7715,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
     background: #fff;
     font-size: 10pt;
     line-height: 1.45;
-    page-break-inside: avoid;
-  }
+    }
   .inv2-destinatario p { margin: 0; }
 
   .inv2-asunto {
@@ -7850,8 +7727,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
 
   .inv2-section {
     margin: 12px 0;
-    page-break-inside: avoid;
-  }
+    }
   .inv2-section-titulo {
     font-size: 10pt;
     font-weight: bold;
@@ -7883,8 +7759,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 6px 0 10px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.inv2-table thead th {
     background: #eee;
     color: #000;
@@ -7917,10 +7792,6 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
   .inv2-firma-block p { font-size: 10pt; margin: 2px 0; }
 
   @media print {
-    .inv2-section       { page-break-inside: avoid; }
-    table.inv2-table    { page-break-inside: avoid; }
-    table.inv2-info     { page-break-inside: avoid; }
-    .inv2-destinatario  { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -8255,8 +8126,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 0 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.inv3-info th {
     background: #f5f5f5;
     font-weight: bold;
@@ -8278,8 +8148,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
     background: #fff;
     font-size: 10pt;
     line-height: 1.45;
-    page-break-inside: avoid;
-  }
+    }
   .inv3-destinatario p { margin: 0; }
 
   .inv3-asunto {
@@ -8291,8 +8160,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
 
   .inv3-section {
     margin: 12px 0;
-    page-break-inside: avoid;
-  }
+    }
   .inv3-section-titulo {
     font-size: 10pt;
     font-weight: bold;
@@ -8324,8 +8192,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 6px 0 10px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.inv3-table thead th {
     background: #eee;
     color: #000;
@@ -8358,10 +8225,6 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
   .inv3-firma-block p { font-size: 10pt; margin: 2px 0; }
 
   @media print {
-    .inv3-section       { page-break-inside: avoid; }
-    table.inv3-table    { page-break-inside: avoid; }
-    table.inv3-info     { page-break-inside: avoid; }
-    .inv3-destinatario  { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -8696,8 +8559,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     border-collapse: collapse;
     margin: 0 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.invg-info th {
     background: #f5f5f5;
     font-weight: bold;
@@ -8719,8 +8581,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     background: #fff;
     font-size: 10pt;
     line-height: 1.45;
-    page-break-inside: avoid;
-  }
+    }
   .invg-destinatario p { margin: 0; }
 
   .invg-asunto {
@@ -8732,8 +8593,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
 
   .invg-section {
     margin: 12px 0;
-    page-break-inside: avoid;
-  }
+    }
   .invg-section-titulo {
     font-size: 10pt;
     font-weight: bold;
@@ -8765,8 +8625,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     border-collapse: collapse;
     margin: 6px 0 10px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.invg-table thead th {
     background: #eee;
     color: #000;
@@ -8790,8 +8649,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     padding: 10px 14px;
     margin: 10px 0;
     background: #fff;
-    page-break-inside: avoid;
-  }
+    }
   .invg-garantia-box .invg-garantia-titulo {
     font-weight: bold;
     font-size: 10pt;
@@ -8832,11 +8690,6 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
   .invg-firma-block p { font-size: 10pt; margin: 2px 0; }
 
   @media print {
-    .invg-section        { page-break-inside: avoid; }
-    table.invg-table     { page-break-inside: avoid; }
-    table.invg-info      { page-break-inside: avoid; }
-    .invg-garantia-box   { page-break-inside: avoid; }
-    .invg-destinatario   { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -9272,8 +9125,6 @@ DOC_TEMPLATES["docs/orden_compra.html"] = `{% extends "docs/base_doc.html" %}
 /* ── Secciones ────────────────────────────────────── */
 .oc-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .oc-section-titulo {
   font-size: 10pt;
@@ -9300,8 +9151,6 @@ table.oc-tabla {
   border-collapse: collapse;
   margin: 0 0 10px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.oc-tabla th {
   background: #eee;
@@ -9575,8 +9424,6 @@ DOC_TEMPLATES["docs/orden_pago.html"] = `{% extends "docs/base_doc.html" %}
 /* ── Secciones ────────────────────────────────────── */
 .op-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .op-section-titulo {
   font-size: 10pt;
@@ -9613,8 +9460,6 @@ table.op-tabla {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.op-tabla th {
   background: #eee;
@@ -9642,8 +9487,6 @@ table.op-data {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.op-data thead th {
   background: #eee;
@@ -9683,8 +9526,6 @@ table.op-imputacion {
   border-collapse: collapse;
   margin: 0 0 6px;
   font-size: 9pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.op-imputacion td,
 table.op-imputacion th {
@@ -9735,8 +9576,6 @@ table.op-imputacion th {
   font-size: 9.5pt;
   text-align: justify;
   line-height: 1.45;
-  page-break-inside: avoid;
-  break-inside: avoid;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -10077,8 +9916,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 0 0 14px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.rp-info th {
     background: #f5f5f5;
     font-weight: bold;
@@ -10096,8 +9934,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
   /* Secciones genéricas */
   .rp-section {
     margin: 12px 0;
-    page-break-inside: avoid;
-  }
+    }
   .rp-section-titulo {
     font-size: 10pt;
     font-weight: bold;
@@ -10120,8 +9957,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 6px 0 10px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.rp-table thead th {
     background: #eee;
     color: #000;
@@ -10155,8 +9991,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
     font-size: 11pt;
     font-weight: bold;
     color: #333;
-    page-break-inside: avoid;
-  }
+    }
   .rp-valor-box .letras {
     font-size: 9.5pt;
     font-weight: normal;
@@ -10190,10 +10025,6 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
   }
 
   @media print {
-    .rp-section        { page-break-inside: avoid; }
-    table.rp-table     { page-break-inside: avoid; }
-    table.rp-info      { page-break-inside: avoid; }
-    .rp-valor-box      { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -10405,8 +10236,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
     border-top: none;
     padding: 8px 10px;
     margin-bottom: 10px;
-    page-break-inside: avoid;
-  }
+    }
 
   .sc-valor-linea {
     font-size: 10pt;
@@ -10420,8 +10250,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
     border-collapse: collapse;
     margin: 4px 0 12px;
     font-size: 9.5pt;
-    page-break-inside: avoid;
-  }
+    }
   table.sc-exp-table td {
     padding: 4px 8px;
     border: 1px solid #ccc;
@@ -10451,7 +10280,6 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
   }
 
   @media print {
-    .sc-bloque        { page-break-inside: avoid; }
   }
 </style>
 {% endblock %}
@@ -10560,8 +10388,6 @@ DOC_TEMPLATES["docs/egreso_dian.html"] = `{% extends "docs/base_doc.html" %}
 }
 .ed-section {
   margin: 10px 0 12px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ed-section-titulo {
   font-size: 10pt;
@@ -10580,8 +10406,6 @@ table.ed-tabla {
   border-collapse: collapse;
   margin: 4px 0 8px;
   font-size: 9.5pt;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 table.ed-tabla th {
   background: #f5f5f5;
@@ -10608,8 +10432,6 @@ table.ed-tabla td {
   padding: 10px 16px;
   margin: 8px 0;
   text-align: center;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 .ed-valor-monto {
   font-size: 14pt;
