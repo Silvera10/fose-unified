@@ -19,7 +19,7 @@ DOC_TEMPLATES["docs/aceptacion.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Fecha y lugar ────────────────────────────────── */
@@ -33,7 +33,7 @@ DOC_TEMPLATES["docs/aceptacion.html"] = `{% extends "docs/base_doc.html" %}
 .ao-destinatario {
   margin: 0 0 12px;
   font-size: 9.5pt;
-  line-height: 1.7;
+  line-height: 1.45;
 }
 .ao-destinatario p { margin: 0; }
 
@@ -41,7 +41,7 @@ DOC_TEMPLATES["docs/aceptacion.html"] = `{% extends "docs/base_doc.html" %}
 .ao-asunto {
   margin: 0 0 14px;
   font-size: 9.5pt;
-  line-height: 1.5;
+  line-height: 1.45;
   border-left: 4px solid #333;
   padding-left: 10px;
   background: #fff;
@@ -55,7 +55,7 @@ DOC_TEMPLATES["docs/aceptacion.html"] = `{% extends "docs/base_doc.html" %}
 .ao-body {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .ao-body p { margin: 0 0 9px; }
 
@@ -112,24 +112,24 @@ table.ao-tabla td {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .ao-section ol li { margin-bottom: 4px; text-align: justify; }
 .ao-section p {
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.55;
+  line-height: 1.45;
 }
 
 /* ── Cierre y firma ───────────────────────────────── */
 .ao-cierre {
   font-size: 9.5pt;
   margin: 12px 0 6px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .ao-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -148,7 +148,7 @@ table.ao-firma-tabla td {
 .ao-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .ao-firma-nombre {
   font-size: 9.5pt;
@@ -358,7 +358,7 @@ DOC_TEMPLATES["docs/acta_inicio.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -375,7 +375,7 @@ DOC_TEMPLATES["docs/acta_inicio.html"] = `{% extends "docs/base_doc.html" %}
 .ai-intro {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.65;
+  line-height: 1.45;
   margin: 0 0 12px;
 }
 
@@ -401,7 +401,7 @@ DOC_TEMPLATES["docs/acta_inicio.html"] = `{% extends "docs/base_doc.html" %}
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Tablas de datos ──────────────────────────────── */
@@ -449,12 +449,12 @@ table.ai-tabla .ai-grupo {
   font-size: 9.5pt;
   text-align: justify;
   margin: 10px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Firmas  (3 columnas) ─────────────────────────── */
 .ai-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -473,7 +473,7 @@ table.ai-firma-tabla td {
 .ai-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .ai-firma-nombre {
   font-size: 9pt;
@@ -731,7 +731,7 @@ DOC_TEMPLATES["docs/acta_liquidacion.html"] = `{% extends "docs/base_doc.html" %
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -748,7 +748,7 @@ DOC_TEMPLATES["docs/acta_liquidacion.html"] = `{% extends "docs/base_doc.html" %
 .al-apertura {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.7;
+  line-height: 1.45;
   margin: 0 0 12px;
   page-break-inside: avoid;
   break-inside: avoid;
@@ -776,13 +776,13 @@ DOC_TEMPLATES["docs/acta_liquidacion.html"] = `{% extends "docs/base_doc.html" %
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .al-section ol {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .al-section ol li {
   margin-bottom: 5px;
@@ -875,7 +875,7 @@ table.al-data tfoot td {
 .al-cierre {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.7;
+  line-height: 1.45;
   margin: 10px 0 0;
   page-break-inside: avoid;
   break-inside: avoid;
@@ -883,7 +883,7 @@ table.al-data tfoot td {
 
 /* ── Firma ────────────────────────────────────────── */
 .al-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -905,7 +905,7 @@ table.al-firma-tabla.al-firma-tres td {
 .al-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .al-firma-nombre {
   font-size: 9.5pt;
@@ -920,7 +920,7 @@ table.al-firma-tabla.al-firma-tres td {
 
 /* ── Firma supervisor (fila inferior centrada) ────── */
 .al-firma-sup {
-  margin-top: 30px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -1221,7 +1221,7 @@ DOC_TEMPLATES["docs/acta_recibido.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -1238,7 +1238,7 @@ DOC_TEMPLATES["docs/acta_recibido.html"] = `{% extends "docs/base_doc.html" %}
 .ar-intro {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.65;
+  line-height: 1.45;
   margin: 0 0 12px;
 }
 
@@ -1264,7 +1264,7 @@ DOC_TEMPLATES["docs/acta_recibido.html"] = `{% extends "docs/base_doc.html" %}
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Tabla de identificación ──────────────────────── */
@@ -1392,7 +1392,7 @@ table.ar-verif tbody tr:nth-child(even) td {
   background: #fff;
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.65;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -1405,12 +1405,12 @@ table.ar-verif tbody tr:nth-child(even) td {
   font-size: 9.5pt;
   text-align: justify;
   margin: 10px 0 6px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Firmas (2 columnas) ──────────────────────────── */
 .ar-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -1429,7 +1429,7 @@ table.ar-firma-tabla td {
 .ar-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .ar-firma-nombre {
   font-size: 9.5pt;
@@ -1705,9 +1705,9 @@ DOC_TEMPLATES["docs/base_doc.html"] = `<!DOCTYPE html>
     table.info td { padding: 3px 6px; border: 1px solid #ccc; }
     table.info td:first-child { font-weight: bold; background: #f5f5f5; width: 35%; }
 
-    .firma-block { margin-top: 40px; }
+    .firma-block { margin-top: 15px; }
     .firma-linea, [class*="-firma-linea"], [class*="-firma-bloque"] { border-top: none !important; border: none !important; }
-    .firma-linea { width: 250px; text-align: center; padding-top: 4px; margin-top: 60px; }
+    .firma-linea { width: 250px; text-align: center; padding-top: 4px; margin-top: 10px; }
     .firma-nombre { font-weight: bold; text-transform: uppercase; }
     [class$="-firma-nombre"] { text-transform: uppercase; }
     .firma-cargo { font-size: 9.5pt; }
@@ -1761,7 +1761,7 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -1778,12 +1778,12 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
 .cj-lugar {
   font-size: 9.5pt;
   margin: 0 0 10px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .cj-destinatario {
   font-size: 9.5pt;
   margin: 0 0 12px;
-  line-height: 1.7;
+  line-height: 1.45;
 }
 .cj-saludo {
   font-size: 9.5pt;
@@ -1794,7 +1794,7 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
 .cj-intro {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.65;
+  line-height: 1.45;
   margin: 0 0 14px;
 }
 
@@ -1820,13 +1820,13 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .cj-section ul {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .cj-section ul li {
   margin-bottom: 4px;
@@ -1849,13 +1849,13 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
   font-size: 9.5pt;
   text-align: justify;
   margin: 3px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .cj-item ul {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 4px 0 6px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .cj-item ul li {
   margin-bottom: 3px;
@@ -1886,12 +1886,12 @@ DOC_TEMPLATES["docs/carta_juramentada.html"] = `{% extends "docs/base_doc.html" 
   color: #333;
   text-align: justify;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Firma ────────────────────────────────────────── */
 .cj-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -1910,7 +1910,7 @@ table.cj-firma-tabla td {
 .cj-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .cj-firma-nombre {
   font-size: 9.5pt;
@@ -2128,7 +2128,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     padding: 8px 0 8px 18px;
     border-left: 3px solid #333;
     font-size: 10pt;
-    line-height: 1.5;
+    line-height: 1.45;
     page-break-inside: avoid;
   }
   .cp-destinatario p          { margin: 1px 0; }
@@ -2152,7 +2152,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
   .cp-asunto {
     margin: 10px 0 14px;
     font-size: 10pt;
-    line-height: 1.6;
+    line-height: 1.45;
     text-align: justify;
   }
 
@@ -2164,7 +2164,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     font-size: 10pt;
     text-align: justify;
     margin: 5px 0;
-    line-height: 1.55;
+    line-height: 1.45;
   }
 
   /* Secciones numeradas */
@@ -2185,13 +2185,13 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
     font-size: 10pt;
     text-align: justify;
     margin: 5px 0;
-    line-height: 1.55;
+    line-height: 1.45;
   }
   .cp-section ol {
     font-size: 10pt;
     padding-left: 22px;
     margin: 5px 0;
-    line-height: 1.55;
+    line-height: 1.45;
   }
   .cp-section ol li {
     margin-bottom: 4px;
@@ -2262,7 +2262,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
 
   /* Firma */
   .cp-firma-section {
-    margin-top: 55px;
+    margin-top: 10px;
     page-break-inside: avoid;
   }
   .cp-firma-block {
@@ -2272,7 +2272,7 @@ DOC_TEMPLATES["docs/carta_propuesta.html"] = `{% extends "docs/base_doc.html" %}
   }
   .cp-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
   }
   .cp-firma-block p {
@@ -2502,14 +2502,14 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     font-size: 10pt;
     text-align: justify;
     margin: 6px 0;
-    line-height: 1.5;
+    line-height: 1.45;
   }
 
   /* Concepto de la Disponibilidad */
   .cdp-concepto-bloque {
     font-size: 10pt;
     text-align: justify;
-    line-height: 1.55;
+    line-height: 1.45;
     border: 1px solid #ccc;
     border-top: none;
     padding: 8px 10px;
@@ -2629,7 +2629,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
 
   /* Firmas dos columnas */
   .cdp-firma-section {
-    margin-top: 50px;
+    margin-top: 15px;
     page-break-inside: avoid;
   }
   .cdp-firma-grid {
@@ -2644,7 +2644,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
   }
   .cdp-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
   }
   .cdp-firma-block p {
@@ -2866,7 +2866,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
     font-size: 10.5pt;
     font-weight: bold;
     text-transform: uppercase;
-    line-height: 1.5;
+    line-height: 1.45;
   }
 
   /* ── CERTIFICA ── */
@@ -2883,12 +2883,12 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
   .cpc-texto {
     text-align: justify;
     font-size: 10.5pt;
-    line-height: 1.65;
+    line-height: 1.45;
   }
   .cpc-texto-italic {
     text-align: justify;
     font-size: 10.5pt;
-    line-height: 1.65;
+    line-height: 1.45;
     font-style: italic;
   }
 
@@ -2918,14 +2918,14 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
     padding: 10px 10px;
     vertical-align: middle;
     font-size: 10pt;
-    line-height: 1.55;
+    line-height: 1.45;
   }
   .cpc-tabla tbody td.tc { text-align: center; }
   .cpc-tabla tbody td.tj { text-align: justify; }
 
   /* ── Firma ── */
   .cpc-firma-wrap {
-    margin-top: 34px;
+    margin-top: 15px;
     page-break-inside: avoid;
     break-inside: avoid;
   }
@@ -2942,7 +2942,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
     width: 60%;
     padding-top: 5px;
   }
-  .cpc-firma-bloque p { font-size: 10.5pt; line-height: 1.7; }
+  .cpc-firma-bloque p { font-size: 10.5pt; line-height: 1.45; }
 </style>
 {% endblock %}
 
@@ -3057,7 +3057,7 @@ DOC_TEMPLATES["docs/contrato.html"] = `{% extends "docs/base_doc.html" %}
 .ct-intro {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.55;
+  line-height: 1.45;
   margin: 0 0 10px;
 }
 
@@ -3132,7 +3132,7 @@ table.ct-unspsc tbody td.ct-unspsc-nombre {
   font-size: 9.5pt;
   text-align: justify;
   margin: 4px 0 10px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Firmas ───────────────────────────────────────── */
@@ -3527,7 +3527,7 @@ DOC_TEMPLATES["docs/contrato2.html"] = `{% extends "docs/base_doc.html" %}
 .ct-intro {
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.55;
+  line-height: 1.45;
   margin: 0 0 10px;
 }
 
@@ -3602,7 +3602,7 @@ table.ct-unspsc tbody td.ct-unspsc-nombre {
   font-size: 9.5pt;
   text-align: justify;
   margin: 4px 0 10px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Firmas ───────────────────────────────────────── */
@@ -3968,7 +3968,7 @@ DOC_TEMPLATES["docs/egreso.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -4003,13 +4003,13 @@ DOC_TEMPLATES["docs/egreso.html"] = `{% extends "docs/base_doc.html" %}
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .ce-section ol {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .ce-section ol li {
   margin-bottom: 4px;
@@ -4094,7 +4094,7 @@ table.ce-data tfoot td {
   margin: 6px 0 0;
   background: #fff;
   font-size: 9.5pt;
-  line-height: 1.6;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -4111,7 +4111,7 @@ table.ce-data tfoot td {
   background: #fff;
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.6;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -4121,7 +4121,7 @@ table.ce-data tfoot td {
 
 /* ── Firma ────────────────────────────────────────── */
 .ce-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -4140,7 +4140,7 @@ table.ce-firma-tabla td {
 .ce-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .ce-firma-nombre {
   font-size: 9.5pt;
@@ -4526,7 +4526,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
 
   /* Bloque de firmas */
   .ep-firma-section {
-    margin-top: 50px;
+    margin-top: 15px;
     page-break-inside: avoid;
   }
   .ep-firma-section h3 {
@@ -4556,7 +4556,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
   }
   .ep-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
   }
   .ep-firma-block p {
@@ -4944,7 +4944,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
 
   /* Bloque de firmas */
   .ep-firma-section {
-    margin-top: 50px;
+    margin-top: 15px;
     page-break-inside: avoid;
   }
   .ep-firma-section h3 {
@@ -4966,7 +4966,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
   .ep-firma-block { flex: 0 1 45%; text-align: center; }
   .ep-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
   }
   .ep-firma-block p { font-size: 10pt; margin: 2px 0; }
@@ -5347,7 +5347,7 @@ DOC_TEMPLATES["docs/evaluacion.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Tabla cabecera institucional ─────────────────── */
@@ -5401,13 +5401,13 @@ table.ev-info td {
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 .ev-section ol {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 .ev-section ol li {
   margin-bottom: 5px;
@@ -5507,7 +5507,7 @@ td.ev-fecha {
   padding: 9px 13px;
   margin: 8px 0 4px;
   font-size: 9.5pt;
-  line-height: 1.5;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -5526,7 +5526,7 @@ td.ev-fecha {
   background: #fff;
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.5;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -5535,7 +5535,7 @@ td.ev-fecha {
 
 /* ── Firmas (tabla para compatibilidad print) ─────── */
 .ev-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -5555,7 +5555,7 @@ table.ev-firma-tabla td {
 .ev-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .ev-firma-nombre {
   font-size: 9.5pt;
@@ -5734,7 +5734,7 @@ DOC_TEMPLATES["docs/evaluacion_garantia.html"] = `{% extends "docs/base_doc.html
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Tabla cabecera institucional ─────────────────── */
@@ -5788,13 +5788,13 @@ table.ev-info td {
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 .ev-section ol {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 .ev-section ol li {
   margin-bottom: 5px;
@@ -5894,7 +5894,7 @@ td.ev-fecha {
   padding: 9px 13px;
   margin: 8px 0 4px;
   font-size: 9.5pt;
-  line-height: 1.5;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -5913,7 +5913,7 @@ td.ev-fecha {
   background: #fff;
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.5;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -5922,7 +5922,7 @@ td.ev-fecha {
 
 /* ── Firmas (tabla para compatibilidad print) ─────── */
 .ev-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -5942,7 +5942,7 @@ table.ev-firma-tabla td {
 .ev-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .ev-firma-nombre {
   font-size: 9.5pt;
@@ -6174,7 +6174,7 @@ DOC_TEMPLATES["docs/habeas_data.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Subtítulo legal ──────────────────────────────── */
@@ -6208,14 +6208,14 @@ DOC_TEMPLATES["docs/habeas_data.html"] = `{% extends "docs/base_doc.html" %}
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.55;
+  line-height: 1.45;
 }
 .hd-section ul,
 .hd-section ol {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.55;
+  line-height: 1.45;
 }
 .hd-section ul li,
 .hd-section ol li {
@@ -6261,7 +6261,7 @@ table.hd-tabla td {
   background: #fff;
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.6;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -6271,7 +6271,7 @@ table.hd-tabla td {
 
 /* ── Firma ────────────────────────────────────────── */
 .hd-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -6290,7 +6290,7 @@ table.hd-firma-tabla td {
 .hd-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .hd-firma-nombre {
   font-size: 9.5pt;
@@ -6543,7 +6543,7 @@ DOC_TEMPLATES["docs/informe_contratista.html"] = `{% extends "docs/base_doc.html
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -6578,13 +6578,13 @@ DOC_TEMPLATES["docs/informe_contratista.html"] = `{% extends "docs/base_doc.html
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .ic-section ul {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .ic-section ul li {
   margin-bottom: 4px;
@@ -6685,7 +6685,7 @@ table.ic-avance tbody tr:last-child td {
 
 /* ── Firma ────────────────────────────────────────── */
 .ic-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -6704,7 +6704,7 @@ table.ic-firma-tabla td {
 .ic-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .ic-firma-nombre {
   font-size: 9.5pt;
@@ -7052,13 +7052,13 @@ DOC_TEMPLATES["docs/informe_supervisor.html"] = `{% extends "docs/base_doc.html"
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .is-section ul {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .is-section ul li {
   margin-bottom: 4px;
@@ -7167,7 +7167,7 @@ table.is-data tfoot td {
   background: #fff;
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.6;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -7873,7 +7873,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
     border-left: 4px solid #333;
     background: #fff;
     font-size: 10pt;
-    line-height: 1.7;
+    line-height: 1.45;
     page-break-inside: avoid;
   }
   .inv2-destinatario p { margin: 0; }
@@ -7881,7 +7881,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
   .inv2-asunto {
     margin: 10px 0 14px;
     font-size: 10pt;
-    line-height: 1.6;
+    line-height: 1.45;
     text-align: justify;
   }
 
@@ -7902,12 +7902,12 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
     font-size: 10pt;
     text-align: justify;
     margin: 5px 0;
-    line-height: 1.6;
+    line-height: 1.45;
   }
   .inv2-section ul {
     margin: 5px 0 5px 20px;
     font-size: 10pt;
-    line-height: 1.7;
+    line-height: 1.45;
   }
   .inv2-section h4 {
     font-size: 10pt;
@@ -7939,7 +7939,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
   table.inv2-table tbody tr:nth-child(even) td { background: #f5f5f5; }
 
   .inv2-firma-section {
-    margin-top: 50px;
+    margin-top: 15px;
     page-break-inside: avoid;
   }
   .inv2-firma-block {
@@ -7949,7 +7949,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
   }
   .inv2-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
   }
   .inv2-firma-block p { font-size: 10pt; margin: 2px 0; }
@@ -8316,7 +8316,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
     border-left: 4px solid #333;
     background: #fff;
     font-size: 10pt;
-    line-height: 1.7;
+    line-height: 1.45;
     page-break-inside: avoid;
   }
   .inv3-destinatario p { margin: 0; }
@@ -8324,7 +8324,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
   .inv3-asunto {
     margin: 10px 0 14px;
     font-size: 10pt;
-    line-height: 1.6;
+    line-height: 1.45;
     text-align: justify;
   }
 
@@ -8345,12 +8345,12 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
     font-size: 10pt;
     text-align: justify;
     margin: 5px 0;
-    line-height: 1.6;
+    line-height: 1.45;
   }
   .inv3-section ul {
     margin: 5px 0 5px 20px;
     font-size: 10pt;
-    line-height: 1.7;
+    line-height: 1.45;
   }
   .inv3-section h4 {
     font-size: 10pt;
@@ -8382,7 +8382,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
   table.inv3-table tbody tr:nth-child(even) td { background: #f5f5f5; }
 
   .inv3-firma-section {
-    margin-top: 50px;
+    margin-top: 15px;
     page-break-inside: avoid;
   }
   .inv3-firma-block {
@@ -8392,7 +8392,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
   }
   .inv3-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
   }
   .inv3-firma-block p { font-size: 10pt; margin: 2px 0; }
@@ -8759,7 +8759,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     border-left: 4px solid #333;
     background: #fff;
     font-size: 10pt;
-    line-height: 1.7;
+    line-height: 1.45;
     page-break-inside: avoid;
   }
   .invg-destinatario p { margin: 0; }
@@ -8767,7 +8767,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
   .invg-asunto {
     margin: 10px 0 14px;
     font-size: 10pt;
-    line-height: 1.6;
+    line-height: 1.45;
     text-align: justify;
   }
 
@@ -8788,12 +8788,12 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     font-size: 10pt;
     text-align: justify;
     margin: 5px 0;
-    line-height: 1.6;
+    line-height: 1.45;
   }
   .invg-section ul {
     margin: 5px 0 5px 20px;
     font-size: 10pt;
-    line-height: 1.7;
+    line-height: 1.45;
   }
   .invg-section h4 {
     font-size: 10pt;
@@ -8858,7 +8858,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
   }
 
   .invg-firma-section {
-    margin-top: 50px;
+    margin-top: 15px;
     page-break-inside: avoid;
   }
   .invg-firma-block {
@@ -8868,7 +8868,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
   }
   .invg-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
   }
   .invg-firma-block p { font-size: 10pt; margin: 2px 0; }
@@ -9299,7 +9299,7 @@ DOC_TEMPLATES["docs/orden_compra.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -9334,7 +9334,7 @@ DOC_TEMPLATES["docs/orden_compra.html"] = `{% extends "docs/base_doc.html" %}
   font-size: 9.5pt;
   text-align: justify;
   margin: 4px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Tabla de datos generales ─────────────────────── */
@@ -9371,12 +9371,12 @@ table.oc-tabla td {
   font-size: 9.5pt;
   text-align: justify;
   margin: 10px 0 6px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 /* ── Firmas ───────────────────────────────────────── */
 .oc-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -9395,7 +9395,7 @@ table.oc-firma-tabla td {
 .oc-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
 }
 .oc-firma-nombre {
   font-size: 9.5pt;
@@ -9604,7 +9604,7 @@ DOC_TEMPLATES["docs/orden_pago.html"] = `{% extends "docs/base_doc.html" %}
 
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 
 /* ── Número de contrato ───────────────────────────── */
@@ -9639,13 +9639,13 @@ DOC_TEMPLATES["docs/orden_pago.html"] = `{% extends "docs/base_doc.html" %}
   font-size: 9.5pt;
   text-align: justify;
   margin: 5px 0;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .op-section ol {
   font-size: 9.5pt;
   padding-left: 22px;
   margin: 5px 0 8px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .op-section ol li {
   margin-bottom: 4px;
@@ -9779,7 +9779,7 @@ table.op-imputacion th {
   background: #fff;
   font-size: 9.5pt;
   text-align: justify;
-  line-height: 1.6;
+  line-height: 1.45;
   page-break-inside: avoid;
   break-inside: avoid;
   -webkit-print-color-adjust: exact;
@@ -9789,7 +9789,7 @@ table.op-imputacion th {
 
 /* ── Firma ────────────────────────────────────────── */
 .op-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
@@ -9808,7 +9808,7 @@ table.op-firma-tabla td {
 .op-firma-linea {
   border-top: none;
   padding-top: 6px;
-  margin-top: 58px;
+  margin-top: 10px;
   text-align: center;
 }
 .op-firma-nombre {
@@ -10158,7 +10158,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
     font-size: 10pt;
     text-align: justify;
     margin: 6px 0;
-    line-height: 1.5;
+    line-height: 1.45;
   }
 
   /* Tabla detalle presupuestal */
@@ -10214,7 +10214,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
 
   /* Firmas dos columnas */
   .rp-firma-section {
-    margin-top: 50px;
+    margin-top: 15px;
     page-break-inside: avoid;
   }
   .rp-firma-grid {
@@ -10229,7 +10229,7 @@ DOC_TEMPLATES["docs/rp.html"] = `{% extends "docs/base_doc.html" %}
   }
   .rp-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
   }
   .rp-firma-block p {
@@ -10414,7 +10414,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
   .sc-destinatario {
     font-size: 10pt;
     margin-bottom: 14px;
-    line-height: 1.7;
+    line-height: 1.45;
   }
   .sc-destinatario p { margin: 1px 0; }
 
@@ -10429,7 +10429,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
   .sc-cuerpo {
     font-size: 10pt;
     text-align: justify;
-    line-height: 1.55;
+    line-height: 1.45;
   }
   .sc-cuerpo p { margin: 8px 0; }
 
@@ -10449,7 +10449,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
   .sc-bloque {
     font-size: 10pt;
     text-align: justify;
-    line-height: 1.55;
+    line-height: 1.45;
     border: 1px solid #ccc;
     border-top: none;
     padding: 8px 10px;
@@ -10486,12 +10486,12 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
 
   /* Firma */
   .sc-firma-section {
-    margin-top: 50px;
+    margin-top: 15px;
     page-break-inside: avoid;
   }
   .sc-firma-linea {
     border-top: none;
-    margin-top: 65px;
+    margin-top: 10px;
     padding-top: 5px;
     width: 260px;
   }
@@ -10600,7 +10600,7 @@ DOC_TEMPLATES["docs/egreso_dian.html"] = `{% extends "docs/base_doc.html" %}
 <style>
 @page {
   size: letter portrait;
-  margin: 18mm 16mm 18mm 20mm;
+  margin: 12mm 14mm 10mm 18mm;
 }
 .ed-numero {
   text-align: center;
@@ -10700,7 +10700,7 @@ table.ed-contable td {
   font-style: italic;
 }
 .ed-firma-section {
-  margin-top: 44px;
+  margin-top: 15px;
   page-break-inside: avoid;
   break-inside: avoid;
 }
