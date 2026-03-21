@@ -1806,30 +1806,32 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
     return;
   }
 
-  toast(`Descargando ${cola.length} documentos... por favor espere`,'info');
+  toast(`Se abrirán ${cola.length} documentos. En cada uno: Ctrl+P → Guardar como PDF → Márgenes: Ninguno`,'info');
 
   for(let i = 0; i < cola.length; i++){
-    await _generarPDFauto(cola[i].html, cola[i].name);
-    await new Promise(r => setTimeout(r, 400));
+    await _abrirParaPDF(cola[i].html, cola[i].name, i+1, cola.length);
   }
-  toast(`${cola.length} documentos descargados. Abra cada uno en Chrome y use Ctrl+P → Guardar como PDF (Márgenes: Ninguno).`,'success');
+  toast('Todos los documentos procesados.','success');
 }
 
-async function _generarPDFauto(htmlDoc, fileName){
-  // Limpiar botón imprimir y margin-top
-  htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
-  htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
+function _abrirParaPDF(htmlDoc, docName, num, total){
+  return new Promise(resolve => {
+    htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
+    htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
 
-  // Descargar como HTML (renombrado a .pdf.html para fácil conversión)
-  const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName + '.html';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+    const w = window.open('', '_blank');
+    if(!w){ toast(`Permita ventanas emergentes para continuar`,'danger'); resolve(); return; }
+
+    w.document.open();
+    w.document.write(htmlDoc);
+    w.document.close();
+    w.document.title = `${num}/${total} — ${docName} — Ctrl+P para guardar como PDF`;
+
+    // Esperar a que el usuario cierre la ventana para abrir la siguiente
+    const check = setInterval(() => {
+      if(w.closed){ clearInterval(check); setTimeout(resolve, 300); }
+    }, 500);
+  });
 }
 
 /* ══════════════════════════════════════════════════════════

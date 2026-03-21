@@ -7,7 +7,7 @@
    - Cuando hay una actualización, notifica al usuario.
    ══════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'fose-v47';
+const CACHE_VERSION = 'fose-v48';
 
 // Archivos esenciales a pre-cachear en la instalación
 const PRECACHE = [
