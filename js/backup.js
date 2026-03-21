@@ -206,8 +206,8 @@ function abrirModalInstForm(id=null){
   if(id){
     const inst = DB.getInstituciones().find(i=>i.id===id);
     if(inst) $('inp-inst-nueva').value = inst.nombre;
-    if(id === DB.getActiveId()){
-      const c = DB.load().config;
+    // Cargar config: si es la activa usa DB.load(), si no carga desde IndexedDB
+    const _poblarCampos = (c) => {
       $('inp-inst-sec').value = c.secretaria||'';
       $('inp-inst-nit').value = c.nit||''; $('inp-inst-dv').value = c.dv||'';
       $('inp-inst-depto').value = c.departamento||''; $('inp-inst-mpio').value = c.municipio||'';
@@ -219,12 +219,9 @@ function abrirModalInstForm(id=null){
       $('inp-inst-acuerdo').value = c.acuerdo||'';
       $('inp-inst-fecha-paa').value = c.fecha_paa||'';
       $('inp-inst-fecha-mod-paa').value = c.fecha_mod_paa||'';
-      // Mostrar preview de firma si existe
       window._firmaRectorBase64 = c.firma_rector||'';
       _mostrarPreviewFirma(c.firma_rector||'');
-      // Unidad ejecutora
       $('inp-inst-unidad-ejecutora').value = c.unidad_ejecutora||'';
-      // Cargar cuentas bancarias
       $('inp-inst-banco1').value = c.banco_1||'';
       $('inp-inst-cta1').value = c.cuenta_1||'';
       $('inp-inst-tipocta1').value = c.tipo_cuenta_1||'Ahorros';
@@ -234,6 +231,14 @@ function abrirModalInstForm(id=null){
       $('inp-inst-banco3').value = c.banco_3||'';
       $('inp-inst-cta3').value = c.cuenta_3||'';
       $('inp-inst-tipocta3').value = c.tipo_cuenta_3||'Ahorros';
+    };
+    if(id === DB.getActiveId()){
+      _poblarCampos(DB.load().config);
+    } else {
+      // Cargar datos de institución no activa desde IndexedDB
+      DB._get('instituciones', id).then(datos => {
+        if(datos && datos.config) _poblarCampos(datos.config);
+      }).catch(e => console.warn('Error cargando config:', e));
     }
     $('tit-minst').textContent = 'Editar Institución';
     $('div-copiar-rubros-bloque').classList.add('d-none');
@@ -289,6 +294,17 @@ async function guardarInstitucion(){
       Object.assign(d.config, campos);
       d.config.cierre = oldCierre;
       DB.save(d);
+    } else {
+      // Guardar config de institución no activa
+      try {
+        const datos = await DB._get('instituciones', editId);
+        if(datos){
+          const oldCierre = (datos.config && datos.config.cierre) || {};
+          Object.assign(datos.config, campos);
+          datos.config.cierre = oldCierre;
+          await DB._put('instituciones', editId, datos);
+        }
+      } catch(e){ console.warn('Error guardando config no activa:', e); }
     }
     bootstrap.Modal.getInstance($('mInst')).hide();
     navUpdate(); renderListaInstituciones();
