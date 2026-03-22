@@ -5,7 +5,7 @@
 
 {% block extra_css %}
 <style>
-  @page { size: Letter; margin: 2cm 2cm 2cm 2.5cm; }
+  @page { size: letter portrait; margin: 12mm 14mm 10mm 18mm; }
 
   /* ── Caja con borde y fondo gris claro ── */
   .cpc-caja {
@@ -15,8 +15,7 @@
     margin-bottom: 7px;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    page-break-inside: avoid;
-    break-inside: avoid;
+      break-inside: avoid;
   }
 
   /* ── Banda de título oscuro ── */
@@ -40,7 +39,7 @@
     font-size: 10.5pt;
     font-weight: bold;
     text-transform: uppercase;
-    line-height: 1.5;
+    line-height: 1.45;
   }
 
   /* ── CERTIFICA ── */
@@ -57,20 +56,19 @@
   .cpc-texto {
     text-align: justify;
     font-size: 10.5pt;
-    line-height: 1.65;
+    line-height: 1.45;
   }
   .cpc-texto-italic {
     text-align: justify;
     font-size: 10.5pt;
-    line-height: 1.65;
+    line-height: 1.45;
     font-style: italic;
   }
 
   /* ── Tabla UNSPSC ── */
   .cpc-tabla-wrap {
     margin-bottom: 7px;
-    page-break-inside: avoid;
-    break-inside: avoid;
+      break-inside: avoid;
   }
   .cpc-tabla {
     width: 100%;
@@ -92,28 +90,30 @@
     padding: 10px 10px;
     vertical-align: middle;
     font-size: 10pt;
-    line-height: 1.55;
+    line-height: 1.45;
   }
   .cpc-tabla tbody td.tc { text-align: center; }
   .cpc-tabla tbody td.tj { text-align: justify; }
 
   /* ── Firma ── */
   .cpc-firma-wrap {
-    margin-top: 34px;
-    
-    
+    margin-top: 15px;
+      break-inside: avoid;
   }
   .cpc-firma-etiq {
     font-size: 10pt;
     color: #555;
     margin-bottom: 48px;
   }
+  .cpc-firma-bloque, .cpc-firma-bloque * {
+    border-top: none !important;
+    border: none !important;
+  }
   .cpc-firma-bloque {
-    border-top: 1.5px solid #000;
     width: 60%;
     padding-top: 5px;
   }
-  .cpc-firma-bloque p { font-size: 10.5pt; line-height: 1.7; }
+  .cpc-firma-bloque p { font-size: 10.5pt; line-height: 1.45; }
 </style>
 {% endblock %}
 
@@ -141,7 +141,7 @@
     <p class="cpc-texto">
       Que el bien o servicio que se describe a continuación se encuentra incluido en el
       Plan General de Compras, aprobado por el Consejo Directivo para la vigencia fiscal
-      <strong>{{ anio }}</strong>
+      <strong>{{ vigencia_contrato }}</strong>
     </p>
   </div>
 
