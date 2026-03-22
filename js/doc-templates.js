@@ -2614,7 +2614,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     <th>Municipio</th>
     <td>{{ inst_municipio }}, {{ inst_departamento }}</td>
     <th>Vigencia</th>
-    <td>{{ anio }}</td>
+    <td>{{ vigencia_contrato }}</td>
   </tr>
 </table>
 
@@ -2625,7 +2625,7 @@ DOC_TEMPLATES["docs/cdp.html"] = `{% extends "docs/base_doc.html" %}
     las conferidas por el Decreto Ley 111 de 1996, artículo 71, y de conformidad
     con el Decreto 4791 de 2008 y el artículo 11 de la Ley 715 de 2001, certifica
     que, una vez revisados los saldos presupuestales correspondientes a la vigencia
-    <strong>{{ anio }}</strong>, se expide el presente Certificado de Disponibilidad
+    <strong>{{ vigencia_contrato }}</strong>, se expide el presente Certificado de Disponibilidad
     Presupuestal (CDP) dejando afectado el presupuesto del Fondo de Servicios
     Educativos – FOSE, así:
   </p>
@@ -2896,7 +2896,7 @@ DOC_TEMPLATES["docs/certificacion_plan_compras.html"] = `{% extends "docs/base_d
     <p class="cpc-texto">
       Que el bien o servicio que se describe a continuación se encuentra incluido en el
       Plan General de Compras, aprobado por el Consejo Directivo para la vigencia fiscal
-      <strong>{{ anio }}</strong>
+      <strong>{{ vigencia_contrato }}</strong>
     </p>
   </div>
 
@@ -10315,7 +10315,7 @@ DOC_TEMPLATES["docs/solicitud_cdp.html"] = `{% extends "docs/base_doc.html" %}
 
   <p>
     En atención al Plan Anual de Adquisiciones previsto para la vigencia
-    <strong>{{ anio }}</strong>, aprobado por el Consejo Directivo y de conformidad
+    <strong>{{ vigencia_contrato }}</strong>, aprobado por el Consejo Directivo y de conformidad
     con lo dispuesto para el manejo de los recursos del Fondo de Servicios
     Educativos, me permito solicitar la expedición del Certificado de
     Disponibilidad Presupuestal, previa verificación de la existencia de recursos

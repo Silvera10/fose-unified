@@ -578,6 +578,7 @@ function buildDocContext(contrato, d, templateName){
     secretaria: cfg.secretaria || 'SECRETARÍA DE EDUCACIÓN',
     unidad_ejecutora: cfg.unidad_ejecutora || '',
     anio: c.vigencia_fiscal || cfg.vigencia || new Date().getFullYear(),
+    vigencia_contrato: c.fecha_suscripcion ? String(c.fecha_suscripcion).split('-')[0] : (c.vigencia_fiscal || cfg.vigencia || new Date().getFullYear()),
 
     // Rector
     rector: cfg.rector || '',
