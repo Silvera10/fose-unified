@@ -142,11 +142,20 @@ function _sifseCalcGastos(d, tMax){
             && _toSifseFuente(_getFuenteInt(c), defaultFuenteSifse) === fSifse)
           .reduce((s,c) => s + (Number(c.valor)||0), 0);
 
-        /* Pagos */
-        agg[k].pagos += (d.pagos_eg||[])
-          .filter(e => e.cod === r.cod && Number(e.trim) === t
-            && _toSifseFuente(_getFuenteInt(e), defaultFuenteSifse) === fSifse)
-          .reduce((s,e) => s + (Number(e.valor)||0), 0);
+        /* Pagos — leer desde contratos_full[].pagos[] (pagos efectuados con egreso) */
+        agg[k].pagos += (d.contratos_full||[])
+          .filter(cf => cf.rubro === r.cod
+            && _toSifseFuente(cf.fuente || _getFuenteInt(cf), defaultFuenteSifse) === fSifse)
+          .reduce((s, cf) => {
+            return s + (cf.pagos||[])
+              .filter(p => {
+                if(!p.fecha_pago || !p.num_egreso) return false;
+                const m = Number(String(p.fecha_pago).split('-')[1]||0);
+                const trimP = m<=3?1 : m<=6?2 : m<=9?3 : 4;
+                return trimP === t;
+              })
+              .reduce((sp, p) => sp + (Number(p.valor)||0), 0);
+          }, 0);
       }
     });
 
