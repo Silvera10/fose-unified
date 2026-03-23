@@ -345,8 +345,16 @@ async function guardarInstitucion(){
     } catch(e){ console.warn('Error copiando rubros:', e); }
   }
 
+  // Guardar datos completos y forzar sync con Supabase
   await DB._put('instituciones', id, d);
+  // Forzar que la memoria interna tenga los datos correctos
+  DB._mem = d;
   await DB.setActive(id);
+  // Re-guardar para asegurar que Supabase tiene la versión completa
+  DB.save(d);
+  if(typeof SB !== 'undefined' && SB.isActive()){
+    try { await SB.saveInst(id, d); } catch(e){ console.warn('SB sync:', e); }
+  }
   bootstrap.Modal.getInstance($('mInst')).hide();
   navUpdate(); renderListaInstituciones(); recargarApp();
   toast(`Institución "${nombre}" creada`);
