@@ -313,8 +313,7 @@ async function guardarInstitucion(){
     return;
   }
 
-  // Crear nueva
-  const id = await DB.addInst(nombre, campos.vigencia);
+  // Crear nueva — primero preparar datos completos
   let d = DB.initVacio(nombre, campos.nit, campos.rector,
     campos.idRector, campos.dv, campos.departamento, campos.municipio,
     campos.direccion, campos.email, campos.vigencia
@@ -327,6 +326,18 @@ async function guardarInstitucion(){
   d.config.fecha_paa = campos.fecha_paa;
   d.config.fecha_mod_paa = campos.fecha_mod_paa;
   d.config.unidad_ejecutora = campos.unidad_ejecutora;
+  d.config.firma_rector = campos.firma_rector || '';
+  d.config.dane = campos.dane || '';
+  // Cuentas bancarias
+  d.config.banco_1 = campos.banco_1 || '';
+  d.config.cuenta_1 = campos.cuenta_1 || '';
+  d.config.tipo_cuenta_1 = campos.tipo_cuenta_1 || '';
+  d.config.banco_2 = campos.banco_2 || '';
+  d.config.cuenta_2 = campos.cuenta_2 || '';
+  d.config.tipo_cuenta_2 = campos.tipo_cuenta_2 || '';
+  d.config.banco_3 = campos.banco_3 || '';
+  d.config.cuenta_3 = campos.cuenta_3 || '';
+  d.config.tipo_cuenta_3 = campos.tipo_cuenta_3 || '';
 
   if($('chk-copiar-rubros').checked){
     const origenId = $('sel-inst-origen').value;
@@ -337,7 +348,6 @@ async function guardarInstitucion(){
           cuenta_contable:r.cuenta_contable||'',nombre_cuenta:r.nombre_cuenta||'',sifse_fuente:r.sifse_fuente||'',sifse_item:r.sifse_item||''}));
         d.rubros_ing = (origen.rubros_ing||[]).map(r => ({cod:r.cod,guia:r.guia||'',con:r.con,esGrupo:r.esGrupo||false,ini:0,
           en_banco:r.en_banco||false,sifse_fuente:r.sifse_fuente||''}));
-        // Copiar mapeo SIFSE si existe
         if(origen.sifse_mapeo) d.sifse_mapeo = JSON.parse(JSON.stringify(origen.sifse_mapeo));
         d.mods = {};
         d.rubros.forEach(r => { d.mods[r.cod]={1:{adi:0,red:0,cre:0,cco:0},2:{adi:0,red:0,cre:0,cco:0},3:{adi:0,red:0,cre:0,cco:0},4:{adi:0,red:0,cre:0,cco:0}}; });
@@ -345,16 +355,12 @@ async function guardarInstitucion(){
     } catch(e){ console.warn('Error copiando rubros:', e); }
   }
 
-  // Guardar datos completos y forzar sync con Supabase
+  // Crear institución en DB con datos COMPLETOS (no vacíos)
+  const id = await DB.addInst(nombre, campos.vigencia, d);
+  // Guardar también en IndexedDB local
   await DB._put('instituciones', id, d);
-  // Forzar que la memoria interna tenga los datos correctos
-  DB._mem = d;
+  // Activar — setActive leerá los datos completos de IndexedDB
   await DB.setActive(id);
-  // Re-guardar para asegurar que Supabase tiene la versión completa
-  DB.save(d);
-  if(typeof SB !== 'undefined' && SB.isActive()){
-    try { await SB.saveInst(id, d); } catch(e){ console.warn('SB sync:', e); }
-  }
   bootstrap.Modal.getInstance($('mInst')).hide();
   navUpdate(); renderListaInstituciones(); recargarApp();
   toast(`Institución "${nombre}" creada`);

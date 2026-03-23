@@ -89,14 +89,14 @@ const DB = {
     this._mem = d || this.initVacio();
   },
 
-  async addInst(nombre, vigencia){
+  async addInst(nombre, vigencia, datosCompletos){
     const id = 'inst_' + uid();
     this._meta.instituciones.push({id, nombre, vigencia: vigencia||''});
     this._meta.activeId = id;
     await this.saveMeta();
-    // Sync con Supabase
+    // Sync con Supabase — usa datos completos si se proporcionan
     if (typeof SB !== 'undefined' && SB.isActive()){
-      await SB.createInst(id, nombre, this.initVacio(nombre));
+      await SB.createInst(id, nombre, datosCompletos || this.initVacio(nombre));
     }
     return id;
   },
