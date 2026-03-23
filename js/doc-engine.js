@@ -1717,8 +1717,7 @@ function mostrarSelectorDescarga(contratoId){
     { key:'pag', label:'Pago y Liquidación' }
   ];
 
-  // Solo mostrar documentos que están en DOC_GRUPO_EXPEDIENTE
-  const disponibles = DOC_CATALOG.filter(d => DOC_GRUPO_EXPEDIENTE.includes(d.file));
+  const disponibles = DOC_CATALOG;
 
   let body = `<div class="mb-2">
     <button class="btn btn-sm btn-outline-primary me-1" onclick="document.querySelectorAll('#dlg-desc-checks input').forEach(c=>c.checked=true)">Todos</button>
@@ -1784,7 +1783,7 @@ function mostrarSelectorImpresion(contratoId){
     { key:'pag', label:'Pago y Liquidación' }
   ];
 
-  const disponibles = DOC_CATALOG.filter(d => DOC_GRUPO_EXPEDIENTE.includes(d.file));
+  const disponibles = DOC_CATALOG;
 
   let body = `<div class="mb-2">
     <button class="btn btn-sm btn-outline-primary me-1" onclick="document.querySelectorAll('#dlg-imp-checks input').forEach(c=>c.checked=true)">Todos</button>
