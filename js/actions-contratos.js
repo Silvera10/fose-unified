@@ -1167,7 +1167,7 @@ function abrirModalContrato(id=null){
       $('mc-fecha-suscripcion').value = '';
     }
     $('mc-modalidad').value = c.modalidad||''; $('mc-estado').value = c.estado||'En ejecucion';
-    $('mc-objeto').value = (c.objeto||'').replace(/^\(Pendiente\)/,''); $('mc-obligaciones').value = c.obligaciones||'';
+    $('mc-objeto').value = (c.objeto||'').replace(/^\(Pendiente\)/,''); $('mc-justificacion').value = c.justificacion_necesidad||''; $('mc-obligaciones').value = c.obligaciones||'';
     $('mc-valor').value = c.valor||''; $('mc-fecha-inicio').value = c.fecha_inicio||'';
     $('mc-fecha-fin').value = c.fecha_fin||''; $('mc-plazo').value = c.plazo||'';
     if($('mc-plazo-unidad')) $('mc-plazo-unidad').value = c.plazo_unidad||'dias';
@@ -2426,7 +2426,7 @@ function guardarContrato(){
     numero: numero, tipo:$('mc-tipo').value, modalidad:$('mc-modalidad').value,
     ref_contrato_anterior: $('mc-ref-anterior')?.value?.trim()||'',
     fecha_suscripcion: $('mc-ref-anterior')?.value?.trim() ? _fixAnio($('mc-fecha-suscripcion').value) : '',
-    estado:estadoFinal, objeto: objeto, obligaciones:$('mc-obligaciones').value.trim(),
+    estado:estadoFinal, objeto: objeto, justificacion_necesidad: ($('mc-justificacion')?.value||'').trim(), obligaciones:$('mc-obligaciones').value.trim(),
     valor, fecha_inicio:_fixAnio($('mc-fecha-inicio').value), fecha_fin:_fixAnio($('mc-fecha-fin').value),
     plazo:Number($('mc-plazo').value)||0,
     plazo_unidad:($('mc-plazo-unidad')||{}).value||'dias',
@@ -2549,6 +2549,39 @@ function eliminarContrato(id){
   d.compromisos_eg = (d.compromisos_eg||[]).filter(e => e.contrato_full_id !== id);
   d.contratos_full = (d.contratos_full||[]).filter(c=>c.id!==id);
   DB.save(d); R.contratos(); toast('Contrato eliminado','warning');
+}
+
+/* ── Generar texto base de necesidad ── */
+function generarTextoNecesidad(){
+  const objeto = ($('mc-objeto')?.value||'').toLowerCase();
+  const tipo = ($('mc-tipo')?.value||'').toLowerCase();
+  let texto = '';
+  // Detectar palabras clave en el objeto
+  if(/mantenimiento|reparaci[oó]n|adecuaci[oó]n|infraestructura|obra|construcci[oó]n|pintura|techo|cubierta/.test(objeto)){
+    texto = 'La Institución Educativa presenta deterioro en su infraestructura física debido al uso constante y las condiciones climáticas de la región, lo cual requiere intervención mediante actividades de mantenimiento, adecuación y mejoramiento para garantizar condiciones seguras y adecuadas para la comunidad educativa, conforme a los planes institucionales vigentes.';
+  } else if(/contab|financier|tesor|presupuest/.test(objeto)){
+    texto = 'La Institución Educativa requiere apoyo profesional en la gestión contable y financiera para el cumplimiento de las normas de contabilidad pública, la elaboración de estados financieros, el manejo presupuestal y la rendición de cuentas ante los organismos de control, garantizando la transparencia en el manejo de los recursos del Fondo de Servicios Educativos.';
+  } else if(/digitaci[oó]n|archivo|sistematizaci[oó]n|secretar|administrativ/.test(objeto)){
+    texto = 'La Institución Educativa requiere apoyo administrativo para la organización, sistematización y archivo de la información institucional, garantizando el adecuado manejo documental y la atención oportuna de los requerimientos administrativos del establecimiento educativo.';
+  } else if(/aseo|limpieza|cafeter[ií]a|higiene/.test(objeto)){
+    texto = 'La Institución Educativa requiere el servicio de aseo y limpieza para mantener condiciones de salubridad e higiene en las instalaciones, garantizando un ambiente sano y seguro para la comunidad educativa conforme a las normas sanitarias vigentes.';
+  } else if(/vigilancia|seguridad|celad|portero/.test(objeto)){
+    texto = 'La Institución Educativa requiere el servicio de vigilancia y seguridad para garantizar la protección de los bienes muebles e inmuebles de la institución, así como la integridad física de la comunidad educativa durante las jornadas escolares y horarios extendidos.';
+  } else if(/transporte|ruta|escolar|traslado/.test(objeto)){
+    texto = 'La Institución Educativa requiere el servicio de transporte escolar para garantizar el acceso y la permanencia de los estudiantes que residen en zonas rurales o de difícil acceso, dando cumplimiento a las estrategias de cobertura educativa y reducción de la deserción escolar.';
+  } else if(/ferret|cemento|material|zinc|pintura|insumo/.test(objeto)){
+    texto = 'La Institución Educativa requiere la adquisición de materiales e insumos necesarios para el mantenimiento y mejoramiento de la infraestructura física del establecimiento educativo, garantizando espacios adecuados para el desarrollo de las actividades académicas y administrativas.';
+  } else if(/papeler[ií]a|t[oó]ner|impres|oficina/.test(objeto)){
+    texto = 'La Institución Educativa requiere la adquisición de insumos de papelería y elementos de oficina necesarios para el normal funcionamiento administrativo y académico del establecimiento educativo durante la vigencia fiscal correspondiente.';
+  } else if(/equipo|computador|tecnolog[ií]a|tablet|port[aá]til/.test(objeto)){
+    texto = 'La Institución Educativa requiere la adquisición de equipos y recursos tecnológicos para fortalecer los procesos pedagógicos y administrativos, contribuyendo al mejoramiento de la calidad educativa y la apropiación de las tecnologías de la información y la comunicación.';
+  } else if(/aliment|restaurante|complemento|nutri/.test(objeto)){
+    texto = 'La Institución Educativa requiere el suministro de alimentos o complementos nutricionales para atender las necesidades de la comunidad estudiantil, contribuyendo a la permanencia escolar y al bienestar de los estudiantes conforme a los programas de alimentación escolar.';
+  } else {
+    texto = 'La Institución Educativa ha identificado la necesidad de contratar el presente servicio o bien para garantizar el adecuado funcionamiento institucional, el cumplimiento de sus objetivos misionales y la continuidad en la prestación del servicio educativo durante la vigencia fiscal correspondiente.';
+  }
+  $('mc-justificacion').value = texto;
+  toast('Texto base generado. Puedes editarlo según tu caso específico.','info');
 }
 
 /* ── UNSPSC Search ── */

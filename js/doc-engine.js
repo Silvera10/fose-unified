@@ -591,6 +591,7 @@ function buildDocContext(contrato, d, templateName){
     tipo_contrato: c.tipo_contrato || c.tipo || 'Contrato de Prestación de Servicios',
     modalidad_seleccion: c.modalidad || 'Mínima Cuantía',
     objeto: c.objeto || '',
+    justificacion_necesidad: c.justificacion_necesidad || '',
     obligaciones: c.obligaciones || '',
     forma_pago: c.forma_pago || 'Pago único',
     dias_duracion: c.dias_duracion || c.plazo || '',

@@ -4516,7 +4516,11 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
     ha identificado la necesidad de contratar lo siguiente, con el fin de garantizar
     el adecuado funcionamiento institucional y el cumplimiento de sus objetivos misionales:
   </p>
+  {% if justificacion_necesidad %}
+  <p><strong>Necesidad identificada:</strong> {{ justificacion_necesidad }}</p>
+  {% else %}
   <p><strong>Necesidad identificada:</strong> {{ objeto }}</p>
+  {% endif %}
   <p>
     La satisfacción de esta necesidad resulta indispensable para el normal desarrollo
     de las actividades académicas y administrativas de la institución, conforme a los
@@ -4963,7 +4967,11 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
     ha identificado la necesidad de contratar lo siguiente, con el fin de garantizar
     el adecuado funcionamiento institucional y el cumplimiento de sus objetivos misionales:
   </p>
+  {% if justificacion_necesidad %}
+  <p><strong>Necesidad identificada:</strong> {{ justificacion_necesidad }}</p>
+  {% else %}
   <p><strong>Necesidad identificada:</strong> {{ objeto }}</p>
+  {% endif %}
   <p>
     La satisfacción de esta necesidad resulta indispensable para el normal desarrollo de
     las actividades académicas y administrativas de la institución, conforme a los planes
