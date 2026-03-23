@@ -384,7 +384,38 @@
 
 <!-- ─────────── SECCIÓN 10 ─────────── -->
 <div class="ep-section">
-  <h3>10. Cronograma del Proceso</h3>
+  <h3>10. Plazo de Ejecución del Contrato</h3>
+  <p>
+    El plazo de ejecución del contrato será de <strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong>,
+    contados a partir de la suscripción del acta de inicio.
+  </p>
+  <table class="ep-table">
+    <thead>
+      <tr>
+        <th style="width:50%">Concepto</th>
+        <th style="width:50%; text-align:center">Detalle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Duración del Contrato</td>
+        <td style="text-align:center"><strong>{{ plazo_valor }} {{ plazo_unidad_texto }}</strong></td>
+      </tr>
+      <tr>
+        <td>Fecha Estimada de Inicio</td>
+        <td style="text-align:center">{{ fecha_inicio_larga if fecha_inicio_larga is defined else '—' }}</td>
+      </tr>
+      <tr>
+        <td>Fecha Estimada de Terminación</td>
+        <td style="text-align:center">{{ fecha_fin_larga if fecha_fin_larga is defined else '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─────────── SECCIÓN 11 ─────────── -->
+<div class="ep-section">
+  <h3>11. Cronograma del Proceso</h3>
   <table class="ep-table">
     <thead>
       <tr>
