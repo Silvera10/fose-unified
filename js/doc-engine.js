@@ -1029,7 +1029,7 @@ function _inyectarFirmas(html, ctx){
               const ctxAfter  = html.substring(m.index, Math.min(html.length, m.index + 400));
               // Debe estar dentro de un contenedor de firma Y tener label "CONTRATISTA" cerca
               const enDivFirma = /class="[^"]*firma[^"]*"/.test(ctxBefore);
-              const tieneLabel = ctxAfter.includes('EL CONTRATISTA') || ctxAfter.includes('LA EMPRESA CONTRATISTA') || ctxAfter.includes('LA CONTRATISTA');
+              const tieneLabel = ctxAfter.includes('EL CONTRATISTA') || ctxAfter.includes('LA EMPRESA CONTRATISTA') || ctxAfter.includes('LA CONTRATISTA') || ctxAfter.includes('Proponente') || ctxAfter.includes('Contratista') || ctxAfter.includes('DECLARANTE') || ctxAfter.includes('Titular de los Datos');
               if(enDivFirma && tieneLabel){
                 ultimaPosicion = m.index;
               }
