@@ -968,6 +968,14 @@
             <div class="mb-2"><label class="form-label small fw-bold mb-0">Justificación de la Necesidad <span class="text-muted fw-normal">(opcional)</span></label>
               <div class="d-flex gap-1 mb-1"><button type="button" class="btn btn-outline-warning btn-sm" style="font-size:10px" onclick="generarTextoNecesidad()"><i class="bi bi-lightning-fill me-1"></i>Generar texto base</button></div>
               <textarea class="form-control form-control-sm" id="mc-justificacion" rows="3" placeholder="Si lo dejas vacío, el estudio previo usará el objeto del contrato como necesidad."></textarea></div>
+            <!-- Especificaciones Técnicas -->
+            <div class="small fw-bold mb-1" style="color:#fff;background:linear-gradient(135deg,#8e44ad,#9b59b6);padding:4px 10px;border-radius:4px;font-size:11px">
+              <i class="bi bi-list-check me-1"></i>Especificaciones Técnicas <span class="fw-normal">(opcional)</span></div>
+            <table class="table table-sm table-bordered mb-1" style="font-size:11px" id="mc-espec-tabla-wrap">
+              <thead><tr class="table-light"><th style="width:5%">#</th><th>Descripción</th><th style="width:15%">Cantidad</th><th style="width:15%">Unidad</th><th style="width:30px"></th></tr></thead>
+              <tbody id="mc-espec-tabla"></tbody>
+            </table>
+            <button type="button" class="btn btn-sm btn-outline-purple mb-2" style="font-size:10px;color:#8e44ad;border-color:#8e44ad" onclick="agregarItemEspec()"><i class="bi bi-plus-lg me-1"></i>Agregar ítem</button>
             <!-- Items UNSPSC -->
             <div class="small fw-bold mb-1" style="color:#fff;background:linear-gradient(135deg,#7f8c8d,#95a5a6);padding:4px 10px;border-radius:4px;font-size:11px">
               <i class="bi bi-box-seam me-1"></i>Items UNSPSC</div>

@@ -96,6 +96,27 @@ function _formatMoneda(n){
   return '$ ' + Math.round(v).toLocaleString('es-CO');
 }
 
+function _buildTablaEspec(items){
+  if(!items || !items.length) return '';
+  let html = `<table style="width:100%;border-collapse:collapse;font-size:9.5pt;margin:8px 0">
+    <thead><tr style="background:#555;color:#fff;font-weight:bold;text-align:center">
+      <th style="padding:5px;border:1px solid #555;width:6%">Ítem</th>
+      <th style="padding:5px;border:1px solid #555">Descripción</th>
+      <th style="padding:5px;border:1px solid #555;width:12%">Cantidad</th>
+      <th style="padding:5px;border:1px solid #555;width:12%">Unidad</th>
+    </tr></thead><tbody>`;
+  items.forEach((it, i) => {
+    html += `<tr>
+      <td style="padding:4px 6px;border:1px solid #aaa;text-align:center">${i+1}</td>
+      <td style="padding:4px 6px;border:1px solid #aaa">${it.descripcion||''}</td>
+      <td style="padding:4px 6px;border:1px solid #aaa;text-align:center">${it.cantidad||''}</td>
+      <td style="padding:4px 6px;border:1px solid #aaa;text-align:center">${it.unidad||''}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
 function _fechaLarga(f){
   if(!f || !String(f).trim()) return '_______________';
   const d = new Date(f+'T12:00:00');
@@ -592,6 +613,9 @@ function buildDocContext(contrato, d, templateName){
     modalidad_seleccion: c.modalidad || 'Mínima Cuantía',
     objeto: c.objeto || '',
     justificacion_necesidad: c.justificacion_necesidad || '',
+    especificaciones_tecnicas: c.especificaciones_tecnicas || [],
+    tiene_especificaciones: (c.especificaciones_tecnicas && c.especificaciones_tecnicas.length > 0) ? true : false,
+    tabla_especificaciones: _buildTablaEspec(c.especificaciones_tecnicas),
     obligaciones: c.obligaciones || '',
     forma_pago: c.forma_pago || 'Pago único',
     dias_duracion: c.dias_duracion || c.plazo || '',

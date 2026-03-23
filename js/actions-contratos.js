@@ -1167,7 +1167,7 @@ function abrirModalContrato(id=null){
       $('mc-fecha-suscripcion').value = '';
     }
     $('mc-modalidad').value = c.modalidad||''; $('mc-estado').value = c.estado||'En ejecucion';
-    $('mc-objeto').value = (c.objeto||'').replace(/^\(Pendiente\)/,''); $('mc-justificacion').value = c.justificacion_necesidad||''; $('mc-obligaciones').value = c.obligaciones||'';
+    $('mc-objeto').value = (c.objeto||'').replace(/^\(Pendiente\)/,''); $('mc-justificacion').value = c.justificacion_necesidad||''; _cargarEspecTecnicas(c.especificaciones_tecnicas||[]); $('mc-obligaciones').value = c.obligaciones||'';
     $('mc-valor').value = c.valor||''; $('mc-fecha-inicio').value = c.fecha_inicio||'';
     $('mc-fecha-fin').value = c.fecha_fin||''; $('mc-plazo').value = c.plazo||'';
     if($('mc-plazo-unidad')) $('mc-plazo-unidad').value = c.plazo_unidad||'dias';
@@ -2427,7 +2427,7 @@ function guardarContrato(){
     numero: numero, tipo:$('mc-tipo').value, modalidad:$('mc-modalidad').value,
     ref_contrato_anterior: $('mc-ref-anterior')?.value?.trim()||'',
     fecha_suscripcion: $('mc-ref-anterior')?.value?.trim() ? _fixAnio($('mc-fecha-suscripcion').value) : '',
-    estado:estadoFinal, objeto: objeto, justificacion_necesidad: ($('mc-justificacion')?.value||'').trim(), obligaciones:$('mc-obligaciones').value.trim(),
+    estado:estadoFinal, objeto: objeto, justificacion_necesidad: ($('mc-justificacion')?.value||'').trim(), especificaciones_tecnicas: _getEspecTecnicas(), obligaciones:$('mc-obligaciones').value.trim(),
     valor, fecha_inicio:_fixAnio($('mc-fecha-inicio').value), fecha_fin:_fixAnio($('mc-fecha-fin').value),
     plazo:Number($('mc-plazo').value)||0,
     plazo_unidad:($('mc-plazo-unidad')||{}).value||'dias',
@@ -2551,6 +2551,49 @@ function eliminarContrato(id){
   d.compromisos_eg = (d.compromisos_eg||[]).filter(e => e.contrato_full_id !== id);
   d.contratos_full = (d.contratos_full||[]).filter(c=>c.id!==id);
   DB.save(d); R.contratos(); toast('Contrato eliminado','warning');
+}
+
+/* ── Especificaciones Técnicas ── */
+function agregarItemEspec(desc='', cant='', unid=''){
+  const tb = $('mc-espec-tabla');
+  if(!tb) return;
+  const n = tb.rows.length + 1;
+  const tr = tb.insertRow();
+  tr.innerHTML = `<td class="text-center align-middle">${n}</td>
+    <td><input class="form-control form-control-sm" style="font-size:11px" placeholder="Descripción del ítem" value="${desc}"></td>
+    <td><input class="form-control form-control-sm" style="font-size:11px" placeholder="Cant." value="${cant}"></td>
+    <td><input class="form-control form-control-sm" style="font-size:11px" placeholder="Unid" value="${unid}"></td>
+    <td><button type="button" class="btn btn-sm btn-outline-danger" style="font-size:10px" onclick="eliminarItemEspec(this)"><i class="bi bi-trash"></i></button></td>`;
+}
+function eliminarItemEspec(btn){
+  const tr = btn.closest('tr');
+  tr.remove();
+  _renumerarEspec();
+}
+function _renumerarEspec(){
+  const tb = $('mc-espec-tabla');
+  if(!tb) return;
+  [...tb.rows].forEach((r,i) => { r.cells[0].textContent = i+1; });
+}
+function _getEspecTecnicas(){
+  const tb = $('mc-espec-tabla');
+  if(!tb) return [];
+  return [...tb.rows].map(r => {
+    const inputs = r.querySelectorAll('input');
+    if(!inputs.length) return null;
+    return {
+      descripcion: inputs[0]?.value?.trim()||'',
+      cantidad: inputs[1]?.value?.trim()||'',
+      unidad: inputs[2]?.value?.trim()||''
+    };
+  }).filter(x => x && x.descripcion);
+}
+function _cargarEspecTecnicas(items){
+  const tb = $('mc-espec-tabla');
+  if(!tb) return;
+  tb.innerHTML = '';
+  if(!items || !items.length) return;
+  items.forEach(it => agregarItemEspec(it.descripcion||'', it.cantidad||'', it.unidad||''));
 }
 
 /* ── Generar texto base de necesidad ── */

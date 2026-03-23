@@ -4548,6 +4548,10 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
       </tr>
     </tbody>
   </table>
+  {% if tiene_especificaciones %}
+  <p style="font-weight:bold;margin-top:8px">Especificaciones Técnicas:</p>
+  {{ tabla_especificaciones }}
+  {% endif %}
   <p>
     El rubro presupuestal afectado corresponde a
     <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
@@ -4999,6 +5003,10 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
       </tr>
     </tbody>
   </table>
+  {% if tiene_especificaciones %}
+  <p style="font-weight:bold;margin-top:8px">Especificaciones Técnicas:</p>
+  {{ tabla_especificaciones }}
+  {% endif %}
   <p>
     El rubro presupuestal afectado corresponde a
     <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,
@@ -7441,6 +7449,10 @@ DOC_TEMPLATES["docs/invitacion.html"] = `{% extends "docs/base_doc.html" %}
 <!-- 1. OBJETO -->
 <div class="inv-seccion">1. OBJETO DEL CONTRATO</div>
 <p class="inv-parrafo">{{ objeto }}</p>
+{% if tiene_especificaciones %}
+<p class="inv-parrafo" style="font-weight:bold;margin-top:8px">Especificaciones Técnicas:</p>
+{{ tabla_especificaciones }}
+{% endif %}
 
 <!-- 2. CLASIFICACIÓN UNSPSC -->
 <div class="inv-seccion">2. CLASIFICACIÓN UNSPSC</div>

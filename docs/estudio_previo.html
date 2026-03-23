@@ -232,6 +232,10 @@
       </tr>
     </tbody>
   </table>
+  {% if tiene_especificaciones %}
+  <p style="font-weight:bold;margin-top:8px">Especificaciones Técnicas:</p>
+  {{ tabla_especificaciones }}
+  {% endif %}
   <p>
     El rubro presupuestal afectado corresponde a
     <strong>{{ rubro_codigo }} — {{ rubro_nombre }}</strong>,

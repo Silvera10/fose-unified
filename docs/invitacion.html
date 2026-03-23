@@ -60,6 +60,10 @@
 <!-- 1. OBJETO -->
 <div class="inv-seccion">1. OBJETO DEL CONTRATO</div>
 <p class="inv-parrafo">{{ objeto }}</p>
+{% if tiene_especificaciones %}
+<p style="font-weight:bold;margin-top:8px">Especificaciones Técnicas:</p>
+{{ tabla_especificaciones }}
+{% endif %}
 
 <!-- 2. CLASIFICACIÓN UNSPSC -->
 <div class="inv-seccion">2. CLASIFICACIÓN UNSPSC</div>

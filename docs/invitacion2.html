@@ -178,6 +178,10 @@
 <div class="inv2-section">
   <div class="inv2-section-titulo">1. Objeto del Contrato</div>
   <p>{{ objeto }}</p>
+{% if tiene_especificaciones %}
+<p style="font-weight:bold;margin-top:8px">Especificaciones Técnicas:</p>
+{{ tabla_especificaciones }}
+{% endif %}
 </div>
 
 <!-- 2. CLASIFICACIÓN UNSPSC -->
