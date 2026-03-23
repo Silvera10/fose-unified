@@ -1804,22 +1804,31 @@ async function descargarExpedientePDFs(contratoId, selectedTemplates){
 
   if(!cola.length){ toast('No se generaron documentos','warning'); return; }
 
-  // Abrir todos los documentos como pestañas nuevas
+  // Descargar cada documento como archivo HTML
   for(let i = 0; i < cola.length; i++){
     let htmlDoc = cola[i].html;
+    // Limpiar botones de impresión y ajustar margen
     htmlDoc = htmlDoc.replace(/<button[^>]*class="print-btn[^>]*>[\s\S]*?<\/button>/gi, '');
     htmlDoc = htmlDoc.replace(/style="margin-top:\s*50px"/gi, 'style="margin-top:0"');
+    // Forzar fondo blanco y márgenes de impresión en el HTML descargado
+    const printCSS = `<style>@media print{body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:letter;margin:0}}</style>`;
+    htmlDoc = htmlDoc.replace('</head>', printCSS + '</head>');
 
+    const fileName = cola[i].name + '.html';
     const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    const w = window.open(url, '_blank');
-    if(!w){ toast('Permita ventanas emergentes en su navegador','danger'); return; }
-    // Liberar URL después de un rato
-    setTimeout(() => URL.revokeObjectURL(url), 30000);
-    await new Promise(r => setTimeout(r, 500));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    // Esperar un poco entre descargas para que el navegador no las bloquee
+    await new Promise(r => setTimeout(r, 300));
   }
 
-  toast(`${cola.length} documentos abiertos en pestañas. En cada pestaña: Ctrl+P → Guardar como PDF → Márgenes: Ninguno.`,'success');
+  toast(`${cola.length} documentos descargados como HTML en su carpeta Descargas. Abra cada uno y use Ctrl+P → Guardar como PDF → Márgenes: Ninguno.`,'success');
 }
 
 /* ══════════════════════════════════════════════════════════
