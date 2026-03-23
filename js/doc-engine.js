@@ -1517,8 +1517,8 @@ const DOC_GRUPO_EXPEDIENTE = [
   'acta_liquidacion.html'
 ];
 
-async function imprimirGrupoDocumentos(contratoId, grupo){
-  const templates = grupo === 'pre' ? DOC_GRUPO_PRECONTRACTUAL : DOC_GRUPO_EXPEDIENTE;
+async function imprimirGrupoDocumentos(contratoId, grupo, selectedTemplates){
+  const templates = selectedTemplates || (grupo === 'pre' ? DOC_GRUPO_PRECONTRACTUAL : DOC_GRUPO_EXPEDIENTE);
   const label = grupo === 'pre' ? 'Fase Pre Contractual' : 'Expediente Completo';
 
   const d = DB.load();
@@ -1770,6 +1770,71 @@ function mostrarSelectorDescarga(contratoId){
   new bootstrap.Modal(modal).show();
 }
 
+function mostrarSelectorImpresion(contratoId){
+  const etapas = [
+    { key:'pre', label:'Fase Precontractual' },
+    { key:'sel', label:'Oferta y Evaluación' },
+    { key:'con', label:'Documentos Contractuales' },
+    { key:'eje', label:'Ejecución y Seguimiento' },
+    { key:'pag', label:'Pago y Liquidación' }
+  ];
+
+  const disponibles = DOC_CATALOG.filter(d => DOC_GRUPO_EXPEDIENTE.includes(d.file));
+
+  let body = `<div class="mb-2">
+    <button class="btn btn-sm btn-outline-primary me-1" onclick="document.querySelectorAll('#dlg-imp-checks input').forEach(c=>c.checked=true)">Todos</button>
+    <button class="btn btn-sm btn-outline-secondary" onclick="document.querySelectorAll('#dlg-imp-checks input').forEach(c=>c.checked=false)">Ninguno</button>
+  </div><div id="dlg-imp-checks">`;
+
+  etapas.forEach(et => {
+    const docs = disponibles.filter(d => d.etapa === et.key);
+    if(!docs.length) return;
+    body += `<div class="mb-2"><strong class="small text-muted">${et.label}</strong>`;
+    docs.forEach(d => {
+      const code = _DOC_FILENAMES[d.file] ? _DOC_FILENAMES[d.file].split('_')[0] : '';
+      body += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${d.file}" id="im-${d.id}" checked>
+        <label class="form-check-label small" for="im-${d.id}">${code ? '<code>'+code+'</code> ' : ''}${d.name}</label></div>`;
+    });
+    body += `</div>`;
+  });
+  body += `</div>`;
+
+  let modal = document.getElementById('modalImpresion');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'modalImpresion';
+    modal.className = 'modal fade';
+    modal.tabIndex = -1;
+    modal.innerHTML = `<div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header py-2">
+          <h6 class="modal-title fw-bold">Seleccionar documentos para imprimir</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modalImpresion-body"></div>
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary btn-sm fw-bold" id="btnImprimirSel">
+            <i class="bi bi-printer me-1"></i>Imprimir seleccionados
+          </button>
+        </div>
+      </div>
+    </div>`;
+    document.body.appendChild(modal);
+  }
+
+  document.getElementById('modalImpresion-body').innerHTML = body;
+  document.getElementById('btnImprimirSel').onclick = () => {
+    const checks = document.querySelectorAll('#dlg-imp-checks input:checked');
+    const selected = Array.from(checks).map(c => c.value);
+    if(!selected.length){ toast('Seleccione al menos un documento','warning'); return; }
+    bootstrap.Modal.getInstance(modal).hide();
+    imprimirGrupoDocumentos(contratoId, 'exp', selected);
+  };
+
+  new bootstrap.Modal(modal).show();
+}
+
 async function descargarExpedientePDFs(contratoId, selectedTemplates){
   const d = DB.load();
   const contrato = (d.contratos_full||[]).find(x => x.id === contratoId);
@@ -1898,7 +1963,7 @@ function renderDocPanel(contratoId){
     <button class="btn btn-success btn-sm fw-bold" onclick="imprimirGrupoDocumentos('${contratoId}','pre')" title="Imprimir CDP, Estudio Previo, Invitaciones">
       <i class="bi bi-printer me-1"></i>🖨️ Fase Pre Contractual
     </button>
-    <button class="btn btn-primary btn-sm fw-bold" onclick="imprimirGrupoDocumentos('${contratoId}','exp')" title="Imprimir todos los documentos del expediente contractual">
+    <button class="btn btn-primary btn-sm fw-bold" onclick="mostrarSelectorImpresion('${contratoId}')" title="Seleccionar documentos del expediente para imprimir">
       <i class="bi bi-printer me-1"></i>🖨️ Expediente Completo
     </button>
     <button class="btn btn-outline-secondary btn-sm fw-bold" onclick="mostrarSelectorDescarga('${contratoId}')" title="Seleccionar documentos para descargar">
