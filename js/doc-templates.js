@@ -7417,7 +7417,7 @@ DOC_TEMPLATES["docs/invitacion.html"] = `{% extends "docs/base_doc.html" %}
     </tr>
     <tr>
       <th>Fecha</th>
-      <td colspan="3">{{ fecha_invitacion_larga if fecha_estudio_previo_larga is defined else hoy_largo }}</td>
+      <td colspan="3">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else hoy_largo }}</td>
     </tr>
   </tbody>
 </table>
@@ -7816,7 +7816,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
   </tr>
   <tr>
     <th>Fecha</th>
-    <td colspan="3">{{ fecha_invitacion_larga if fecha_estudio_previo_larga is defined else hoy_largo }}</td>
+    <td colspan="3">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else hoy_largo }}</td>
   </tr>
 </table>
 
@@ -8161,7 +8161,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
   </tr>
   <tr>
     <th>Fecha</th>
-    <td colspan="3">{{ fecha_invitacion_larga if fecha_estudio_previo_larga is defined else hoy_largo }}</td>
+    <td colspan="3">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else hoy_largo }}</td>
   </tr>
 </table>
 
@@ -8538,7 +8538,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
   </tr>
   <tr>
     <th>Fecha</th>
-    <td colspan="3">{{ fecha_invitacion_larga if fecha_estudio_previo_larga is defined else hoy_largo }}</td>
+    <td colspan="3">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else hoy_largo }}</td>
   </tr>
 </table>
 
