@@ -689,6 +689,7 @@ function buildDocContext(contrato, d, templateName){
     fecha_modificacion_plan_compras: cfg.fecha_mod_paa || c.fecha_modificacion_plan_compras || '',
     fecha_suscripcion: c.fecha_suscripcion || '',
     fecha_contrato: c.fecha_suscripcion || c.fecha_contrato || c.fecha_inicio || '',
+    fecha_invitacion: c.fecha_invitacion || c.fecha_presentacion_oferta || c.fecha_estudio_previo || '',
     // Fechas adicionales del flujo contractual
     fecha_carta_propuesta: c.fecha_carta_propuesta || '',
     fecha_aceptacion: c.fecha_aceptacion || '',
@@ -708,6 +709,7 @@ function buildDocContext(contrato, d, templateName){
     fecha_estudio_previo_larga: _fechaLarga(c.fecha_estudio_previo),
     fecha_evaluacion_larga: _fechaLarga(c.fecha_evaluacion),
     fecha_presentacion_oferta_larga: _fechaLarga(c.fecha_presentacion_oferta),
+    fecha_invitacion_larga: _fechaLarga(c.fecha_invitacion || c.fecha_presentacion_oferta || c.fecha_estudio_previo),
     fecha_aprobacion_plan_compras_larga: _fechaLargaOrEmpty(cfg.fecha_paa || c.fecha_aprobacion_plan_compras),
     fecha_modificacion_plan_compras_larga: _fechaLargaOrEmpty(cfg.fecha_mod_paa || c.fecha_modificacion_plan_compras),
     // Fechas largas adicionales

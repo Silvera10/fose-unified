@@ -4711,7 +4711,7 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
     <tbody>
       <tr>
         <td>Publicación del Estudio Previo e Invitación</td>
-        <td style="text-align:center">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else '—' }}</td>
+        <td style="text-align:center">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else '—' }}</td>
       </tr>
       <tr>
         <td>Recepción de Ofertas</td>
@@ -5137,7 +5137,7 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
     <tbody>
       <tr>
         <td>Publicación del Estudio Previo e Invitación</td>
-        <td style="text-align:center">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else '—' }}</td>
+        <td style="text-align:center">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else '—' }}</td>
       </tr>
       <tr>
         <td>Recepción de Ofertas</td>
@@ -7912,7 +7912,7 @@ DOC_TEMPLATES["docs/invitacion2.html"] = `{% extends "docs/base_doc.html" %}
     <tbody>
       <tr>
         <td>Publicación del Estudio Previo e Invitación</td>
-        <td style="text-align:center">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else '—' }}</td>
+        <td style="text-align:center">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else '—' }}</td>
       </tr>
       <tr>
         <td>Recepción de Ofertas</td>
@@ -8257,7 +8257,7 @@ DOC_TEMPLATES["docs/invitacion3.html"] = `{% extends "docs/base_doc.html" %}
     <tbody>
       <tr>
         <td>Publicación del Estudio Previo e Invitación</td>
-        <td style="text-align:center">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else '—' }}</td>
+        <td style="text-align:center">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else '—' }}</td>
       </tr>
       <tr>
         <td>Recepción de Ofertas</td>
@@ -8682,7 +8682,7 @@ DOC_TEMPLATES["docs/invitacion_garantia.html"] = `{% extends "docs/base_doc.html
     <tbody>
       <tr>
         <td>Publicación del Estudio Previo e Invitación</td>
-        <td style="text-align:center">{{ fecha_estudio_previo_larga if fecha_estudio_previo_larga is defined else '—' }}</td>
+        <td style="text-align:center">{{ fecha_invitacion_larga if fecha_invitacion_larga is defined else '—' }}</td>
       </tr>
       <tr>
         <td>Recepción de Ofertas</td>

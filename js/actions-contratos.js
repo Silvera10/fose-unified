@@ -258,6 +258,7 @@ function _autoFechasContrato(force){
     const dia2 = _addDias(fechaCDP, 2);                        // CDP + 2 hábiles (Ofertas)
     const dia3 = _addDias(fechaCDP, 3);                        // CDP + 3 hábiles (Evaluación/Aceptación/Firma/RP)
     _si('mc-fecha-estudio',         fechaCDP);                 // Estudio Previo = mismo día CDP
+    _si('mc-fecha-invitacion',      dia1);                     // Invitación/Publicación (día 1)
     _si('mc-fecha-ofertas',         dia2);                     // Recepción de Ofertas (día 2)
     _si('mc-fecha-carta-propuesta', dia2);                     // Carta Propuesta (día 2)
     _si('mc-fecha-evaluacion',      dia3);                     // Evaluación y Selección (día 3)
@@ -1172,6 +1173,7 @@ function abrirModalContrato(id=null){
     if($('mc-plazo-unidad')) $('mc-plazo-unidad').value = c.plazo_unidad||'dias';
     // Fechas proceso
     $('mc-fecha-estudio').value = c.fecha_estudio_previo||'';
+    $('mc-fecha-invitacion').value = c.fecha_invitacion||'';
     $('mc-fecha-ofertas').value = c.fecha_presentacion_oferta||'';
     $('mc-fecha-evaluacion').value = c.fecha_evaluacion||'';
     $('mc-forma-pago').value = c.forma_pago||'';
@@ -2431,6 +2433,7 @@ function guardarContrato(){
     plazo_unidad:($('mc-plazo-unidad')||{}).value||'dias',
     // Fechas proceso
     fecha_estudio_previo:_fixAnio($('mc-fecha-estudio').value),
+    fecha_invitacion:_fixAnio($('mc-fecha-invitacion')?.value||''),
     fecha_presentacion_oferta:_fixAnio($('mc-fecha-ofertas').value),
     fecha_evaluacion:_fixAnio($('mc-fecha-evaluacion').value),
     forma_pago:$('mc-forma-pago').value,
