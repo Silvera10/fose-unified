@@ -254,20 +254,19 @@ function _autoFechasContrato(force){
     _si('mc-fecha-mod-plan', d0.config.fecha_mod_paa || fechaCDP);
 
     // ═══ Fase Precontractual ═══
-    const dia1 = _addDias(fechaCDP, 1);                        // CDP + 1 hábil
-    const dia2 = _addDias(fechaCDP, 2);                        // CDP + 2 hábiles
-    const dia3 = _addDias(fechaCDP, 3);                        // CDP + 3 hábiles
-    const dia4 = _addDias(fechaCDP, 4);                        // CDP + 4 hábiles
-    _si('mc-fecha-estudio',         dia1);                     // Estudio Previo + Invitación (día 1)
+    const dia1 = _addDias(fechaCDP, 1);                        // CDP + 1 hábil (Invitación)
+    const dia2 = _addDias(fechaCDP, 2);                        // CDP + 2 hábiles (Ofertas)
+    const dia3 = _addDias(fechaCDP, 3);                        // CDP + 3 hábiles (Evaluación/Aceptación/Firma/RP)
+    _si('mc-fecha-estudio',         fechaCDP);                 // Estudio Previo = mismo día CDP
     _si('mc-fecha-ofertas',         dia2);                     // Recepción de Ofertas (día 2)
     _si('mc-fecha-carta-propuesta', dia2);                     // Carta Propuesta (día 2)
     _si('mc-fecha-evaluacion',      dia3);                     // Evaluación y Selección (día 3)
     _si('mc-fecha-aceptacion',      dia3);                     // Aceptación Oferta (día 3)
 
     // ═══ Fase Contractual ═══
-    _si('mc-fecha-inicio',          dia4);                     // Fecha Contrato (día 4)
-    _si('mc-pp-fecha-rp',           dia4);                     // RP
-    _si('mc-sv-fecha-inicio',       $('mc-fecha-inicio').value);  // Acta Inicio = misma Fecha Inicio
+    _si('mc-fecha-inicio',          dia3);                     // Fecha Contrato = mismo día evaluación
+    _si('mc-pp-fecha-rp',           dia3);                     // RP = mismo día
+    _si('mc-sv-fecha-inicio',       dia3);                     // Acta Inicio = mismo día
   }
 
   // ═══ Cálculo: Fecha Fin = Fecha Inicio + Plazo ═══
