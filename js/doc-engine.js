@@ -22,11 +22,12 @@ let _escudoBase64 = '';
 
 /* ── Obtener plantilla (prioridad: archivo .html → DOC_TEMPLATES fallback) ── */
 async function fetchTemplate(name){
-  if(typeof DOC_TEMPLATES !== "undefined" && DOC_TEMPLATES["docs/"+ name]) return DOC_TEMPLATES["docs/"+ name];
-  const _dk = (name.startsWith("docs/") ? name : "docs/" + name);
-  if(typeof DOC_TEMPLATES!=="undefined" && DOC_TEMPLATES[_dk]) return DOC_TEMPLATES[_dk];
-  const _dk = (name.indexOf('docs/') === 0 ? name : 'docs/' + name); if(typeof DOC_TEMPLATES !== 'undefined' && DOC_TEMPLATES[_dk]) return DOC_TEMPLATES[_dk]; if(_tplCache[name]) return _tplCache[name];
+  if(_tplCache[name]) return _tplCache[name];
   const key = name.startsWith('docs/') ? name : 'docs/' + name;
+  if(typeof DOC_TEMPLATES !== 'undefined' && DOC_TEMPLATES[key]) {
+    _tplCache[name] = DOC_TEMPLATES[key];
+    return DOC_TEMPLATES[key];
+  }
 
   // 1° Intentar cargar el archivo .html directamente
   try {
