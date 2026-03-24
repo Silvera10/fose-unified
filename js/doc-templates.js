@@ -4595,10 +4595,10 @@ DOC_TEMPLATES["docs/estudio_previo.html"] = `{% extends "docs/base_doc.html" %}
 <div class="ep-section">
   <h3>6. Análisis del Sector y Referenciación de Precios de Mercado</h3>
   <p>
-    Con el fin de establecer el valor del contrato, se realizó una consulta de precios
+    Con el fin de establecer el valor estimado de la futura contratación, se realizó una consulta de precios
     en el mercado. El análisis arrojó como valor de referencia la
     suma de <strong>{{ format_moneda(valor_total) }}</strong>
-    (<strong>{{ valor_letras }}</strong>), el cual corresponde al valor total del contrato,
+    (<strong>{{ valor_letras }}</strong>), el cual corresponde al valor estimado de la contratación,
     amparado mediante Certificado de Disponibilidad Presupuestal (CDP)
     N.° <strong>{{ num_cdp }}</strong> de fecha <strong>{{ fecha_cdp_larga }}</strong>.
   </p>
@@ -5050,10 +5050,10 @@ DOC_TEMPLATES["docs/estudio_previo_garantia.html"] = `{% extends "docs/base_doc.
 <div class="ep-section">
   <h3>6. Análisis del Sector y Referenciación de Precios de Mercado</h3>
   <p>
-    Con el fin de establecer el valor del contrato, se realizó una consulta de precios en
+    Con el fin de establecer el valor estimado de la futura contratación, se realizó una consulta de precios en
     el mercado. El análisis arrojó como valor de referencia la suma de
     <strong>{{ format_moneda(valor_total) }}</strong>
-    (<strong>{{ valor_letras }}</strong>), el cual corresponde al valor total del contrato,
+    (<strong>{{ valor_letras }}</strong>), el cual corresponde al valor estimado de la contratación,
     amparado mediante Certificado de Disponibilidad Presupuestal (CDP)
     N.° <strong>{{ num_cdp }}</strong> de fecha <strong>{{ fecha_cdp_larga }}</strong>.
   </p>
