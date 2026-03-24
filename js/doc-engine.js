@@ -22,6 +22,7 @@ let _escudoBase64 = '';
 
 /* ── Obtener plantilla (prioridad: archivo .html → DOC_TEMPLATES fallback) ── */
 async function fetchTemplate(name){
+  if(typeof DOC_TEMPLATES !== "undefined" && DOC_TEMPLATES[name]) return DOC_TEMPLATES[name];
   if(_tplCache[name]) return _tplCache[name];
   const key = name.startsWith('docs/') ? name : 'docs/' + name;
 
