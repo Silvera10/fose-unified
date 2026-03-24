@@ -50,6 +50,10 @@ R.contratos = function(){
             <div>
               <span class="fw-bold" style="font-size:13px;color:var(--azul)">Contrato N° ${c.numero||'S/N'}</span>
               <span class="estado-badge ${estadoClases[est]||''} ms-2">${est}</span>${diasBadge}
+              <span class="ms-2" style="font-size:10px">
+                <span class="badge ${c.secop_pre ? 'bg-success' : 'bg-secondary opacity-50'}" style="font-size:9px;cursor:pointer" onclick="event.stopPropagation();toggleSecop('${id}','secop_pre')" title="Clic para marcar/desmarcar SECOP Precontractual">SECOP: Pre ${c.secop_pre ? '✓' : '✗'}</span>
+                <span class="badge ${c.secop_pub ? 'bg-success' : 'bg-secondary opacity-50'} ms-1" style="font-size:9px;cursor:pointer" onclick="event.stopPropagation();toggleSecop('${id}','secop_pub')" title="Clic para marcar/desmarcar SECOP Publicado">SECOP: Pub ${c.secop_pub ? '✓' : '✗'}</span>
+              </span>
               <div class="text-muted mt-1" style="font-size:11px">
                 <strong>Tipo:</strong> ${c.tipo||''} | <strong>Modalidad:</strong> ${c.modalidad||''}
               </div>

@@ -2542,6 +2542,16 @@ function guardarContrato(){
   }
 }
 
+function toggleSecop(id, campo){
+  const d = DB.load();
+  const c = (d.contratos_full||[]).find(x=>x.id===id);
+  if(!c) return;
+  c[campo] = !c[campo];
+  DB.save(d);
+  R.contratos();
+  toast(c[campo] ? 'SECOP marcado ✓' : 'SECOP desmarcado', c[campo] ? 'success' : 'info');
+}
+
 function eliminarContrato(id){
   if(!confirm('Eliminar este contrato?')) return;
   const d = DB.load();
